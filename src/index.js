@@ -12,7 +12,9 @@ const container = document.getElementById('root');
 const root = createRoot(container);
 
 root.render(
-  <React.StrictMode>
+  // note: Strict mode is useful for development but can cause double renders. 
+  // this won't happen in prod 
+  <React.StrictMode> 
     <Provider store={store}>
       <App />
     </Provider>

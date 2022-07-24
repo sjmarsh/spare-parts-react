@@ -1,22 +1,33 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 
-import { addPart } from './partSlice';
+import { addPart, selectPartById } from './partSlice';
 
 const PartDetail = (props) => {
-    const [inputPart, setInputPart] = useState({
-        id: 0,
-        name: "",
-        description: "",
-        weight: 0,
-        price: 0,
-        startDate: "2020-01-01",
-        endDate: "2020-01-01"
-    });
-
+    const editPart = useSelector(state => selectPartById(state, props.partId)); 
+    
+    const setInitialPart = () => {
+        if(props.mode === 'Edit' && editPart){
+            return editPart;
+        }
+        else{
+            return {
+                id: 0,
+                name: "",
+                description: "",
+                weight: 0,
+                price: 0,
+                startDate: "2020-01-01",
+                endDate: "2020-01-01"
+            }
+        }
+    }
+    
+    const [inputPart, setInputPart] = useState(() => setInitialPart());
+    
     const dispatch = useDispatch();
 
     const handleInputChange = (e) => setInputPart({ ...inputPart, [e.target.name]: e.target.value });
