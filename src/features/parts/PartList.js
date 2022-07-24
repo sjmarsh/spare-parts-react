@@ -1,61 +1,76 @@
-import React from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import Form from 'react-bootstrap/Form'
-import Button from 'react-bootstrap/Button'
+import Table from 'react-bootstrap/Table';
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 
-import { addPart, removePart, selectParts } from './partSlice';
-import PartListItem from './PartListItem'
+import { selectParts, deletePart } from './partSlice';
+import PartDetail from './PartDetail';
 
 export function PartList() {
-    const [inputPart, setInputPart] = useState({
-        name: "",
-        weight: 0,
-        dateStart: "2020-01-01"
-    });
-    const parts = useSelector(selectParts);
     const dispatch = useDispatch();
+    const parts = useSelector(selectParts);
+    
+    const [showModal, setShowModal] = useState(false);
 
-    function handleInputChange(e) {
-        console.log(`name: ${e.target.name} value: ${e.target.value}`);
-        setInputPart({
-          ...inputPart,
-          [e.target.name]: e.target.value
-        });
-      }
+    const handleCloseModal = () => setShowModal(false);
+    const handleShowModal = () => setShowModal(true);
 
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        dispatch(addPart(inputPart));
+    const handleOnDeletePart = (partId) => {
+        dispatch(deletePart(partId));
     }
 
     return(
         <div>
-            <Form onSubmit={(e) => handleSubmit(e)}>
-                <Form.Group className='form-group my-2'>
-                    <Form.Label>Name</Form.Label>
-                    <Form.Control type="text" name="name" value={inputPart.name} onChange={handleInputChange}/>
-                </Form.Group>
-                <Form.Group>
-                    <Form.Label>Weight</Form.Label>
-                    <Form.Control type="text" name="weight" value={inputPart.weight}  onChange={handleInputChange}/>
-                </Form.Group>
-                <Form.Group>
-                    <Form.Label>Date Start</Form.Label>
-                    <Form.Control type="text" name="dateStart" value={inputPart.dateStart}  onChange={handleInputChange}/>
-                </Form.Group>
-                <div className='my-3'>
-                    <Button type="submit">Add Part</Button>
-                </div>
-            </Form>
+            <h3>Part List</h3>
+            
             <div>
+                <Table hover>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Weight</th>
+                            <th>Price</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {parts.map((part, index) => (
+                        <tr key={index}>
+                            <td>{part.name}</td>
+                            <td>{part.description}</td>
+                            <td>{part.weight}</td>
+                            <td>{part.price}</td>
+                            <td>{part.startDate}</td>
+                            <td>{part.endDate}</td>
+                            <td><Button variant="link">Edit</Button></td>
+                            <td><Button variant="link" onClick={() => handleOnDeletePart(part.id)}>Delete</Button></td>
+                        </tr>
+                    ))}  
+                    </tbody>
+                </Table>
                 
-                {parts.map((part, index) => (
-                    <PartListItem key={index} part={part}/>
-                ))}  
-            </div>  
+            </div> 
+            
+            <Button variant="primary" onClick={handleShowModal}>
+                Add Part
+            </Button>
+            <Modal show={showModal} onHide={handleCloseModal}>
+                <Modal.Body>
+                    <PartDetail mode="Add"/>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="link" onClick={handleCloseModal}>
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
         </div>
     )
 }

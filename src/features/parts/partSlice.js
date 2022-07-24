@@ -2,7 +2,13 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
     parts: [
-        { id: 1, name: 'part 1', weight: 2.3, dateStart: '2020-01-01' }
+        { id: 1, 
+          name: 'Part 1', 
+          description: 'The first one', 
+          weight: 2.3, 
+          price: 2.2, 
+          startDate: '2020-01-01',
+          endDate: '' }
     ]
 };
 
@@ -14,8 +20,9 @@ export const partSlice = createSlice({
             state.parts.push(action.payload);
             return state;
         },
-        removePart:(state, action) => {
-            return state.parts.filter(p => p.id !== action.payload.id);
+        deletePart:(state, action) => {
+            state.parts =  state.parts.filter(p => p.id !== action.payload);
+            return state;
         }
     }
 });
@@ -24,7 +31,7 @@ export const selectParts = (state) => state.parts.parts;
 
 export const {
     addPart,
-    removePart
+    deletePart
 } = partSlice.actions;
 
 export default partSlice.reducer;
