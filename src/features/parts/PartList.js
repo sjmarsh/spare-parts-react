@@ -1,8 +1,12 @@
 import React from 'react';
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+
+import Form from 'react-bootstrap/Form'
+import Button from 'react-bootstrap/Button'
+
 import { addPart, removePart, selectParts } from './partSlice';
-import PartItem from './PartItem'
+import PartListItem from './PartListItem'
 
 export function PartList() {
     const [inputPart, setInputPart] = useState({
@@ -29,18 +33,27 @@ export function PartList() {
 
     return(
         <div>
-            <form onSubmit={(e) => handleSubmit(e)}>
-                <p>Name:</p>
-                <input type="text" name="name" value={inputPart.name} onChange={handleInputChange}></input>
-                <p>Weight:</p>
-                <input type="text" name="weight" value={inputPart.weight}  onChange={handleInputChange}></input>
-                <p>Date Start:</p>
-                <input type="text" name="dateStart" value={inputPart.dateStart}  onChange={handleInputChange}></input>
-                <button type='submit'>Add Part</button>
-            </form>
+            <Form onSubmit={(e) => handleSubmit(e)}>
+                <Form.Group className='form-group my-2'>
+                    <Form.Label>Name</Form.Label>
+                    <Form.Control type="text" name="name" value={inputPart.name} onChange={handleInputChange}/>
+                </Form.Group>
+                <Form.Group>
+                    <Form.Label>Weight</Form.Label>
+                    <Form.Control type="text" name="weight" value={inputPart.weight}  onChange={handleInputChange}/>
+                </Form.Group>
+                <Form.Group>
+                    <Form.Label>Date Start</Form.Label>
+                    <Form.Control type="text" name="dateStart" value={inputPart.dateStart}  onChange={handleInputChange}/>
+                </Form.Group>
+                <div className='my-3'>
+                    <Button type="submit">Add Part</Button>
+                </div>
+            </Form>
             <div>
+                
                 {parts.map((part, index) => (
-                    <PartItem key={index} part={part}/>
+                    <PartListItem key={index} part={part}/>
                 ))}  
             </div>  
         </div>
