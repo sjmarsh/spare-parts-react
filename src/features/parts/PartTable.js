@@ -19,6 +19,11 @@ const PartTable = () => {
         }
     }, [partsStatus, dispatch])
 
+    const handleOnAddPart = () => {
+        dispatch(fetchPart(0));
+        dispatch(showDetail({detailMode: 'Add', selectPartId: 0}));
+    }
+    
     const handleOnEditPart = (partId) => {
         dispatch(fetchPart(partId));
         dispatch(showDetail({detailMode: 'Edit', selectedPartId: partId}));
@@ -68,6 +73,7 @@ const PartTable = () => {
             ))}  
             </tbody>
         </Table>    
+        <Button variant="primary" onClick={handleOnAddPart}>Add Part</Button>
     </div>
     )
 }

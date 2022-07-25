@@ -17,6 +17,9 @@ export const fetchParts = createAsyncThunk('parts/fetchParts', async () => {
 })
 
 export const fetchPart = createAsyncThunk('parts/fetchPart', async (partId) => {
+    if(partId === 0) {
+        return {};
+    }
     const response = await client.get(`https://localhost:7104/api/part/?id=${partId}`);
     return response.data.value;
 })
