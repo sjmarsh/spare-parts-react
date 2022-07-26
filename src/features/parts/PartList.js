@@ -5,7 +5,7 @@ import PartTable from './PartTable';
 import PartDetail from './PartDetail';
 
 export function PartList() {
-    const detailMode = useSelector(state => state.parts.detailMode);
+    const detailMode = useSelector(state => state.partDetail.mode);
     const isShowDetail = detailMode === 'Add' || detailMode === 'Edit';
     
     return(

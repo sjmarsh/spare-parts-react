@@ -6,7 +6,8 @@ import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 import Alert from 'react-bootstrap/Alert';
 
-import { selectAllParts, fetchParts, deletePart, showDetail, fetchPart } from './partSlice';
+import { selectAllParts, fetchParts, deletePart } from './partListSlice';
+import { showDetail, fetchPart } from './partDetailSlice';
 
 const PartTable = () => {
     const dispatch = useDispatch();
@@ -30,7 +31,9 @@ const PartTable = () => {
     }
 
     const handleOnDeletePart = (partId) => {
-        dispatch(deletePart(partId));
+        dispatch(deletePart(partId)).then((res) => {
+            if(res.meta.requestStatus === 'fulfilled') dispatch(fetchParts());
+        });
     }
 
     return (
