@@ -1,12 +1,16 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { client } from '../../api/client';
+
 import config from '../../config.json';
+
+import DetailMode from '../../app/constants/detailMode';
+import FetchStatus from '../../app/constants/fetchStatus';
 
 const initialState = {
     id: 0,
     value: {},
-    mode: 'Closed',
-    status: 'idle',
+    mode: DetailMode.Closed,
+    status: FetchStatus.Idle,
     error: null
 };
 
@@ -52,36 +56,36 @@ export const partDetailSlice = createSlice({
     extraReducers(builder){
         builder
             .addCase(fetchPart.pending, (state, action) => {
-                state.status = 'loading';
+                state.status = FetchStatus.Loading;
             })
             .addCase(fetchPart.fulfilled, (state, action) => {
-                state.status = 'succeeded';
+                state.status = FetchStatus.Succeeded;
                 state.value = action.payload;
             })
             .addCase(fetchPart.rejected, (state, action) => {
-                state.status = 'failed';
+                state.status = FetchStatus.Failed;
                 state.error = action.error.message;
             })
             .addCase(createPart.pending, (state, action) => {
-                state.status = 'loading';
+                state.status = FetchStatus.Loading;
             })
             .addCase(createPart.fulfilled, (state, action) => {
-                state.status = 'succeeded';
+                state.status = FetchStatus.Succeeded;
                 state.value = action.payload;
             })
             .addCase(createPart.rejected, (state, action) => {
-                state.status = 'failed';
+                state.status = FetchStatus.Failed;
                 state.error = action.error.message;
             })
             .addCase(updatePart.pending, (state, action) => {
-                state.status = 'loading';
+                state.status = FetchStatus.Loading;
             })
             .addCase(updatePart.fulfilled, (state, action) => {
-                state.status = 'succeeded';
+                state.status = FetchStatus.Succeeded;
                 state.value = action.payload;
             })
             .addCase(updatePart.rejected, (state, action) => {
-                state.status = 'failed';
+                state.status = FetchStatus.Failed;
                 state.error = action.error.message;
             })
     }

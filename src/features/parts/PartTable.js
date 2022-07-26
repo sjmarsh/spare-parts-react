@@ -5,6 +5,8 @@ import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 import Alert from 'react-bootstrap/Alert';
+import DetailMode from '../../app/constants/detailMode';
+import FetchStatus from '../../app/constants/fetchStatus';
 
 import { selectAllParts, fetchParts, deletePart } from './partListSlice';
 import { showDetail, fetchPart } from './partDetailSlice';
@@ -15,19 +17,21 @@ const PartTable = () => {
     const partsStatus = useSelector(state => state.parts.status);
 
     useEffect(() => {
-        if(partsStatus === "idle"){
+        if(partsStatus === FetchStatus.Idle){
             dispatch(fetchParts());
         }
     }, [partsStatus, dispatch])
 
     const handleOnAddPart = () => {
-        dispatch(fetchPart(0));
-        dispatch(showDetail({detailMode: 'Add', selectPartId: 0}));
+        dispatch(fetchPart(0)).then(
+            () => dispatch(showDetail({detailMode: DetailMode.Add, selectPartId: 0}))
+        );
     }
     
     const handleOnEditPart = (partId) => {
-        dispatch(fetchPart(partId));
-        dispatch(showDetail({detailMode: 'Edit', selectedPartId: partId}));
+        dispatch(fetchPart(partId)).then(
+            () => dispatch(showDetail({detailMode: DetailMode.Edit, selectedPartId: partId}))
+        );
     }
 
     const handleOnDeletePart = (partId) => {
@@ -39,12 +43,12 @@ const PartTable = () => {
     return (
         <div>
     
-        { partsStatus === 'loading' && 
+        { partsStatus === FetchStatus.Idle && 
             <Spinner animation="border" role="status" >
                 <span className="visually-hidden">Loading...</span>
             </Spinner>
         }
-        { partsStatus === 'failed' && 
+        { partsStatus === FetchStatus.Failed && 
             <Alert variant='danger'>An error occurred fetching parts.</Alert>
         }
        

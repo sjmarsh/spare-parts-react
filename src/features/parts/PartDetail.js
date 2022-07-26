@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import DetailMode from '../../app/constants/detailMode';
 
 import { showDetail, createPart, updatePart } from './partDetailSlice';
 import { fetchParts } from './partListSlice';
@@ -21,21 +22,21 @@ const PartDetail = (props) => {
         setFormData(selectedPart);
     }, [selectedPart]);
     
-    const handleCloseModal = () => dispatch(showDetail({detailMode: 'Close', selectedPartId: 0}));
+    const handleCloseModal = () => dispatch(showDetail({detailMode: DetailMode.Closed, selectedPartId: 0}));
         
     const handleFormDataChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
     
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        if(detailMode ==='Add') {
+        if(detailMode === DetailMode.Add) {
             dispatch(createPart(formData))
             .then((res) => {
                 if(res.meta.requestStatus === 'fulfilled') dispatch(fetchParts());
             });    
         }
 
-        if(detailMode === 'Edit') {
+        if(detailMode === DetailMode.Edit) {
             dispatch(updatePart(formData))
             .then((res) => {
                 if(res.meta.requestStatus === 'fulfilled') dispatch(fetchParts());
@@ -49,10 +50,6 @@ const PartDetail = (props) => {
                 <Modal.Body>
                     <h3>{detailMode} Part</h3>
                     <Form onSubmit={(e) => handleSubmit(e)}>
-                        <Form.Group className='form-group my-2'>
-                            <Form.Label>Id</Form.Label>
-                            <Form.Control type="text" name="id" value={formData.id || ""} onChange={handleFormDataChange}/>
-                        </Form.Group>
                         <Form.Group className='form-group my-2'>
                             <Form.Label>Name</Form.Label>
                             <Form.Control type="text" name="name" value={formData.name || ""} onChange={handleFormDataChange}/>

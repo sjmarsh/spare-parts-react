@@ -1,10 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { client } from '../../api/client';
+
 import config from '../../config.json';
+
+import FetchStatus from '../../app/constants/fetchStatus';
 
 const initialState = {
     items: [],
-    status: 'idle',
+    status: FetchStatus.Idle,
     error: null
 };
 
@@ -32,25 +35,25 @@ export const partListSlice = createSlice({
     extraReducers(builder) {
         builder
             .addCase(fetchParts.pending, (state, action) => {
-                state.status = 'loading';
+                state.status = FetchStatus.Loading;
             })
             .addCase(fetchParts.fulfilled, (state, action) => {
-                state.status = 'succeeded';
+                state.status = FetchStatus.Succeeded;
                 //state.items = state.items.concat(action.payload);
                 state.items = action.payload;
             })
             .addCase(fetchParts.rejected, (state, action) => {
-                state.status = 'failed';
+                state.status = FetchStatus.Failed;
                 state.error = action.error.message;
             })
             .addCase(deletePart.pending, (state, action) => {
-                state.status = 'loading';
+                state.status = FetchStatus.Loading;
             })
             .addCase(deletePart.fulfilled, (state, action) => {
-                state.status = 'succeeded';
+                state.status = FetchStatus.Succeeded;
             })
             .addCase(deletePart.rejected, (state, action) => {
-                state.status = 'failed';
+                state.status = FetchStatus.Failed;
                 state.error = action.error.message;
             })
 
