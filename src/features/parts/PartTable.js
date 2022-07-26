@@ -70,8 +70,8 @@ const PartTable = () => {
                 <tr key={index}>
                     <td>{part.name}</td>
                     <td>{part.description}</td>
-                    <td>{part.weight}</td>
-                    <td>{part.price}</td>
+                    <td>{Number(part.weight).toFixed(2)}</td>
+                    <td>{new Intl.NumberFormat('en-AU', {style: 'currency', currency: 'AUD'}).format(part.price)}</td>
                     <td>{new Date(part.startDate).toLocaleDateString('en-au')}</td>
                     <td>{part.endDate === null ? '' : new Date(part.endDate).toLocaleDateString('en-au')}</td>
                     <td><Button variant="link" onClick={() => handleOnEditPart(part.id)}>Edit</Button></td>
