@@ -4,6 +4,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import NumberFormat from 'react-number-format';
+
 import DetailMode from '../../app/constants/detailMode';
 
 import { showDetail, createPart, updatePart } from './partDetailSlice';
@@ -26,6 +28,8 @@ const PartDetail = (props) => {
         
     const handleFormDataChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
     
+    const handleFormCurrencyDataChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value.replace('$', '') });
+
     const handleSubmit = (e) => {
         e.preventDefault();
 
@@ -67,11 +71,13 @@ const PartDetail = (props) => {
                         </Form.Group>
                         <Form.Group>
                             <Form.Label>Weight</Form.Label>
-                            <Form.Control type="text" name="weight" value={formData.weight || ""} onChange={handleFormDataChange}/>
+                            <NumberFormat name="weight" className="form-control" displayType='number' value={formData.weight || ""} isNumericString={true} 
+                                thousandSeparator={true} decimalScale={2} fixedDecimalScale={true} onChange={handleFormDataChange} />
                         </Form.Group>
                         <Form.Group className='form-group my-2'>
                             <Form.Label>Price</Form.Label>
-                            <Form.Control type="text" name="price" value={formData.price || ""} onChange={handleFormDataChange}/>
+                            <NumberFormat name="price" className="form-control" displayType='number' value={formData.price || ""} isNumericString={true}
+                                thousandSeparator={true} prefix={'$'} decimalScale={2} fixedDecimalScale={true} onChange={handleFormCurrencyDataChange} />
                         </Form.Group>
                         <Form.Group>
                             <Form.Label>Date Start</Form.Label>
