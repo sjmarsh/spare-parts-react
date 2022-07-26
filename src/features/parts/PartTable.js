@@ -72,8 +72,8 @@ const PartTable = () => {
                     <td>{part.description}</td>
                     <td>{part.weight}</td>
                     <td>{part.price}</td>
-                    <td>{part.startDate}</td>
-                    <td>{part.endDate}</td>
+                    <td>{new Date(part.startDate).toLocaleDateString('en-au')}</td>
+                    <td>{part.endDate === null ? '' : new Date(part.endDate).toLocaleDateString('en-au')}</td>
                     <td><Button variant="link" onClick={() => handleOnEditPart(part.id)}>Edit</Button></td>
                     <td><Button variant="link" onClick={() => handleOnDeletePart(part.id)}>Delete</Button></td>
                 </tr>

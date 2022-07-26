@@ -44,6 +44,13 @@ const PartDetail = (props) => {
         }
     }
 
+    const getDateForPicker = (dateString) => {
+        if(!dateString){
+            return ''
+        }
+        return dateString.substring(0, 10);
+    }
+
     return (
         <div>
             <Modal show={true} onHide={handleCloseModal}>
@@ -68,11 +75,11 @@ const PartDetail = (props) => {
                         </Form.Group>
                         <Form.Group>
                             <Form.Label>Date Start</Form.Label>
-                            <Form.Control type="text" name="startDate" value={formData.startDate || ""} onChange={handleFormDataChange}/>
+                            <Form.Control type="date" name="startDate" value={getDateForPicker(formData.startDate)} onChange={handleFormDataChange}/>
                         </Form.Group>
                         <Form.Group className='form-group my-2'>
                             <Form.Label>End Date</Form.Label>
-                            <Form.Control type="text" name="endDate" value={formData.endDate || ""} onChange={handleFormDataChange}/>
+                            <Form.Control type="date" name="endDate" value={getDateForPicker(formData.endDate)} onChange={handleFormDataChange}/>
                         </Form.Group>
                         <div className='my-3'>
                             <Button type="submit">Submit</Button>
