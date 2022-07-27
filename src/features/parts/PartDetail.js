@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Formik, Form, Field, ErrorMessage, useField, useFormikContext } from 'formik';
+import * as Yup from 'yup';
 
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
@@ -14,22 +15,20 @@ import FetchStatus from '../../app/constants/fetchStatus';
 import { showDetail, createPart, updatePart } from './partDetailSlice';
 import { fetchParts } from './partListSlice';
 
-const PartDetail = (props) => {
+const PartDetail = () => {
     
     const dispatch = useDispatch();
     const detailMode = useSelector(state => state.partDetail.mode);
     const selectedPart = useSelector(state => state.partDetail.value);
     const detailStatus = useSelector(state => state.partDetail.status);
-    
     const currentPage = useSelector(state => state.partsList.currentPage);
-       
-    const emptyPart = { id: 0, name: "", description: "", weight: 0, price: 0, startDate: "", endDate: "" };
-    const [formData, setFormData] = useState(emptyPart);
-    
-    useEffect(() => {
-        setFormData(selectedPart);
-    }, [selectedPart]);
-
+   
+    const PartDetailSchema = Yup.object().shape({
+        name: Yup.string().required('Required'),
+        weight: Yup.number().min(0).required('Required'),
+        price: Yup.number().min(0).required('Required'),
+        startDate: Yup.date().min('2000-01-01').required('Reqired')
+    })
 
     const handleCloseModal = () => dispatch(showDetail({detailMode: DetailMode.Closed, selectedPartId: 0}));
    
@@ -100,14 +99,9 @@ const PartDetail = (props) => {
                     }
                     <Formik
                         initialValues={selectedPart}
-                        validate={values => {
-                            const errors = {};
-                            if(!values.name){
-                                errors.name = 'Name required';
-                            }
-                            return errors;
-                        }}
+                        validationSchema={PartDetailSchema}
                         onSubmit={(values, {setSubmitting}) => {
+                            setSubmitting(true);
                             handleFormSubmit(values);
                         }}
                     >
@@ -139,6 +133,11 @@ const PartDetail = (props) => {
                                     <label htmlFor="startDate">Start Date</label>
                                     <DateField name="startDate" className={getFieldClassName(touched.startDate, errors.startDate)}/>
                                     <ErrorMessage name="startDate" component="div" className="validation-message"/>
+                                </div>
+                                <div className='form-group  my-2'>
+                                    <label htmlFor="endDate">End Date</label>
+                                    <DateField name="endDate" className={getFieldClassName(touched.endDate, errors.endDate)}/>
+                                    <ErrorMessage name="endDate" component="div" className="validation-message"/>
                                 </div>
                                 <div className='my-3'>
                                     <Button type="submit" disabled={isSubmitting}>Submit</Button>
