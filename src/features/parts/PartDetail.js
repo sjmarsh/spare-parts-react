@@ -16,6 +16,7 @@ const PartDetail = (props) => {
     const dispatch = useDispatch();
     const detailMode = useSelector(state => state.partDetail.mode);
     const selectedPart = useSelector(state => state.partDetail.value);
+    const currentPage = useSelector(state => state.partsList.currentPage);
        
     const emptyPart = { id: 0, name: "", description: "", weight: 0, price: 0, startDate: "", endDate: "" };
     const [formData, setFormData] = useState(emptyPart);
@@ -36,14 +37,14 @@ const PartDetail = (props) => {
         if(detailMode === DetailMode.Add) {
             dispatch(createPart(formData))
             .then((res) => {
-                if(res.meta.requestStatus === 'fulfilled') dispatch(fetchParts());
+                if(res.meta.requestStatus === 'fulfilled') dispatch(fetchParts(currentPage));
             });    
         }
 
         if(detailMode === DetailMode.Edit) {
             dispatch(updatePart(formData))
             .then((res) => {
-                if(res.meta.requestStatus === 'fulfilled') dispatch(fetchParts());
+                if(res.meta.requestStatus === 'fulfilled') dispatch(fetchParts(currentPage));
             });
         }
     }

@@ -4,18 +4,22 @@ import { client } from '../../api/client';
 import config from '../../config.json';
 
 import FetchStatus from '../../app/constants/fetchStatus';
+import TableSettings from '../../app/constants/tableSettings';
 
 const initialState = {
     items: [],
+    totalItemCount: 0,
+    currentPage: 1,
     status: FetchStatus.Idle,
     error: null
 };
 
 const baseUrl = `${config.SERVER_URL}/api/part`;
 
-export const fetchParts = createAsyncThunk('parts/fetchParts', async () => {
-    const response =  await client.get(`${baseUrl}/index`);
-    return response.data.items;  // todo - better handle actual response from api
+export const fetchParts = createAsyncThunk('parts/fetchParts', async (page) => {
+    let skip = (page -1) * TableSettings.PageSize;
+    const response =  await client.get(`${baseUrl}/index?skip=${skip}&take=${TableSettings.PageSize}`);
+    return response.data;  
 })
 
 export const deletePart = createAsyncThunk('parts/deletePart', async (partId) => {
@@ -39,8 +43,8 @@ export const partListSlice = createSlice({
             })
             .addCase(fetchParts.fulfilled, (state, action) => {
                 state.status = FetchStatus.Succeeded;
-                //state.items = state.items.concat(action.payload);
-                state.items = action.payload;
+                state.items = action.payload.items;
+                state.totalItemCount = action.payload.totalItemCount;
             })
             .addCase(fetchParts.rejected, (state, action) => {
                 state.status = FetchStatus.Failed;
@@ -60,7 +64,7 @@ export const partListSlice = createSlice({
     }
 });
 
-export const selectAllParts = (state) => state.parts.items;
+export const selectAllParts = (state) => state.partsList.items;
 
 /*
 export const {

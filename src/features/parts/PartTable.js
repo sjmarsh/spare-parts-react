@@ -7,6 +7,8 @@ import Spinner from 'react-bootstrap/Spinner';
 import Alert from 'react-bootstrap/Alert';
 import DetailMode from '../../app/constants/detailMode';
 import FetchStatus from '../../app/constants/fetchStatus';
+import TableSettings from '../../app/constants/tableSettings';
+import Pager from '../../components/Pager';
 
 import { selectAllParts, fetchParts, deletePart } from './partListSlice';
 import { showDetail, fetchPart } from './partDetailSlice';
@@ -14,13 +16,15 @@ import { showDetail, fetchPart } from './partDetailSlice';
 const PartTable = () => {
     const dispatch = useDispatch();
     const parts = useSelector(selectAllParts);
-    const partsStatus = useSelector(state => state.parts.status);
-
+    const totalItemCount = useSelector(state => state.partsList.totalItemCount);
+    const currentPage = useSelector(state => state.partsList.currentPage);
+    const partsStatus = useSelector(state => state.partsList.status);
+    
     useEffect(() => {
-        if(partsStatus === FetchStatus.Idle){
-            dispatch(fetchParts());
+        if(partsStatus === FetchStatus.Idle) {
+            dispatch(fetchParts(currentPage));
         }
-    }, [partsStatus, dispatch])
+    }, [partsStatus, dispatch, currentPage])
 
     const handleOnAddPart = () => {
         dispatch(fetchPart(0)).then(
@@ -36,8 +40,12 @@ const PartTable = () => {
 
     const handleOnDeletePart = (partId) => {
         dispatch(deletePart(partId)).then((res) => {
-            if(res.meta.requestStatus === 'fulfilled') dispatch(fetchParts());
+            if(res.meta.requestStatus === 'fulfilled') dispatch(fetchParts(currentPage));
         });
+    }
+
+    const handleOnPageClick = (pageNumber) => {
+        dispatch(fetchParts(pageNumber));
     }
 
     return (
@@ -79,7 +87,10 @@ const PartTable = () => {
                 </tr>
             ))}  
             </tbody>
-        </Table>    
+        </Table>
+        
+        <Pager totalItemCount={totalItemCount} pageSize={TableSettings.PageSize} onPageClick={handleOnPageClick} />
+        
         <Button variant="primary" onClick={handleOnAddPart}>Add Part</Button>
     </div>
     )
