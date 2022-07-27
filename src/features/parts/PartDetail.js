@@ -103,6 +103,7 @@ const PartDetail = () => {
                         onSubmit={(values, {setSubmitting}) => {
                             setSubmitting(true);
                             handleFormSubmit(values);
+                            setSubmitting(false);
                         }}
                     >
                         {(props) => {
