@@ -4,9 +4,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import Spinner from 'react-bootstrap/esm/Spinner';
+import Alert from 'react-bootstrap/Alert'
 import NumberFormat from 'react-number-format';
 
 import DetailMode from '../../app/constants/detailMode';
+import FetchStatus from '../../app/constants/fetchStatus';
 
 import { showDetail, createPart, updatePart } from './partDetailSlice';
 import { fetchParts } from './partListSlice';
@@ -16,6 +19,8 @@ const PartDetail = (props) => {
     const dispatch = useDispatch();
     const detailMode = useSelector(state => state.partDetail.mode);
     const selectedPart = useSelector(state => state.partDetail.value);
+    const detailStatus = useSelector(state => state.partDetail.status);
+    
     const currentPage = useSelector(state => state.partsList.currentPage);
        
     const emptyPart = { id: 0, name: "", description: "", weight: 0, price: 0, startDate: "", endDate: "" };
@@ -61,6 +66,15 @@ const PartDetail = (props) => {
             <Modal show={true} onHide={handleCloseModal}>
                 <Modal.Body>
                     <h3>{detailMode} Part</h3>
+                    { detailStatus === FetchStatus.Idle && 
+                        <Spinner animation="border" role="status" >
+                            <span className="visually-hidden">Loading...</span>
+                        </Spinner>
+                    }
+                    { detailStatus === FetchStatus.Failed && 
+                        <Alert variant='danger'>An error occurred fetching part.</Alert>
+                    }
+       
                     <Form onSubmit={(e) => handleSubmit(e)}>
                         <Form.Group className='form-group my-2'>
                             <Form.Label>Name</Form.Label>
