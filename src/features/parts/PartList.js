@@ -6,7 +6,7 @@ import DetailMode from '../../app/constants/detailMode';
 import PartTable from './PartTable';
 import PartDetail from './PartDetail';
 
-export function PartList() {
+export default function PartList() {
     const detailMode = useSelector(state => state.partDetail.mode);
     const isShowDetail = detailMode === DetailMode.Add || detailMode === DetailMode.Edit;
     
