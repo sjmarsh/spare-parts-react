@@ -1,42 +1,63 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import Navbar from 'react-bootstrap/Navbar';
-import Nav from 'react-bootstrap/Nav';
 
+import Home from '../features/home/Home';
 import PartList from '../features/parts/PartList';
 import Counter from '../features/counter/Counter';
 
 import './Sidebar.css'
 
 export const SideBar = () => {
-  return (
-    <div className='sidebar flex-column flex-shrink-0'> 
+  
+  const [collapseNavMenu, setCollapseNavMenu] = useState(false);
+  const [navMenuClass, setNavMenuClass] = useState("");
+  const [activeLink, setActiveLink] = useState("");
+  
+  const toggleNavMenu = () => {
+    setCollapseNavMenu(!collapseNavMenu);
+    let navMenuClass = collapseNavMenu ? "collapse" : "";
+    setNavMenuClass(navMenuClass);
+  }
 
-      <div class="top-row ps-3 navbar navbar-dark">
-          <div class="container-fluid">
-              <Navbar.Brand>Spare Parts</Navbar.Brand>
-              <button title="Navigation menu" class="navbar-toggler" >
-                  <span class="navbar-toggler-icon"></span>
+   const updateActiveLink = (e) => {
+      setActiveLink(e.currentTarget.id);
+   }
+
+  const activeClass = (linkId) => {
+    return activeLink === linkId ? "active" : "";
+  }
+
+  return (
+    <div className='sidebar'> 
+
+      <div className="top-row-cust ps-3 navbar navbar-dark">
+          <div className="container-fluid">
+              <div className="navbar-brand">Spare Parts</div>
+              <button title="Navigation menu" className="navbar-toggler" onClick={toggleNavMenu}>
+                  <span className="navbar-toggler-icon"></span>
               </button>
           </div>
       </div>
 
-      <Navbar variant="dark">          
-        <Nav className="me-auto">
-          <ul>
-            <Nav.Item className="px-3">
-              <Link className='nav-link' to="/part-list" element={<PartList/>}>
+      <div className={navMenuClass}>
+          <nav className="flex-column">
+          <div className="nav-item-cust px-3">
+              <Link id="home" className={`nav-link-cust ${activeClass('home')}`} to="/home" element={<Home/>} onClick={updateActiveLink}>
+                <span className="oi oi-home" aria-hidden="true"/>Home
+              </Link>
+            </div>
+            <div className="nav-item-cust px-3">
+              <Link id="part-list" className={`nav-link-cust ${activeClass('part-list')}`} to="/part-list" element={<PartList/>} onClick={updateActiveLink}>
                 <span className="oi oi-list" aria-hidden="true"/>Part List
               </Link>
-            </Nav.Item>
-            <Nav.Item className="px-3">
-              <Link className='nav-link' to="/counter" element={<Counter/>}>
+            </div>
+            <div className="nav-item-cust px-3">
+              <Link id="counter" className={`nav-link-cust ${activeClass('counter')}`} to="/counter" element={<Counter/>} onClick={updateActiveLink}>
               <span className="oi oi-spreadsheet" aria-hidden="true"/>Counter
               </Link>
-            </Nav.Item>
-          </ul>
-        </Nav>
-      </Navbar>        
+            </div>
+          </nav>
+      </div>        
     </div>  
   )
 }
