@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Formik, Form } from 'formik';
-import * as Yup from 'yup';
 
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
@@ -11,6 +10,7 @@ import TextField from '../../components/TextField';
 import NumericField from '../../components/NumericField';
 import DateField from '../../components/DateField';
 
+import PartDetailSchema from './partDetailSchema';
 import DetailMode from '../../app/constants/detailMode';
 import FetchStatus from '../../app/constants/fetchStatus';
 
@@ -27,13 +27,6 @@ const PartDetail = () => {
     const detailStatus = useSelector(state => state.partDetail.status);
     const currentPage = useSelector(state => state.partsList.currentPage);
    
-    const PartDetailSchema = Yup.object().shape({
-        name: Yup.string().required('Required'),
-        weight: Yup.number().min(0).required('Required'),
-        price: Yup.number().min(0).required('Required'),
-        startDate: Yup.date().min('2000-01-01').required('Reqired')
-    })
-
     const handleCloseModal = () => dispatch(showDetail({detailMode: DetailMode.Closed, selectedPartId: 0}));
    
     const handleFormSubmit = (part) => {
