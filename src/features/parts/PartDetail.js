@@ -1,13 +1,15 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Formik, Form, Field, ErrorMessage, useField, useFormikContext } from 'formik';
+import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Spinner from 'react-bootstrap/esm/Spinner';
 import Alert from 'react-bootstrap/Alert'
-import NumberFormat from 'react-number-format';
+import TextField from '../../components/TextField';
+import NumericField from '../../components/NumericField';
+import DateField from '../../components/DateField';
 
 import DetailMode from '../../app/constants/detailMode';
 import FetchStatus from '../../app/constants/fetchStatus';
@@ -17,6 +19,8 @@ import { fetchParts } from './partListSlice';
 
 const PartDetail = () => {
     
+    const [hasSubmitted, setHasSubmitted] = useState(false);
+ 
     const dispatch = useDispatch();
     const detailMode = useSelector(state => state.partDetail.mode);
     const selectedPart = useSelector(state => state.partDetail.value);
@@ -46,42 +50,7 @@ const PartDetail = () => {
                 if(res.meta.requestStatus === 'fulfilled') dispatch(fetchParts(currentPage));
             });
         }
-    }
-
-    const getFieldClassName = (touched, errors) => {  
-        var modified = touched ? "modified" : "";
-        var valid = errors ? "invalid" : "valid";
-        return `form-control ${modified} ${valid}`;
-    }
-
-    const NumberField = ({...props}) => {      
-        const { setFieldValue } = useFormikContext(); 
-        const [field] = useField(props);
-        const handleThis = (e) =>{
-            setFieldValue(e.floatValue);
-        }
-        // TODO - handle issue when using prefix={'$'} doubles up on $ symbol and doesn't strip symbol when submitting value
-        return (
-            <NumberFormat {...field} {...props} 
-                displayType='number' isNumericString={true} thousandSeparator={true} decimalScale={2} fixedDecimalScale={true} 
-                onValueChange={(e) => handleThis(e)}/>
-        )
-    }
-
-    const getDateForPicker = (dateString) => {
-        if(!dateString) {
-            return '';
-        }
-        return dateString.substring(0, 10);
-    }
-
-    
-    const DateField = ({...props}) => {       
-        const [field] = useField(props);
-        field.value = getDateForPicker(field.value);
-        return (
-            <input type="date" {...field} {...props}/>           
-        )
+        setHasSubmitted(true);
     }
 
     return (
@@ -97,6 +66,9 @@ const PartDetail = () => {
                     { detailStatus === FetchStatus.Failed && 
                         <Alert variant='danger'>An error occurred fetching part.</Alert>
                     }
+                    { hasSubmitted && detailStatus === FetchStatus.Succeeded &&
+                        <Alert variant='success'>Success</Alert>
+                    }
                     <Formik
                         initialValues={selectedPart}
                         validationSchema={PartDetailSchema}
@@ -107,39 +79,15 @@ const PartDetail = () => {
                         }}
                     >
                         {(props) => {
-                            const { isSubmitting, handleSubmit, touched, errors } = props;
+                            const { isSubmitting, handleSubmit } = props;
                             return (
                             <Form onSubmit={handleSubmit}>
-                                <div className='form-group  my-2'>
-                                    <label htmlFor="name">Name</label>
-                                    <Field type="string" name="name" className={getFieldClassName(touched.name, errors.name)}/>
-                                    <ErrorMessage name="name" component="div" className="validation-message"/>
-                                </div>
-                                <div className='form-group  my-2'>
-                                    <label htmlFor="name">Description</label>
-                                    <Field type="string" name="description" className={getFieldClassName(touched.description, errors.description)}/>
-                                    <ErrorMessage name="description" component="div" className="validation-message"/>
-                                </div>
-                                <div className='form-group  my-2'>
-                                    <label htmlFor="weight">Weight</label>
-                                    <NumberField name="weight" className={getFieldClassName(touched.weight, errors.weight)}/>
-                                    <ErrorMessage name="weight" component="div" className="validation-message"/>
-                                </div>
-                                <div className='form-group  my-2'>
-                                    <label htmlFor="price">Price</label>
-                                    <NumberField name="price" className={getFieldClassName(touched.price, errors.price)}/>
-                                    <ErrorMessage name="price" component="div" className="validation-message"/>
-                                </div>
-                                <div className='form-group  my-2'>
-                                    <label htmlFor="startDate">Start Date</label>
-                                    <DateField name="startDate" className={getFieldClassName(touched.startDate, errors.startDate)}/>
-                                    <ErrorMessage name="startDate" component="div" className="validation-message"/>
-                                </div>
-                                <div className='form-group  my-2'>
-                                    <label htmlFor="endDate">End Date</label>
-                                    <DateField name="endDate" className={getFieldClassName(touched.endDate, errors.endDate)}/>
-                                    <ErrorMessage name="endDate" component="div" className="validation-message"/>
-                                </div>
+                                <TextField name="name" displayName="Name" formProps={props}/>
+                                <TextField name="description" displayName="Description" formProps={props}/>
+                                <NumericField name="weight" displayName="Weight" formProps={props}/>
+                                <NumericField name="price" displayName="Price" formProps={props}/>
+                                <DateField name="startDate" displayName="Start Date" formProps={props}/>
+                                <DateField name="endDate" displayName="End Date" formProps={props}/>
                                 <div className='my-3'>
                                     <Button type="submit" disabled={isSubmitting}>Submit</Button>
                                 </div>
