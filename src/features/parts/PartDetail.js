@@ -48,7 +48,7 @@ const PartDetail = () => {
         }
     }
 
-    const getFieldClassName = (touched, errors) => {
+    const getFieldClassName = (touched, errors) => {  
         var modified = touched ? "modified" : "";
         var valid = errors ? "invalid" : "valid";
         return `form-control ${modified} ${valid}`;
@@ -89,7 +89,7 @@ const PartDetail = () => {
             <Modal show={true} onHide={handleCloseModal}>
                 <Modal.Body>
                     <h3>{detailMode} Part</h3>
-                    { detailStatus === FetchStatus.Idle && 
+                    { detailStatus === FetchStatus.Loading && 
                         <Spinner animation="border" role="status" >
                             <span className="visually-hidden">Loading...</span>
                         </Spinner>
@@ -107,7 +107,7 @@ const PartDetail = () => {
                         }}
                     >
                         {(props) => {
-                            const { isSubmitting, handleSubmit, touched, errors} = props;
+                            const { isSubmitting, handleSubmit, touched, errors } = props;
                             return (
                             <Form onSubmit={handleSubmit}>
                                 <div className='form-group  my-2'>
