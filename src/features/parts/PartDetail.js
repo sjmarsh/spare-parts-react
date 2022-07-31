@@ -2,10 +2,7 @@ import React, {useState} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Formik, Form } from 'formik';
 
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
-import Spinner from 'react-bootstrap/esm/Spinner';
-import Alert from 'react-bootstrap/Alert'
+import { Button, Modal, Spinner, Alert } from 'react-bootstrap';
 import TextField from '../../components/TextField';
 import NumericField from '../../components/NumericField';
 import DateField from '../../components/DateField';

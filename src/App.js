@@ -23,7 +23,7 @@ function App() {
           </div>
           <article className='content px-4'>
             <Routes>
-              <Route path='/home' element={<Home/>} />
+              <Route path="/" element={<Home/>} />
               <Route path="/part-list" element={<PartList />} />
               <Route path="/counter" element={<Counter />} />
             </Routes>    
