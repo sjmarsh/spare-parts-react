@@ -10,12 +10,12 @@ import FetchStatus from '../../app/constants/fetchStatus';
 import TableSettings from '../../app/constants/tableSettings';
 import Pager from '../../components/Pager';
 
-import { selectAllParts, fetchParts, deletePart } from './partListSlice';
+import { selectPageOfParts, fetchParts, deletePart, setCurrentPage } from './partListSlice';
 import { showDetail, fetchPart } from './partDetailSlice';
 
 const PartTable = () => {
     const dispatch = useDispatch();
-    const parts = useSelector(selectAllParts);
+    const pageOfParts = useSelector(selectPageOfParts);
     const totalItemCount = useSelector(state => state.partsList.totalItemCount);
     const currentPage = useSelector(state => state.partsList.currentPage);
     const partsStatus = useSelector(state => state.partsList.status);
@@ -40,12 +40,16 @@ const PartTable = () => {
 
     const handleOnDeletePart = (partId) => {
         dispatch(deletePart(partId)).then((res) => {
-            if(res.meta.requestStatus === 'fulfilled') dispatch(fetchParts(currentPage));
+            if(res.meta.requestStatus === 'fulfilled') {
+                dispatch(fetchParts(currentPage));
+            };
         });
     }
 
     const handleOnPageClick = (pageNumber) => {
-        dispatch(fetchParts(pageNumber));
+        dispatch(fetchParts(pageNumber)).then((re) => {
+            dispatch(setCurrentPage(pageNumber));
+        });
     }
 
     return (
@@ -74,7 +78,7 @@ const PartTable = () => {
                 </tr>
             </thead>
             <tbody>
-            {parts.map((part, index) => (
+            {pageOfParts.map((part, index) => (
                 <tr key={index}>
                     <td>{part.name}</td>
                     <td>{part.description}</td>
@@ -89,7 +93,7 @@ const PartTable = () => {
             </tbody>
         </Table>
         
-        <Pager totalItemCount={totalItemCount} pageSize={TableSettings.PageSize} onPageClick={handleOnPageClick} />
+        <Pager totalItemCount={totalItemCount} pageSize={TableSettings.PageSize} currentPage={currentPage} onPageClick={handleOnPageClick} />
         
         <Button variant="primary" onClick={handleOnAddPart}>Add Part</Button>
     </div>

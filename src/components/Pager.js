@@ -4,7 +4,7 @@ import Pagination from 'react-bootstrap/Pagination';
 
 const Pager = (props) => {
 
-    const [currentPage, setCurrentPage] = useState(1);
+    const [currentPage, setCurrentPage] = useState(props.currentPage ?? 1);
 
     const getPageCount = () => {
         return Math.ceil(props.totalItemCount / props.pageSize);   

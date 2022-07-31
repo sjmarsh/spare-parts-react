@@ -35,6 +35,9 @@ export const partListSlice = createSlice({
     name: 'partList',
     initialState,
     reducers: {
+        setCurrentPage: (state, action) => {
+            state.currentPage = action.payload      
+        }
     },
     extraReducers(builder) {
         builder
@@ -64,12 +67,12 @@ export const partListSlice = createSlice({
     }
 });
 
-export const selectAllParts = (state) => state.partsList.items;
+export const selectPageOfParts = (state) => state.partsList.items;
 
-/*
+
 export const {
-    // actions go here
+    setCurrentPage
 } = partListSlice.actions;
-*/
+
 
 export default partListSlice.reducer;
