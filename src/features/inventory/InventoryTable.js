@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from 'react-redux';
 
 import Table from 'react-bootstrap/Table';
@@ -8,26 +8,43 @@ import FetchStatus from '../../app/constants/fetchStatus';
 import TableSettings from '../../app/constants/tableSettings';
 import Pager from '../../components/Pager';
 
-import { fetchInventory, selectPageOfInventory, setCurrentPage } from './inventorySlice';
+import { fetchInventory, selectPageOfInventory, setHistoryStockPage, setCurrentStockPage } from './inventorySlice';
 
 
 export default function IventoryTable(props) {
     const dispatch = useDispatch();
     const pageOfInventory = useSelector(selectPageOfInventory);
     const totalItemCount = useSelector(state => state.inventory.totalItemCount);
-    const currentPage = useSelector(state => state.inventory.currentPage);
+    const historyStockPage = useSelector(state => state.inventory.historyStockPage);
+    const currentStockPage = useSelector(state => state.inventory.currentStockPage);
     const inventoryStatus = useSelector(state => state.inventory.status);
 
+    const [isCurrent, setIsCurrent] = useState(false);
+
     useEffect(() => {
-        if(inventoryStatus === FetchStatus.Idle) {
-            dispatch(fetchInventory(currentPage));
+        setIsCurrent(props.isCurrent);
+        if(props.isCurrent){
+            dispatch(fetchInventory({ page:currentStockPage, isCurrent: true }));
         }
-    }, [inventoryStatus, dispatch, currentPage]);
+        else {
+            dispatch(fetchInventory({ page:historyStockPage, isCurrent: false }));
+        }            
+           
+    }, [dispatch, props.isCurrent, currentStockPage, historyStockPage]);
 
     const handleOnPageClick = (pageNumber) => {
-        dispatch(fetchInventory(pageNumber)).then((re) => {
-            dispatch(setCurrentPage(pageNumber));
+        dispatch(fetchInventory({ page:pageNumber, isCurrent: isCurrent })).then((re) => {
+            if(isCurrent){
+                dispatch(setCurrentStockPage(pageNumber));
+            }
+            else {
+                dispatch(setHistoryStockPage(pageNumber));
+            }
         });
+    }
+
+    const getCurrentPage = () => {
+        return isCurrent ? currentStockPage : historyStockPage;
     }
 
     return (
@@ -40,7 +57,7 @@ export default function IventoryTable(props) {
             { inventoryStatus === FetchStatus.Failed && 
                 <Alert variant='danger'>An error occurred fetching inventory.</Alert>
             }
-            
+          
             <Table hover>
                 <thead>
                     <tr>
@@ -60,7 +77,7 @@ export default function IventoryTable(props) {
                 </tbody>
             </Table>
 
-            <Pager totalItemCount={totalItemCount} pageSize={TableSettings.PageSize} currentPage={currentPage} onPageClick={handleOnPageClick} />
+            <Pager totalItemCount={totalItemCount} pageSize={TableSettings.PageSize} currentPage={getCurrentPage} onPageClick={handleOnPageClick} />
 
         </div>
     );

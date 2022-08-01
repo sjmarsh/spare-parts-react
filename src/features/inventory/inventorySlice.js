@@ -7,18 +7,22 @@ import FetchStatus from '../../app/constants/fetchStatus';
 import TableSettings from '../../app/constants/tableSettings';
 
 const initialState = {
+    currentTab: "",
     items: [],
     totalItemCount: 0,
-    currentPage: 1,
+    currentStockPage: 1,
+    historyStockPage: 1,
     status: FetchStatus.Idle,
     error: null
 };
 
 const baseUrl = `${config.SERVER_URL}/api/inventory`;
 
-export const fetchInventory = createAsyncThunk('inventory/fetchInventory', async (page) => {
-    let skip = (page -1) * TableSettings.PageSize;
-    const response =  await client.get(`${baseUrl}/index-detail?skip=${skip}&take=${TableSettings.PageSize}`);
+export const fetchInventory = createAsyncThunk('inventory/fetchInventory', async (options) => {
+    console.log(options);
+    let current = options.isCurrent ? "isCurrentOnly=true&" : "";
+    let skip = (options.page -1) * TableSettings.PageSize;
+    const response =  await client.get(`${baseUrl}/index-detail?${current}skip=${skip}&take=${TableSettings.PageSize}`);
     return response.data;  
 })
 
@@ -26,8 +30,14 @@ export const inventorySlice = createSlice({
     name: "ivnentory",
     initialState,
     reducers: {
-        setCurrentPage: (state, action) => {
-            state.currentPage = action.payload      
+        setCurrentTab: (state, action) => {
+            state.currentTab = action.payload
+        },
+        setCurrentStockPage: (state, action) => {
+            state.currentStockPage = action.payload      
+        },
+        setHistoryStockPage: (state, action) => {
+            state.historyStockPage = action.payload      
         }
     },
     extraReducers(builder){
@@ -51,7 +61,9 @@ export const inventorySlice = createSlice({
 export const selectPageOfInventory = (state) => state.inventory.items;
 
 export const {
-    setCurrentPage
+    setCurrentTab,
+    setCurrentStockPage,
+    setHistoryStockPage,
 } = inventorySlice.actions;
 
 export default inventorySlice.reducer;
