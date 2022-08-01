@@ -9,6 +9,7 @@ import TableSettings from '../../app/constants/tableSettings';
 const initialState = {
     currentTab: "",
     items: [],
+    currentParts: [],
     totalItemCount: 0,
     currentStockPage: 1,
     historyStockPage: 1,
@@ -19,11 +20,25 @@ const initialState = {
 const baseUrl = `${config.SERVER_URL}/api/inventory`;
 
 export const fetchInventory = createAsyncThunk('inventory/fetchInventory', async (options) => {
-    console.log(options);
     let current = options.isCurrent ? "isCurrentOnly=true&" : "";
     let skip = (options.page -1) * TableSettings.PageSize;
-    const response =  await client.get(`${baseUrl}/index-detail?${current}skip=${skip}&take=${TableSettings.PageSize}`);
+    const response = await client.get(`${baseUrl}/index-detail?${current}skip=${skip}&take=${TableSettings.PageSize}`);
     return response.data;  
+})
+
+export const createInventoryItem = createAsyncThunk('inventory/createInventoryItem', async(item) => {
+    if(!item) {
+        console.log("Can't create null inventory item");
+        return;
+    }
+    const response = await client.post(baseUrl, item);
+    return response.data.value;
+})
+
+export const fetchCurrentParts = createAsyncThunk('inventory/fetchCurrentParts', async () => {
+    const url = `${config.SERVER_URL}/api/part/index?isCurrentOnly=true`;
+    const response = await client.get(url);
+    return response.data;
 })
 
 export const inventorySlice = createSlice({
@@ -54,11 +69,34 @@ export const inventorySlice = createSlice({
                 state.status = FetchStatus.Failed;
                 state.error = action.error.message;
             })
+            .addCase(createInventoryItem.pending, (state, action) => {
+                state.status = FetchStatus.Loading;
+            })
+            .addCase(createInventoryItem.fulfilled, (state, action) => {
+                state.status = FetchStatus.Succeeded;
+            })
+            .addCase(createInventoryItem.rejected, (state, action) => {
+                state.status = FetchStatus.Failed;
+                state.error = action.error.message;
+            })
+            .addCase(fetchCurrentParts.pending, (state, action) => {
+                state.status = FetchStatus.Loading;
+            })
+            .addCase(fetchCurrentParts.fulfilled, (state, action) => {
+                state.status = FetchStatus.Succeeded;
+                state.currentParts = action.payload.items;
+                state.totalItemCount = action.payload.totalItemCount;
+            })
+            .addCase(fetchCurrentParts.rejected, (state, action) => {
+                state.status = FetchStatus.Failed;
+                state.error = action.error.message;
+            })
     }
 
 });
 
 export const selectPageOfInventory = (state) => state.inventory.items;
+export const selectCurrentParts = (state) => state.inventory.currentParts;
 
 export const {
     setCurrentTab,

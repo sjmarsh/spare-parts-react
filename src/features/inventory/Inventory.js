@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
+import ManualStockEntry from './ManualStockEntry';
 import IventoryTable from './InventoryTable';
 import InventoryTab from './inventoryTab';
 
@@ -11,6 +12,12 @@ import { setCurrentTab } from './inventorySlice';
 export default function Inventory() {
     const dispatch = useDispatch();
     const currentTab = useSelector(state => state.inventory.currentTab);
+    
+    useEffect(() => {
+        if(!currentTab) {
+            dispatch(setCurrentTab(InventoryTab.Entry));
+        }
+    }, [currentTab, dispatch]);
 
     const setTab = (tabKey) => {
         dispatch(setCurrentTab(tabKey));
@@ -25,7 +32,7 @@ export default function Inventory() {
                 onSelect={(k) => setTab(k)}
             >
                 <Tab eventKey={InventoryTab.Entry} title="Manual Stock Entry">
-
+                    <ManualStockEntry />
                 </Tab>
                 <Tab eventKey={InventoryTab.Stocktake} title="Stocktake">
 
