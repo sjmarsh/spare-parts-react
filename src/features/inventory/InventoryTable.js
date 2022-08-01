@@ -10,7 +10,6 @@ import Pager from '../../components/Pager';
 
 import { fetchInventory, selectPageOfInventory, setHistoryStockPage, setCurrentStockPage } from './inventorySlice';
 
-
 export default function IventoryTable(props) {
     const dispatch = useDispatch();
     const pageOfInventory = useSelector(selectPageOfInventory);
@@ -77,7 +76,7 @@ export default function IventoryTable(props) {
                 </tbody>
             </Table>
 
-            <Pager totalItemCount={totalItemCount} pageSize={TableSettings.PageSize} currentPage={getCurrentPage} onPageClick={handleOnPageClick} />
+            <Pager totalItemCount={totalItemCount} pageSize={TableSettings.PageSize} currentPage={getCurrentPage} onPageClick={handleOnPageClick} key={isCurrent} />
 
         </div>
     );
