@@ -15,8 +15,8 @@ const TextField = (props) => {
     return (
         <div className='form-group  my-2'>
             <label htmlFor={props.name}>{props.displayName}</label>
-            <Field type="string" name={props.name} className={fieldClass}/>
-            <ErrorMessage name={props.name} component="div" className="validation-message"/>
+            <Field type="string" name={props.name} className={fieldClass} data-testid={'txt-' + props.name}/>
+            <ErrorMessage name={props.name} component="div" className="validation-message" data-testid={'error-' + props.name} />
         </div>
     );
 };

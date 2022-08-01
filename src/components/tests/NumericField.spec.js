@@ -3,10 +3,9 @@ import { act } from 'react-dom/test-utils';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { Formik, Form } from 'formik';
 
-import TextField from '../TextField';
+import NumericField from '../NumericField';
 
-
-test('renders text field', () => {
+test('renders numeric field', () => {
     const fakeFormProps = {
         touched: [], 
         errors: [], 
@@ -16,7 +15,7 @@ test('renders text field', () => {
     const { container, getByText } = render(
         <Formik>
             <Form>
-                <TextField name="testName" displayName = "Test Name" formProps={fakeFormProps}/>
+                <NumericField name="testName" displayName = "Test Name" formProps={fakeFormProps}/>
             </Form>
         </Formik>
     );
@@ -24,19 +23,19 @@ test('renders text field', () => {
     const formControls = container.getElementsByClassName('form-control');
     expect(formControls.length).toBe(1);
     expect(formControls[0].classList).not.toContain('modified');
-});
+})
 
-test('renders text field with modified', () => {
+test('renders numeric field with modified', () => {
     const fakeFormProps = {
         touched: {testName:true}, 
         errors: [], 
         initialValues: {testName:null}, 
-        values: {testName:'abc'}
+        values: {testName:1.1}
     };
     const { container, getByText } = render(
         <Formik>
             <Form>
-                <TextField name="testName" displayName = "Test Name" formProps={fakeFormProps}/>
+                <NumericField name="testName" displayName = "Test Name" formProps={fakeFormProps}/>
             </Form>
         </Formik>
     );
@@ -47,9 +46,7 @@ test('renders text field with modified', () => {
     expect(formControls[0].classList).toContain('valid');
 });
 
-
-// ref: testing Formic validation:  https://scottsauber.com/2019/05/25/testing-formik-with-react-testing-library/
-test('renders text field with validation error', async () => {
+test('renders numeric field with validation error', async () => {
     const errorMessage = 'Required';
     const fakeFormProps = {
         touched: {}, 
@@ -62,13 +59,13 @@ test('renders text field with validation error', async () => {
             return fakeFormProps.errors;
         }}>           
             <Form>
-                <TextField name="testName" displayName = "Test Name" formProps={fakeFormProps}/>
+                <NumericField name="testName" displayName = "Test Name" formProps={fakeFormProps}/>
             </Form>
             
         </Formik>
     );
  
-    const input = await screen.findByTestId('txt-testName');
+    const input = await screen.findByTestId('num-testName');
     
     act(() =>{
         fireEvent.blur(input);

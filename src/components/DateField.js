@@ -25,8 +25,8 @@ const DateField = (props) => {
     return (
         <div className='form-group  my-2'>
             <label htmlFor={props.name}>{props.displayName}</label>
-            <input name={props.name} type="date" className={fieldClass} {...field} />
-            <ErrorMessage name={props.name} component="div" className="validation-message"/>
+            <input name={props.name} type="date" className={fieldClass} {...field} data-testid={'dte-' + props.name}/>
+            <ErrorMessage name={props.name} component="div" className="validation-message" data-testid={'error-' + props.name}/>
         </div>
     );
 }

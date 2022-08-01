@@ -24,8 +24,8 @@ const NumericField = (props) => {
             <label htmlFor={props.name}>{props.displayName}</label>
             <NumberFormat name={props.name} className={fieldClass} {...field} 
                 displayType='number' isNumericString={true} thousandSeparator={true} decimalScale={2} fixedDecimalScale={true} 
-                onValueChange={(e) => handleThis(e)}/>
-            <ErrorMessage name={props.name} component="div" className="validation-message"/>
+                onValueChange={(e) => handleThis(e)} data-testid={'num-' + props.name}/>
+            <ErrorMessage name={props.name} component="div" className="validation-message" data-testid={'error-' + props.name}/>
         </div>
     );
 };
