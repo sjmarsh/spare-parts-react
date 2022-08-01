@@ -7,6 +7,7 @@ import TextField from "../../components/TextField";
 import FetchStatus from "../../app/constants/fetchStatus";
 
 import { selectCurrentParts, fetchCurrentParts, createInventoryItem } from "./inventorySlice";
+import InventoryItemSchmea from "./inventoryItemSchema";
 
 export default function ManualStockEntry() {
     const dispatch = useDispatch();
@@ -40,6 +41,7 @@ export default function ManualStockEntry() {
                     partId: 1,
                     quantity: 0 
                 }}
+                validationSchema={InventoryItemSchmea}
                 onSubmit={(values, {setSubmitting, resetForm}) => {
                     setSubmitting(true);
                     handleFormSubmit(values);
