@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 
 import Home from '../features/home/Home';
 import PartList from '../features/parts/PartList';
+import Inventory from '../features/inventory/Inventory';
 import Counter from '../features/counter/Counter';
 
 import './Sidebar.css'
@@ -42,13 +43,18 @@ export const SideBar = () => {
       <div className={navMenuClass}>
           <nav className="flex-column">
           <div className="nav-item-cust px-3">
-              <Link id="home" className={`nav-link-cust ${activeClass('home')}`} to="/home" element={<Home/>} onClick={updateActiveLink}>
+              <Link id="home" className={`nav-link-cust ${activeClass('home')}`} to="/" element={<Home/>} onClick={updateActiveLink}>
                 <span className="oi oi-home" aria-hidden="true"/>Home
               </Link>
             </div>
             <div className="nav-item-cust px-3">
               <Link id="part-list" className={`nav-link-cust ${activeClass('part-list')}`} to="/part-list" element={<PartList/>} onClick={updateActiveLink}>
                 <span className="oi oi-list" aria-hidden="true"/>Part List
+              </Link>
+            </div>
+            <div className="nav-item-cust px-3">
+              <Link id="inventory" className={`nav-link-cust ${activeClass('inventory')}`} to="/inventory" element={<Inventory/>} onClick={updateActiveLink}>
+              <span className="oi oi-spreadsheet" aria-hidden="true"/>Inventory
               </Link>
             </div>
             <div className="nav-item-cust px-3">
