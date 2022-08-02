@@ -70,7 +70,7 @@ export default function IventoryTable(props) {
                         <tr key={index}>
                             <td>{item.partName}</td>
                             <td>{item.quantity}</td>
-                            <td>{item.dateRecorded}</td>
+                            <td>{new Date(item.dateRecorded).toLocaleString('en-AU')}</td>
                         </tr>
                     ))}
                 </tbody>

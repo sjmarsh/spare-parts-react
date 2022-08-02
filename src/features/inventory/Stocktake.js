@@ -6,6 +6,7 @@ import { Table, Button, Spinner, Alert } from "react-bootstrap";
 import FetchStatus from "../../app/constants/fetchStatus";
 import { fetchInventory, selectStocktakeItems, createInventoryItemList } from "./inventorySlice";
 import StocktakeItemsSchema from "./stocktakeItemsSchema";
+import { getLocalDateTimeString } from '../../app/helpers/dateTime';
 
 export default function Stocktake() {
     const dispatch = useDispatch();
@@ -19,7 +20,7 @@ export default function Stocktake() {
     
     const handleFormSubmit = (items) => {
         if(items) {
-            let datedItems = items.map(i => ({...i, dateRecorded: new Date().toISOString()}));
+            let datedItems = items.map(i => ({...i, dateRecorded: getLocalDateTimeString()}));
             dispatch(createInventoryItemList(datedItems));
         }
                 
