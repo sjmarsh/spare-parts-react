@@ -5,6 +5,7 @@ import { Formik, Form, Field } from "formik";
 import { Container, Row, Col, Button, Spinner, Alert } from "react-bootstrap";
 import TextField from "../../components/TextField";
 import FetchStatus from "../../app/constants/fetchStatus";
+import { getLocalDateTimeString } from "../../app/helpers/dateTime";
 
 import { selectCurrentParts, fetchCurrentParts, createInventoryItem } from "./inventorySlice";
 import InventoryItemSchmea from "./inventoryItemSchema";
@@ -23,7 +24,7 @@ export default function ManualStockEntry() {
     }, [inventoryStatus, dispatch]);
 
     const handleFormSubmit = (item) => {
-        item.dateRecorded = new Date().toISOString();
+        item.dateRecorded = getLocalDateTimeString();
         dispatch(createInventoryItem(item));
         setHasSubmitted(true);
     }
@@ -54,8 +55,8 @@ export default function ManualStockEntry() {
                     return (
                 <Form onSubmit={handleSubmit}>
                     <Container fluid>
-                        <Row className="justify-content-start">
-                            <Col>
+                        <Row className="justify-content-start w-75">
+                            <Col sm={6}>
                                 <div className="form-group my-2">
                                     <label htmlFor="partId">Select Part</label>
                                     <Field as="select" name="partId" className="form-select">
@@ -65,7 +66,7 @@ export default function ManualStockEntry() {
                                     </Field>
                                 </div>
                             </Col>
-                            <Col>
+                            <Col sm={2}>
                                 <TextField name="quantity" displayName="Quantity" formProps={props}/>
                             </Col>
                         </Row>
