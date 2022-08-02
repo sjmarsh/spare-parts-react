@@ -22,7 +22,8 @@ const baseUrl = `${config.SERVER_URL}/api/inventory`;
 export const fetchInventory = createAsyncThunk('inventory/fetchInventory', async (options) => {
     let current = options.isCurrent ? "isCurrentOnly=true&" : "";
     let skip = (options.page -1) * TableSettings.PageSize;
-    const response = await client.get(`${baseUrl}/index-detail?${current}skip=${skip}&take=${TableSettings.PageSize}`);
+    let skipQuery = options.takeAll ? "" : `skip=${skip}&take=${TableSettings.PageSize}`;
+    const response = await client.get(`${baseUrl}/index-detail?${current}${skipQuery}`);
     return response.data;  
 })
 
@@ -33,6 +34,15 @@ export const createInventoryItem = createAsyncThunk('inventory/createInventoryIt
     }
     const response = await client.post(baseUrl, item);
     return response.data.value;
+})
+
+export const createInventoryItemList = createAsyncThunk('inventory/createInventoryItemList', async(items) => {
+    if(!items || items.length === 0){
+        console.log("Can't create null inventory items");
+        return;
+    }
+    const response = await client.post(`${baseUrl}/post-list`, items);
+    return response.data;
 })
 
 export const fetchCurrentParts = createAsyncThunk('inventory/fetchCurrentParts', async () => {
@@ -79,6 +89,16 @@ export const inventorySlice = createSlice({
                 state.status = FetchStatus.Failed;
                 state.error = action.error.message;
             })
+            .addCase(createInventoryItemList.pending, (state, action) => {
+                state.status = FetchStatus.Loading;
+            })
+            .addCase(createInventoryItemList.fulfilled, (state, action) => {
+                state.status = FetchStatus.Succeeded;
+            })
+            .addCase(createInventoryItemList.rejected, (state, action) => {
+                state.status = FetchStatus.Failed;
+                state.error = action.error.message;
+            })
             .addCase(fetchCurrentParts.pending, (state, action) => {
                 state.status = FetchStatus.Loading;
             })
@@ -96,6 +116,7 @@ export const inventorySlice = createSlice({
 });
 
 export const selectPageOfInventory = (state) => state.inventory.items;
+export const selectStocktakeItems = (state) => state.inventory.items.map(item => ({ partID: item.partID, partName: item.partName, quantity: 0 }));
 export const selectCurrentParts = (state) => state.inventory.currentParts;
 
 export const {

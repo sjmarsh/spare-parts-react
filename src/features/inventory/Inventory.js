@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import ManualStockEntry from './ManualStockEntry';
+import Stocktake from './Stocktake';
 import IventoryTable from './InventoryTable';
 import InventoryTab from './inventoryTab';
 
@@ -32,10 +33,10 @@ export default function Inventory() {
                 onSelect={(k) => setTab(k)}
             >
                 <Tab eventKey={InventoryTab.Entry} title="Manual Stock Entry">
-                    <ManualStockEntry />
+                    {currentTab === InventoryTab.Entry && <ManualStockEntry /> } 
                 </Tab>
                 <Tab eventKey={InventoryTab.Stocktake} title="Stocktake">
-
+                    {currentTab === InventoryTab.Stocktake && <Stocktake key="stocktake" /> } 
                 </Tab>
                 <Tab eventKey={InventoryTab.Current} title="Current Stock">
                     {currentTab === InventoryTab.Current && <IventoryTable key="current" isCurrent={true}/>}

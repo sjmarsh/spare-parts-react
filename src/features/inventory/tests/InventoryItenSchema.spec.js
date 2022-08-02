@@ -20,7 +20,7 @@ test('has error when partId is blank', async () => {
     expect(result).toBe(false);
 })
 
-test('has error when partId is zerp', async () => {
+test('has error when partId is zero', async () => {
     const item = getInventoryItem();
     item.partId = 0;
     const result = await InventoryItemSchmea.isValid(item);
@@ -34,9 +34,9 @@ test('has error when quantity is null', async () => {
     expect(result).toBe(false);
 })
 
-test('has error when quantity is zero', async () => {
+test('has error when quantity is less than zero', async () => {
     const item = getInventoryItem();
-    item.quantity = 0;
+    item.quantity = -1;
     const result = await InventoryItemSchmea.isValid(item);
     expect(result).toBe(false);
 })
