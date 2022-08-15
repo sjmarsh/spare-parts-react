@@ -1,12 +1,21 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { client } from '../../api/client';
+import { RootState } from '../../app/store';
 
 import config from '../../config.json';
 
 import FetchStatus from '../../app/constants/fetchStatus';
 import TableSettings from '../../app/constants/tableSettings';
 
-const initialState = {
+export interface PartListState {
+    items: Array<any>
+    totalItemCount: number
+    currentPage: number
+    status: string
+    error?: string | null
+}
+
+const initialState : PartListState = {
     items: [],
     totalItemCount: 0,
     currentPage: 1,
@@ -14,15 +23,15 @@ const initialState = {
     error: null
 };
 
-const baseUrl = `${config.SERVER_URL}/api/part`;
+const baseUrl: string = `${config.SERVER_URL}/api/part`;
 
-export const fetchParts = createAsyncThunk('parts/fetchParts', async (page) => {
+export const fetchParts = createAsyncThunk('parts/fetchParts', async (page: number) => {
     let skip = (page -1) * TableSettings.PageSize;
     const response =  await client.get(`${baseUrl}/index?skip=${skip}&take=${TableSettings.PageSize}`);
     return response.data;  
 })
 
-export const deletePart = createAsyncThunk('parts/deletePart', async (partId) => {
+export const deletePart = createAsyncThunk('parts/deletePart', async (partId: number) => {
     if(partId === 0) {
         return {};
     }
@@ -35,7 +44,7 @@ export const partListSlice = createSlice({
     name: 'partList',
     initialState,
     reducers: {
-        setCurrentPage: (state, action) => {
+        setCurrentPage: (state, action: PayloadAction<number>) => {
             state.currentPage = action.payload      
         }
     },
@@ -44,7 +53,7 @@ export const partListSlice = createSlice({
             .addCase(fetchParts.pending, (state, action) => {
                 state.status = FetchStatus.Loading;
             })
-            .addCase(fetchParts.fulfilled, (state, action) => {
+            .addCase(fetchParts.fulfilled, (state, action: PayloadAction<PartListState>) => {
                 state.status = FetchStatus.Succeeded;
                 state.items = action.payload.items;
                 state.totalItemCount = action.payload.totalItemCount;
@@ -67,7 +76,7 @@ export const partListSlice = createSlice({
     }
 });
 
-export const selectPageOfParts = (state) => state.partsList.items;
+export const selectPageOfParts = (state: RootState) => state.partsList.items;
 
 
 export const {
