@@ -1,16 +1,42 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { client } from '../../api/client';
+import { RootState } from '../../app/store';
 
 import config from '../../config.json';
 
+import InventoryItem from './types/InventoryItem';
+import InventoryItemResponse from './types/InventoryItemResponse';
+import InventoryItemListResponse from './types/InventoryItemListResponse';
+import Part from '../parts/types/Part';
+import PartListReponse from '../parts/types/PartListResponse';
 import FetchStatus from '../../app/constants/fetchStatus';
 import TableSettings from '../../app/constants/tableSettings';
 
-const initialState = {
-    currentTab: "",
+
+
+export interface InventoryState {
+    items: Array<InventoryItem>;
+    totalItemCount: number;
+    currentParts: Array<Part>;
+    currentTab: string;
+    currentStockPage: number;
+    historyStockPage: number;
+    status: FetchStatus;
+    error?: string | null;
+};
+
+export interface InventoryFetchOptions {
+    isCurrent: boolean;
+    page: number;
+    takeAll: boolean;
+}
+
+const initialState: InventoryState = {
+    
     items: [],
-    currentParts: [],
     totalItemCount: 0,
+    currentParts: [],
+    currentTab: "",
     currentStockPage: 1,
     historyStockPage: 1,
     status: FetchStatus.Idle,
@@ -19,7 +45,7 @@ const initialState = {
 
 const baseUrl = `${config.SERVER_URL}/api/inventory`;
 
-export const fetchInventory = createAsyncThunk('inventory/fetchInventory', async (options) => {
+export const fetchInventory = createAsyncThunk<InventoryItemListResponse, InventoryFetchOptions>('inventory/fetchInventory', async (options: InventoryFetchOptions) => {
     let current = options.isCurrent ? "isCurrentOnly=true&" : "";
     let skip = (options.page -1) * TableSettings.PageSize;
     let skipQuery = options.takeAll ? "" : `skip=${skip}&take=${TableSettings.PageSize}`;
@@ -27,16 +53,16 @@ export const fetchInventory = createAsyncThunk('inventory/fetchInventory', async
     return response.data;  
 })
 
-export const createInventoryItem = createAsyncThunk('inventory/createInventoryItem', async(item) => {
+export const createInventoryItem = createAsyncThunk<InventoryItemResponse, InventoryItem>('inventory/createInventoryItem', async(item: InventoryItem) => {
     if(!item) {
         console.log("Can't create null inventory item");
         return;
     }
     const response = await client.post(baseUrl, item);
-    return response.data.value;
+    return response.data;
 })
 
-export const createInventoryItemList = createAsyncThunk('inventory/createInventoryItemList', async(items) => {
+export const createInventoryItemList = createAsyncThunk<InventoryItemListResponse, Array<InventoryItem>>('inventory/createInventoryItemList', async(items: Array<InventoryItem>) => {
     if(!items || items.length === 0){
         console.log("Can't create null inventory items");
         return;
@@ -45,7 +71,7 @@ export const createInventoryItemList = createAsyncThunk('inventory/createInvento
     return response.data;
 })
 
-export const fetchCurrentParts = createAsyncThunk('inventory/fetchCurrentParts', async () => {
+export const fetchCurrentParts = createAsyncThunk<PartListReponse>('inventory/fetchCurrentParts', async () => {
     const url = `${config.SERVER_URL}/api/part/index?isCurrentOnly=true`;
     const response = await client.get(url);
     return response.data;
@@ -115,9 +141,9 @@ export const inventorySlice = createSlice({
 
 });
 
-export const selectPageOfInventory = (state) => state.inventory.items;
-export const selectStocktakeItems = (state) => state.inventory.items.map(item => ({ partID: item.partID, partName: item.partName, quantity: 0 }));
-export const selectCurrentParts = (state) => state.inventory.currentParts;
+export const selectPageOfInventory = (state: RootState) => state.inventory.items;
+export const selectStocktakeItems = (state: RootState) => state.inventory.items.map(item => ({ partID: item.partID, partName: item.partName, quantity: 0 }));
+export const selectCurrentParts = (state: RootState) => state.inventory.currentParts;
 
 export const {
     setCurrentTab,
