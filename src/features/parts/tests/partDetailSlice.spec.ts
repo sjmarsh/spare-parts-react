@@ -1,17 +1,19 @@
 import { configureStore } from '@reduxjs/toolkit';
 import partDetailReducer, {
+    PartDetailState,
     showDetail, 
     fetchPart
 } from '../partDetailSlice';
 import { client } from '../../../api/client';
 
+import Part from '../types/Part';
 import DetailMode from '../../../app/constants/detailMode';
 import FetchStatus from '../../../app/constants/fetchStatus';
 
 describe('partDetail reducer', () => {
-    const initialState = {
+    const initialState: PartDetailState = {
       id: 0,
-      value: {},
+      value: {} as Part,
       mode: DetailMode.Closed,
       status: FetchStatus.Idle,
       error: null
@@ -32,7 +34,7 @@ describe('partDetail reducer', () => {
     });
 
     it('should handle showDetail', () => {
-        const actual = partDetailReducer(initialState, showDetail({ detailMode: DetailMode.Add, selectedPartId: 1}));
+        const actual = partDetailReducer(initialState, showDetail({ mode: DetailMode.Add, id: 1}));
         expect(actual.mode).toEqual(DetailMode.Add);
         expect(actual.id).toEqual(1);
     });
@@ -52,7 +54,7 @@ describe('partDetail reducer', () => {
 
     it('should handle successful fetch part', async () => {
         const partId = 1;
-        const fakeResponse = { data: { value: { id: partId }}};
+        const fakeResponse = { status: 200, data: { value: { id: partId }}, headers: {} as Headers, url: ""};
         jest.spyOn(client, 'get').mockResolvedValueOnce(fakeResponse);
         const store = configureStore({reducer: partDetailReducer});
         await store.dispatch(fetchPart(partId));

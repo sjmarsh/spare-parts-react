@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useAppSelector } from '../../app/hooks';
 
 import DetailMode from '../../app/constants/detailMode';
 
@@ -7,7 +7,7 @@ import PartTable from './PartTable';
 import PartDetail from './PartDetail';
 
 export default function PartList() {
-    const detailMode = useSelector(state => state.partDetail.mode);
+    const detailMode = useAppSelector(state => state.partDetail.mode);
     const isShowDetail = detailMode === DetailMode.Add || detailMode === DetailMode.Edit;
     
     return(

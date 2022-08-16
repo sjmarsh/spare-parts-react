@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useAppSelector, useAppDispatch } from '../../app/hooks';
 
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
@@ -14,11 +14,11 @@ import { selectPageOfParts, fetchParts, deletePart, setCurrentPage } from './par
 import { showDetail, fetchPart } from './partDetailSlice';
 
 const PartTable = () => {
-    const dispatch = useDispatch();
-    const pageOfParts = useSelector(selectPageOfParts);
-    const totalItemCount = useSelector(state => state.partsList.totalItemCount);
-    const currentPage = useSelector(state => state.partsList.currentPage);
-    const partsStatus = useSelector(state => state.partsList.status);
+    const dispatch = useAppDispatch();
+    const pageOfParts = useAppSelector(selectPageOfParts);
+    const totalItemCount = useAppSelector(state => state.partsList.totalItemCount);
+    const currentPage = useAppSelector(state => state.partsList.currentPage);
+    const partsStatus = useAppSelector(state => state.partsList.status);
     
     useEffect(() => {
         if(partsStatus === FetchStatus.Idle) {
@@ -32,13 +32,13 @@ const PartTable = () => {
         );
     }
     
-    const handleOnEditPart = (partId) => {
+    const handleOnEditPart = (partId: number) => {
         dispatch(fetchPart(partId)).then(
             () => dispatch(showDetail({mode: DetailMode.Edit, id: partId}))
         );
     }
 
-    const handleOnDeletePart = (partId) => {
+    const handleOnDeletePart = (partId: number) => {
         dispatch(deletePart(partId)).then((res) => {
             if(res.meta.requestStatus === 'fulfilled') {
                 dispatch(fetchParts(currentPage));
@@ -46,7 +46,7 @@ const PartTable = () => {
         });
     }
 
-    const handleOnPageClick = (pageNumber) => {
+    const handleOnPageClick = (pageNumber: number) => {
         dispatch(fetchParts(pageNumber)).then((re) => {
             dispatch(setCurrentPage(pageNumber));
         });
@@ -85,7 +85,7 @@ const PartTable = () => {
                     <td>{Number(part.weight).toFixed(2)}</td>
                     <td>{new Intl.NumberFormat('en-AU', {style: 'currency', currency: 'AUD'}).format(part.price)}</td>
                     <td>{new Date(part.startDate).toLocaleDateString('en-au')}</td>
-                    <td>{part.endDate === null ? '' : new Date(part.endDate).toLocaleDateString('en-au')}</td>
+                    <td>{part.endDate === null ? '' : new Date(part.endDate || '').toLocaleDateString('en-au')}</td>
                     <td><Button variant="link" onClick={() => handleOnEditPart(part.id)}>Edit</Button></td>
                     <td><Button variant="link" onClick={() => handleOnDeletePart(part.id)}>Delete</Button></td>
                 </tr>

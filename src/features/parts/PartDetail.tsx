@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useAppSelector, useAppDispatch } from '../../app/hooks';
 import { Formik, Form } from 'formik';
 
 import { Button, Modal, Spinner, Alert } from 'react-bootstrap';
@@ -7,6 +7,7 @@ import TextField from '../../components/TextField';
 import NumericField from '../../components/NumericField';
 import DateField from '../../components/DateField';
 
+import Part from './types/Part';
 import PartDetailSchema from './partDetailSchema';
 import DetailMode from '../../app/constants/detailMode';
 import FetchStatus from '../../app/constants/fetchStatus';
@@ -17,16 +18,17 @@ import { fetchParts } from './partListSlice';
 const PartDetail = () => {
     
     const [hasSubmitted, setHasSubmitted] = useState(false);
- 
-    const dispatch = useDispatch();
-    const detailMode = useSelector(state => state.partDetail.mode);
-    const selectedPart = useSelector(state => state.partDetail.value);
-    const detailStatus = useSelector(state => state.partDetail.status);
-    const currentPage = useSelector(state => state.partsList.currentPage);
+     
+    const dispatch = useAppDispatch();
+
+    const detailMode = useAppSelector(state => state.partDetail.mode);
+    const selectedPart = useAppSelector(state => state.partDetail.value);
+    const detailStatus = useAppSelector(state => state.partDetail.status);
+    const currentPage = useAppSelector(state => state.partsList.currentPage);
    
     const handleCloseModal = () => dispatch(showDetail({mode: DetailMode.Closed, id: 0}));
    
-    const handleFormSubmit = (part) => {
+    const handleFormSubmit = (part: Part) => {
         if(detailMode === DetailMode.Add) {
             dispatch(createPart(part))
             .then((res) => {
