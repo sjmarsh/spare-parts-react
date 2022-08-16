@@ -1,31 +1,33 @@
 import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 
 import { Table, Button, Spinner, Alert } from "react-bootstrap";
+import InventoryItem from "./types/InventoryItem";
+import StocktakeItem from "./types/StocktakeItem";
 import FetchStatus from "../../app/constants/fetchStatus";
 import { fetchInventory, selectStocktakeItems, createInventoryItemList } from "./inventorySlice";
 import StocktakeItemsSchema from "./stocktakeItemsSchema";
 import { getLocalDateTimeString } from '../../app/helpers/dateTime';
 
 export default function Stocktake() {
-    const dispatch = useDispatch();
-    const stocktakeItems = useSelector(selectStocktakeItems);
-    const inventoryStatus = useSelector(state => state.inventory.status);   
+    const dispatch = useAppDispatch();
+    const stocktakeItems = useAppSelector(selectStocktakeItems);
+    const inventoryStatus = useAppSelector(state => state.inventory.status);   
     const [hasSubmitted, setHasSubmitted] = useState(false);
 
     useEffect(() => {
         dispatch(fetchInventory({ page: 0, isCurrent: true, takeAll: true }));
     }, [dispatch]);
     
-    const handleFormSubmit = (items) => {
+    const handleFormSubmit = (items: Array<StocktakeItem>) => {
         if(items) {
-            let datedItems = items.map(i => ({...i, dateRecorded: getLocalDateTimeString()}));
+            let datedItems = items.map(i => ({...i, id: 0, dateRecorded: getLocalDateTimeString()} as InventoryItem));
             dispatch(createInventoryItemList(datedItems));
         }
                 
         setHasSubmitted(true);
-    }
+    };
 
     return (
         <div>

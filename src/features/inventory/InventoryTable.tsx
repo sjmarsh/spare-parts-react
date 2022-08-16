@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from 'react-redux';
+import { useAppSelector, useAppDispatch } from "../../app/hooks";
 
 import Table from 'react-bootstrap/Table';
 import Spinner from 'react-bootstrap/Spinner';
@@ -10,29 +10,34 @@ import Pager from '../../components/Pager';
 
 import { fetchInventory, selectPageOfInventory, setHistoryStockPage, setCurrentStockPage } from './inventorySlice';
 
-export default function IventoryTable(props) {
-    const dispatch = useDispatch();
-    const pageOfInventory = useSelector(selectPageOfInventory);
-    const totalItemCount = useSelector(state => state.inventory.totalItemCount);
-    const historyStockPage = useSelector(state => state.inventory.historyStockPage);
-    const currentStockPage = useSelector(state => state.inventory.currentStockPage);
-    const inventoryStatus = useSelector(state => state.inventory.status);
+interface InputProps {
+    key: string,
+    isCurrent: boolean
+};
+
+export default function IventoryTable(props: InputProps) {
+    const dispatch = useAppDispatch();
+    const pageOfInventory = useAppSelector(selectPageOfInventory);
+    const totalItemCount = useAppSelector(state => state.inventory.totalItemCount);
+    const historyStockPage = useAppSelector(state => state.inventory.historyStockPage);
+    const currentStockPage = useAppSelector(state => state.inventory.currentStockPage);
+    const inventoryStatus = useAppSelector(state => state.inventory.status);
 
     const [isCurrent, setIsCurrent] = useState(false);
 
     useEffect(() => {
         setIsCurrent(props.isCurrent);
         if(props.isCurrent){
-            dispatch(fetchInventory({ page:currentStockPage, isCurrent: true }));
+            dispatch(fetchInventory({ page: currentStockPage, isCurrent: true, takeAll: false }));
         }
         else {
-            dispatch(fetchInventory({ page:historyStockPage, isCurrent: false }));
+            dispatch(fetchInventory({ page: historyStockPage, isCurrent: false, takeAll: false }));
         }            
            
     }, [dispatch, props.isCurrent, currentStockPage, historyStockPage]);
 
-    const handleOnPageClick = (pageNumber) => {
-        dispatch(fetchInventory({ page:pageNumber, isCurrent: isCurrent })).then((re) => {
+    const handleOnPageClick = (pageNumber: number) => {
+        dispatch(fetchInventory({ page: pageNumber, isCurrent: isCurrent, takeAll: false })).then((re) => {
             if(isCurrent){
                 dispatch(setCurrentStockPage(pageNumber));
             }

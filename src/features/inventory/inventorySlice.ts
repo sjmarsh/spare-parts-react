@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { client } from '../../api/client';
 import { RootState } from '../../app/store';
 
@@ -7,6 +7,8 @@ import config from '../../config.json';
 import InventoryItem from './types/InventoryItem';
 import InventoryItemResponse from './types/InventoryItemResponse';
 import InventoryItemListResponse from './types/InventoryItemListResponse';
+import InventoryTab from './types/inventoryTab';
+import StocktakeItem from './types/StocktakeItem';
 import Part from '../parts/types/Part';
 import PartListReponse from '../parts/types/PartListResponse';
 import FetchStatus from '../../app/constants/fetchStatus';
@@ -16,7 +18,7 @@ export interface InventoryState {
     items: Array<InventoryItem>;
     totalItemCount: number;
     currentParts: Array<Part>;
-    currentTab: string;
+    currentTab: InventoryTab;
     currentStockPage: number;
     historyStockPage: number;
     status: FetchStatus;
@@ -34,7 +36,7 @@ const initialState: InventoryState = {
     items: [],
     totalItemCount: 0,
     currentParts: [],
-    currentTab: "",
+    currentTab: InventoryTab.Entry,
     currentStockPage: 1,
     historyStockPage: 1,
     status: FetchStatus.Idle,
@@ -79,7 +81,7 @@ export const inventorySlice = createSlice({
     name: "ivnentory",
     initialState,
     reducers: {
-        setCurrentTab: (state, action) => {
+        setCurrentTab: (state, action: PayloadAction<InventoryTab>) => {
             state.currentTab = action.payload
         },
         setCurrentStockPage: (state, action) => {
@@ -140,7 +142,7 @@ export const inventorySlice = createSlice({
 });
 
 export const selectPageOfInventory = (state: RootState) => state.inventory.items;
-export const selectStocktakeItems = (state: RootState) => state.inventory.items.map(item => ({ partID: item.partID, partName: item.partName, quantity: 0 }));
+export const selectStocktakeItems = (state: RootState) => state.inventory.items.map(item => ({ partID: item.partID, partName: item.partName, quantity: 0 } as StocktakeItem));
 export const selectCurrentParts = (state: RootState) => state.inventory.currentParts;
 
 export const {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { Formik, Form, Field } from "formik";
 
 import { Container, Row, Col, Button, Spinner, Alert } from "react-bootstrap";
@@ -8,12 +8,13 @@ import FetchStatus from "../../app/constants/fetchStatus";
 import { getLocalDateTimeString } from "../../app/helpers/dateTime";
 
 import { selectCurrentParts, fetchCurrentParts, createInventoryItem } from "./inventorySlice";
+import InventoryItem from "./types/InventoryItem";
 import InventoryItemSchmea from "./inventoryItemSchema";
 
 export default function ManualStockEntry() {
-    const dispatch = useDispatch();
-    const currentParts = useSelector(selectCurrentParts);
-    const inventoryStatus = useSelector(state => state.inventory.status);
+    const dispatch = useAppDispatch();
+    const currentParts = useAppSelector(selectCurrentParts);
+    const inventoryStatus = useAppSelector(state => state.inventory.status);
 
     const [hasSubmitted, setHasSubmitted] = useState(false);
     
@@ -23,11 +24,11 @@ export default function ManualStockEntry() {
         }
     }, [inventoryStatus, dispatch]);
 
-    const handleFormSubmit = (item) => {
+    const handleFormSubmit = (item: InventoryItem) => {
         item.dateRecorded = getLocalDateTimeString();
         dispatch(createInventoryItem(item));
         setHasSubmitted(true);
-    }
+    };
 
     return (
         <div>
@@ -38,10 +39,7 @@ export default function ManualStockEntry() {
             }
                                             
             <Formik
-                initialValues={{
-                    partId: 1,
-                    quantity: 0 
-                }}
+                initialValues={{} as InventoryItem}
                 validationSchema={InventoryItemSchmea}
                 onSubmit={(values, {setSubmitting, resetForm}) => {
                     setSubmitting(true);
