@@ -12,8 +12,6 @@ import PartListReponse from '../parts/types/PartListResponse';
 import FetchStatus from '../../app/constants/fetchStatus';
 import TableSettings from '../../app/constants/tableSettings';
 
-
-
 export interface InventoryState {
     items: Array<InventoryItem>;
     totalItemCount: number;
