@@ -4,11 +4,13 @@ import { RootState } from '../../app/store';
 
 import config from '../../config.json';
 
+import Part from './types/Part';
+import PartListReponse from './types/PartListResponse';
 import FetchStatus from '../../app/constants/fetchStatus';
 import TableSettings from '../../app/constants/tableSettings';
 
 export interface PartListState {
-    items: Array<any>
+    items: Array<Part>
     totalItemCount: number
     currentPage: number
     status: string
@@ -25,7 +27,7 @@ const initialState : PartListState = {
 
 const baseUrl: string = `${config.SERVER_URL}/api/part`;
 
-export const fetchParts = createAsyncThunk('parts/fetchParts', async (page: number) => {
+export const fetchParts = createAsyncThunk<PartListReponse, number>('parts/fetchParts', async (page: number) => {
     let skip = (page -1) * TableSettings.PageSize;
     const response =  await client.get(`${baseUrl}/index?skip=${skip}&take=${TableSettings.PageSize}`);
     return response.data;  
@@ -53,7 +55,7 @@ export const partListSlice = createSlice({
             .addCase(fetchParts.pending, (state, action) => {
                 state.status = FetchStatus.Loading;
             })
-            .addCase(fetchParts.fulfilled, (state, action: PayloadAction<PartListState>) => {
+            .addCase(fetchParts.fulfilled, (state, action: PayloadAction<PartListReponse>) => {
                 state.status = FetchStatus.Succeeded;
                 state.items = action.payload.items;
                 state.totalItemCount = action.payload.totalItemCount;

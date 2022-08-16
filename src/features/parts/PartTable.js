@@ -28,13 +28,13 @@ const PartTable = () => {
 
     const handleOnAddPart = () => {
         dispatch(fetchPart(0)).then(
-            () => dispatch(showDetail({detailMode: DetailMode.Add, selectPartId: 0}))
+            () => dispatch(showDetail({mode: DetailMode.Add, id: 0}))
         );
     }
     
     const handleOnEditPart = (partId) => {
         dispatch(fetchPart(partId)).then(
-            () => dispatch(showDetail({detailMode: DetailMode.Edit, selectedPartId: partId}))
+            () => dispatch(showDetail({mode: DetailMode.Edit, id: partId}))
         );
     }
 

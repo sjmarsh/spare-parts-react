@@ -24,7 +24,7 @@ const PartDetail = () => {
     const detailStatus = useSelector(state => state.partDetail.status);
     const currentPage = useSelector(state => state.partsList.currentPage);
    
-    const handleCloseModal = () => dispatch(showDetail({detailMode: DetailMode.Closed, selectedPartId: 0}));
+    const handleCloseModal = () => dispatch(showDetail({mode: DetailMode.Closed, id: 0}));
    
     const handleFormSubmit = (part) => {
         if(detailMode === DetailMode.Add) {
