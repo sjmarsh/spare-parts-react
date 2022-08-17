@@ -81,7 +81,7 @@ export default function IventoryTable(props: InputProps) {
                 </tbody>
             </Table>
 
-            <Pager totalItemCount={totalItemCount} pageSize={TableSettings.PageSize} currentPage={getCurrentPage} onPageClick={handleOnPageClick} key={isCurrent} />
+            <Pager totalItemCount={totalItemCount} pageSize={TableSettings.PageSize} currentPage={getCurrentPage()} onPageClick={handleOnPageClick} key={props.isCurrent ? 'current': 'history'}/>
 
         </div>
     );

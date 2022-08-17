@@ -2,7 +2,14 @@ import React, { useState } from 'react';
 
 import Pagination from 'react-bootstrap/Pagination';
 
-const Pager = (props) => {
+interface InputProps {
+    currentPage: number;
+    pageSize: number;
+    totalItemCount: number;
+    onPageClick?: (pageNumber: number) => void | null; 
+}
+
+const Pager = (props: InputProps) => {
 
     const [currentPage, setCurrentPage] = useState(props.currentPage ?? 1);
 
@@ -10,7 +17,7 @@ const Pager = (props) => {
         return Math.ceil(props.totalItemCount / props.pageSize);   
     }
 
-    const handleOnClick = (pageNumber) => {
+    const handleOnClick = (pageNumber: number) => {
         setCurrentPage(pageNumber);
         if(props.onPageClick){
             props.onPageClick(pageNumber);
