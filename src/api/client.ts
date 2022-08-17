@@ -2,11 +2,11 @@
 // A tiny wrapper around fetch(), borrowed from
 // https://kentcdodds.com/blog/replace-axios-with-a-simple-custom-fetch-wrapper
 
-export async function client(endpoint, { body, ...customConfig } = {}) {
+export async function client<T>(endpoint: string, method: string, body?: T, ...customConfig: any) {
     const headers = { 'Content-Type': 'application/json' }
   
     const config = {
-      method: body ? 'POST' : 'GET',
+      method: method,
       ...customConfig,
       headers: {
         ...headers,
@@ -32,23 +32,23 @@ export async function client(endpoint, { body, ...customConfig } = {}) {
         }
       }
       throw new Error(response.statusText)
-    } catch (err) {
+    } catch (err: any) {
       return Promise.reject(err.message ? err.message : data)
     }
   }
   
-  client.get = function (endpoint, customConfig = {}) {
-    return client(endpoint, { ...customConfig, method: 'GET' })
+  client.get = function (endpoint: string, customConfig = {}) {
+    return client(endpoint, 'GET', null, { ...customConfig })
   }
   
-  client.post = function (endpoint, body, customConfig = {}) {
-    return client(endpoint, { ...customConfig, body })
+  client.post = function<T> (endpoint: string, body: T, customConfig = {}) {
+    return client(endpoint, 'POST', body, { ...customConfig })
   }
 
-  client.put = function (endpoint, body, customConfig ={}) {
-    return client(endpoint, { ...customConfig, method: 'PUT', body})
+  client.put = function<T> (endpoint: string, body: T, customConfig ={}) {
+    return client(endpoint, 'PUT', body, { ...customConfig })
   }
 
-  client.delete = function (endpoint, customConfig ={}) {
-    return client(endpoint, { ...customConfig, method: 'DELETE' })
+  client.delete = function (endpoint: string, customConfig ={}) {
+    return client(endpoint, 'DELETE', null, { ...customConfig})
   }
