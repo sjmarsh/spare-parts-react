@@ -1,12 +1,19 @@
 import React from "react";
-import { Field, ErrorMessage } from 'formik';
+import { Field, ErrorMessage, FormikProps, getIn } from 'formik';
 
-const TextField = (props) => {
+interface InputProps<T> {
+    name: string;
+    displayName: string;
+    formProps: FormikProps<T>; 
+}
+
+const TextField = <T,>(props: InputProps<T>) => {
     const { touched, errors, initialValues, values } = props.formProps;
-    const isTouched = touched[props.name];
-    const hasError = errors[props.name];
-    const initValue = initialValues[props.name];
-    const currValue = values[props.name];
+    
+    const isTouched: boolean = getIn(touched, props.name);
+    const hasError: boolean = getIn(errors, props.name);
+    const initValue: string = getIn(initialValues, props.name);
+    const currValue: string = getIn(values, props.name);
     const modifiedClass = isTouched && initValue !== currValue ? 'modified' : '';
     const errorClass = hasError ? 'invalid' : 'valid';
   
