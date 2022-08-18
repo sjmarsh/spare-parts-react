@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 
 import './Sidebar.css'
 
-export const SideBar = () => {
+const SideBar = () => {
   
   const [collapseNavMenu, setCollapseNavMenu] = useState(false);
   const [navMenuClass, setNavMenuClass] = useState("");
@@ -62,3 +62,5 @@ export const SideBar = () => {
     </div>  
   )
 }
+
+export default SideBar

@@ -11,7 +11,7 @@ import Counter from './features/counter/Counter';
 
 import './App.css';
 
-import { SideBar } from './components/SideBar';
+import SideBar from './components/SideBar';
 
 function App() {
   return (
