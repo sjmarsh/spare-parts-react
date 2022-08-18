@@ -16,7 +16,7 @@ test('should render pager with 2 pages', () => {
 test('should render pager with 1 page', () => {
 
     const {container} = render(
-        <Pager totalItemCount="3" pageSize="5" currentPage="1"/> 
+        <Pager totalItemCount={3} pageSize={5} currentPage={1}/> 
     )
 
     const pageItems = container.getElementsByClassName('page-item');
@@ -36,7 +36,7 @@ test('should set current page from props to active', async () => {
 test('should fire page click event', async () => {
     
     let page = 0;
-    const handlePageClick = (pageNumber) => {
+    const handlePageClick = (pageNumber: number) => {
         page = pageNumber;
     }
     
@@ -56,7 +56,7 @@ test('should fire page click event', async () => {
 test('should set page to active when clicked', async () => {
     
     let page = 0;
-    const handlePageClick = (pageNumber) => {
+    const handlePageClick = (pageNumber: number) => {
         page = pageNumber;
     }
     

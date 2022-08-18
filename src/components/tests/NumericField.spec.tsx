@@ -3,21 +3,20 @@ import { act } from 'react-dom/test-utils';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { Formik, Form } from 'formik';
 
-import TextField from '../TextField';
+import NumericField from '../NumericField';
 
 interface TestObject {
-    testName: string;
+    testName: number;
 }
 
-test('renders text field', () => {
-        
-    const formdata: TestObject = { testName: "" };
+test('renders numeric field', () => {
+    const formdata: TestObject = { testName: 0 };
     const { container, getByText } = render(
         <Formik initialValues={formdata} onSubmit={()=> {}}>
             {(props) => {
             return (
                 <Form>
-                    <TextField name="testName" displayName = "Test Name" formProps={props}/>
+                    <NumericField name="testName" displayName = "Test Name" formProps={props}/>
                 </Form>
             )}}
         </Formik>
@@ -26,50 +25,47 @@ test('renders text field', () => {
     const formControls = container.getElementsByClassName('form-control');
     expect(formControls.length).toBe(1);
     expect(formControls[0].classList).not.toContain('modified');
-});
+})
 
-test('renders text field with modified', async () => {
-    const formdata: TestObject = { testName: "" };
+test('renders numeric field with modified', async () => {
+    const formdata: TestObject = { testName: 0 };
     render(
         <Formik initialValues={formdata} onSubmit={()=> {}}>
             {(props) => {
             return (
                 <Form>
-                    <TextField name="testName" displayName = "Test Name" formProps={props}/>
+                    <NumericField name="testName" displayName = "Test Name" formProps={props}/>
                 </Form>
             )}}
         </Formik>
     );
     
-    expect(await screen.findByTestId('txt-testName')).toBeInTheDocument();
-    let input = await screen.findByTestId('txt-testName');
+    expect(await screen.findByTestId('num-testName')).toBeInTheDocument();
+    let input = await screen.findByTestId('num-testName');
     
     act(() =>{
         fireEvent.blur(input);
-        fireEvent.change(input, {target: {value: "abc"}});
+        fireEvent.change(input, {target: {value: 2}});
     })
 
-    input = await screen.findByTestId('txt-testName');
+    input = await screen.findByTestId('num-testName');
     await waitFor(() => {
         expect(input.classList).toContain('valid');
         expect(input.classList).toContain('modified');    
     });
 });
 
-
-// ref: testing Formic validation:  https://scottsauber.com/2019/05/25/testing-formik-with-react-testing-library/
-test('renders text field with validation error', async () => {
+test('renders numeric field with validation error', async () => {
     const errorMessage = 'Required';
-    const formdata: TestObject = { testName: "" };
-    
-    act(() =>{
+    const formdata: TestObject = { testName: 0 };
+
     render(
         <Formik 
             initialValues={formdata} 
             onSubmit={()=> {}} 
             validate={(values) => {
                 let errors: any = {};
-                if(!values?.testName){
+                if(!values?.testName || values?.testName < 1){
                     errors.testName = errorMessage;
                 }
                 return errors;
@@ -77,25 +73,23 @@ test('renders text field with validation error', async () => {
             {(props) => {     
             return (
                 <Form>
-                    <TextField name="testName" displayName = "Test Name" formProps={props}/>
+                    <NumericField name="testName" displayName = "Test Name" formProps={props}/>
                 </Form>
             )}}
         </Formik>
     );
-    });
-
-    expect(await screen.findByTestId('txt-testName')).toBeInTheDocument();
-    let input = await screen.findByTestId('txt-testName');
+ 
+    expect(await screen.findByTestId('num-testName')).toBeInTheDocument();
+    let input = await screen.findByTestId('num-testName');
     
     act(() =>{
         fireEvent.blur(input);
     });
 
-    input = await screen.findByTestId('txt-testName');
+    input = await screen.findByTestId('num-testName');
     await waitFor(() => {
         expect(input.classList).toContain('invalid');    
     });
     const validationMessage = await screen.findByTestId('error-testName');
     expect(validationMessage.innerHTML).toBe(errorMessage); 
-
-})
+});
