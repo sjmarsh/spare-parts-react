@@ -1,5 +1,3 @@
-import React from 'react';
-import { act } from 'react-dom/test-utils';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { Formik, Form } from 'formik';
 
@@ -9,9 +7,9 @@ interface TestObject {
     testName: string;
 }
 
-test('renders date field', () => {
+test('renders date field', async() => {
     const formdata: TestObject = { testName: '' };
-    const { container, getByText } = render(
+    render(
         <Formik initialValues={formdata} onSubmit={()=> {}}>
             {(props) => {
             return (
@@ -21,10 +19,13 @@ test('renders date field', () => {
             )}}
         </Formik>
     );
-    expect(getByText(/Test Name/i)).toBeInTheDocument();
-    const formControls = container.getElementsByClassName('form-control');
-    expect(formControls.length).toBe(1);
-    expect(formControls[0].classList).not.toContain('modified');
+
+    // ref: avoid formik update warnings https://davidwcai.medium.com/react-testing-library-and-the-not-wrapped-in-act-errors-491a5629193b
+    await waitFor(() => { expect(screen.getByText(/Test Name/i)).toBeInTheDocument(); });
+
+    const input = await screen.findByLabelText('Test Name');
+    expect (input).toBeInTheDocument();
+    expect (input).not.toHaveClass('modified'); 
 })
 
 test('renders date field with modified', async () => {
@@ -40,19 +41,17 @@ test('renders date field with modified', async () => {
         </Formik>
     );
     
-    expect(await screen.findByTestId('dte-testName')).toBeInTheDocument();
-    let input = await screen.findByTestId('dte-testName');
-    
-    act(() =>{
-        fireEvent.blur(input);
-        fireEvent.change(input, {target: {value: "2020-01-01"}});
-    })
+    await waitFor(() => { expect(screen.getByText(/Test Name/i)).toBeInTheDocument(); });
 
-    input = await screen.findByTestId('dte-testName');
-    await waitFor(() => {
-        expect(input.classList).toContain('valid');
-        expect(input.classList).toContain('modified');    
-    });
+    let input = await screen.findByLabelText('Test Name');
+        
+    fireEvent.blur(input);
+    fireEvent.change(input, {target: {value: "2020-01-01"}});
+ 
+    await waitFor(() => { expect(screen.getByText(/Test Name/i)).toBeInTheDocument(); });
+    input = await screen.findByLabelText('Test Name');
+    await waitFor(() => { expect(input.classList).toContain('valid'); });
+    expect(input.classList).toContain('modified');    
 });
 
 test('renders date field with validation error', async () => {
@@ -79,17 +78,14 @@ test('renders date field with validation error', async () => {
         </Formik>
     );
  
-    expect(await screen.findByTestId('dte-testName')).toBeInTheDocument();
-    let input = await screen.findByTestId('dte-testName');
+    await waitFor(() => { expect(screen.getByText(/Test Name/i)).toBeInTheDocument(); });
+    let input = await screen.findByLabelText('Test Name');
     
-    act(() =>{
-        fireEvent.blur(input);
-    });
-
-    input = await screen.findByTestId('dte-testName');
-    await waitFor(() => {
-        expect(input.classList).toContain('invalid');    
-    });
+    fireEvent.blur(input);
+    
+    await waitFor(() => { expect(screen.getByText(/Test Name/i)).toBeInTheDocument(); });
+    input = await screen.findByLabelText('Test Name');
+    await waitFor(() => { expect(input.classList).toContain('invalid'); });
     const validationMessage = await screen.findByTestId('error-testName');
     expect(validationMessage.innerHTML).toBe(errorMessage); 
-})
+});

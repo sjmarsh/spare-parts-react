@@ -28,9 +28,9 @@ const NumericField = <T,>(props: InputProps<T>) => {
     return (
         <div className='form-group  my-2'>
             <label htmlFor={props.name}>{props.displayName}</label>
-            <NumberFormat className={fieldClass} {...field} 
+            <NumberFormat id={props.name} className={fieldClass} {...field} 
                 displayType="input" isNumericString={true} thousandSeparator={true} decimalScale={2} fixedDecimalScale={true} 
-                onValueChange={(e) => handleThis(e)} data-testid={'num-' + props.name}/>
+                onValueChange={(e) => handleThis(e)} aria-label={props.name}/>
             <ErrorMessage name={props.name} component="div" className="validation-message" data-testid={'error-' + props.name}/>
         </div>
     );

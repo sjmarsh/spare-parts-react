@@ -22,7 +22,7 @@ const TextField = <T,>(props: InputProps<T>) => {
     return (
         <div className='form-group  my-2'>
             <label htmlFor={props.name}>{props.displayName}</label>
-            <Field type="string" name={props.name} className={fieldClass} data-testid={'txt-' + props.name}/>
+            <Field type="text" name={props.name} className={fieldClass} aria-label={props.name} />
             <ErrorMessage name={props.name} component="div" className="validation-message" data-testid={'error-' + props.name} />
         </div>
     );

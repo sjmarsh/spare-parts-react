@@ -24,19 +24,30 @@ const Pager = (props: InputProps) => {
         }
     }
 
+    const isActive = (pageNumber: number) => {
+        return pageNumber === currentPage;                
+    }
+
+    const getAriaLabel = (pageNumber: number) => {
+        if(isActive(pageNumber)){
+            return `Current Page, Page ${pageNumber}`;
+        }
+        return `Goto Page ${pageNumber}`;
+    }
+
     let items = [];
     let pageCount = getPageCount();
     for(let i = 1; i <= pageCount; i++) {
         items.push(
-            <Pagination.Item key={i} active={i === currentPage} onClick={() => handleOnClick(i)}>{i}</Pagination.Item>
+            <Pagination.Item key={i} active={isActive(i)} role="link" aria-current={isActive(i)} aria-label={getAriaLabel(i)} onClick={() => handleOnClick(i)}>{i}</Pagination.Item>
         )
     }
 
     return (
-        <Pagination>
-            <Pagination.First onClick={() => handleOnClick(1)} />
+        <Pagination role='navigation' aria-label='Pagination Navigation'>
+            <Pagination.First aria-label="Goto First Page" role="link" onClick={() => handleOnClick(1)} />
             {items}       
-            <Pagination.Last onClick={() => handleOnClick(pageCount)}/>
+            <Pagination.Last aria-label="Goto Last Page" role="link" onClick={() => handleOnClick(pageCount)}/>
         </Pagination>
     );
 

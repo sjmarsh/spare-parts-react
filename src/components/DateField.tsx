@@ -31,7 +31,7 @@ const DateField = <T,>(props: InputProps<T>) => {
     return (
         <div className='form-group  my-2'>
             <label htmlFor={props.name}>{props.displayName}</label>
-            <input type="date" className={fieldClass} {...field} data-testid={'dte-' + props.name}/>
+            <input id={props.name} type="date" className={fieldClass} {...field} aria-label={props.name}/>
             <ErrorMessage name={props.name} component="div" className="validation-message" data-testid={'error-' + props.name}/>
         </div>
     );
