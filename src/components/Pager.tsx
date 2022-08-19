@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import Pagination from 'react-bootstrap/Pagination';
 
@@ -12,6 +12,10 @@ interface InputProps {
 const Pager = (props: InputProps) => {
 
     const [currentPage, setCurrentPage] = useState(props.currentPage ?? 1);
+
+    useEffect(() => {
+        setCurrentPage(props.currentPage);
+    }, [props.currentPage]);
 
     const getPageCount = () => {
         return Math.ceil(props.totalItemCount / props.pageSize);   

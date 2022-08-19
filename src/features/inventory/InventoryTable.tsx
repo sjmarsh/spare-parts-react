@@ -24,14 +24,17 @@ export default function IventoryTable(props: InputProps) {
     const inventoryStatus = useAppSelector(state => state.inventory.status);
 
     const [isCurrent, setIsCurrent] = useState(false);
+    const [pagerPage, setPagerPage] = useState(1);
 
     useEffect(() => {
         setIsCurrent(props.isCurrent);
         if(props.isCurrent){
             dispatch(fetchInventory({ page: currentStockPage, isCurrent: true, takeAll: false }));
+            setPagerPage(currentStockPage);
         }
         else {
             dispatch(fetchInventory({ page: historyStockPage, isCurrent: false, takeAll: false }));
+            setPagerPage(historyStockPage);
         }            
            
     }, [dispatch, props.isCurrent, currentStockPage, historyStockPage]);
@@ -45,10 +48,6 @@ export default function IventoryTable(props: InputProps) {
                 dispatch(setHistoryStockPage(pageNumber));
             }
         });
-    }
-
-    const getCurrentPage = () => {
-        return isCurrent ? currentStockPage : historyStockPage;
     }
 
     return (
@@ -81,7 +80,7 @@ export default function IventoryTable(props: InputProps) {
                 </tbody>
             </Table>
 
-            <Pager totalItemCount={totalItemCount} pageSize={TableSettings.PageSize} currentPage={getCurrentPage()} onPageClick={handleOnPageClick} key={props.isCurrent ? 'current': 'history'}/>
+            <Pager totalItemCount={totalItemCount} pageSize={TableSettings.PageSize} currentPage={pagerPage} onPageClick={handleOnPageClick} key={props.isCurrent ? 'current': 'history'}/>
 
         </div>
     );
