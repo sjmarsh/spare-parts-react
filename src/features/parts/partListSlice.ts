@@ -8,12 +8,14 @@ import Part from './types/Part';
 import PartListReponse from './types/PartListResponse';
 import FetchStatus from '../../app/constants/fetchStatus';
 import TableSettings from '../../app/constants/tableSettings';
+import PartResponse from './types/PartResponse';
 
 export interface PartListState {
     items: Array<Part>
     totalItemCount: number
     currentPage: number
     status: string
+    hasError: boolean
     error?: string | null
 }
 
@@ -22,6 +24,7 @@ const initialState : PartListState = {
     totalItemCount: 0,
     currentPage: 1,
     status: FetchStatus.Idle,
+    hasError: false,
     error: null
 };
 
@@ -33,12 +36,12 @@ export const fetchParts = createAsyncThunk<PartListReponse, number>('parts/fetch
     return response.data;  
 })
 
-export const deletePart = createAsyncThunk('parts/deletePart', async (partId: number) => {
+export const deletePart = createAsyncThunk<PartResponse, number>('parts/deletePart', async (partId: number) => {
     if(partId === 0) {
         return {};
     }
     const response = await client.delete(`${baseUrl}/?id=${partId}`);
-    return response.data.value;
+    return response.data;
 });
 
 
@@ -69,6 +72,8 @@ export const partListSlice = createSlice({
             })
             .addCase(deletePart.fulfilled, (state, action) => {
                 state.status = FetchStatus.Succeeded;
+                state.hasError = action.payload.hasError;
+                state.error = action.payload.message;
             })
             .addCase(deletePart.rejected, (state, action) => {
                 state.status = FetchStatus.Failed;

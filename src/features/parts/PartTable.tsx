@@ -19,6 +19,8 @@ const PartTable = () => {
     const totalItemCount = useAppSelector(state => state.partsList.totalItemCount);
     const currentPage = useAppSelector(state => state.partsList.currentPage);
     const partsStatus = useAppSelector(state => state.partsList.status);
+    const hasError = useAppSelector(state => state.partsList.hasError);
+    const errorMessage = useAppSelector(state => state.partsList.error);
     
     useEffect(() => {
         if(partsStatus === FetchStatus.Idle) {
@@ -59,6 +61,10 @@ const PartTable = () => {
             <Spinner animation="border" role="status" >
                 <span className="visually-hidden">Loading...</span>
             </Spinner>
+        }
+        {
+           hasError && errorMessage &&
+           <Alert variant='danger'>{errorMessage}</Alert>
         }
         { partsStatus === FetchStatus.Failed && 
             <Alert variant='danger'>An error occurred fetching parts.</Alert>
