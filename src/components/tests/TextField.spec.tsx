@@ -29,6 +29,27 @@ test('renders text field', async () => {
     expect (input).not.toHaveClass('modified'); 
 });
 
+test('renders password field', async() => {
+    const formdata: TestObject = { testName: "" };
+    render(
+        <Formik initialValues={formdata} onSubmit={()=> {}}>
+            {(props) => {
+            return (
+                <Form>
+                    <TextField name="testName" displayName = "Test Name" isPassword={true} formProps={props}/>
+                </Form>
+            )}}
+        </Formik>
+    );
+    
+    await waitFor(() => { expect(screen.getByText(/Test Name/i)).toBeInTheDocument(); });
+    
+    const input = screen.getByLabelText(/Test Name/i);
+    expect (input).toBeInTheDocument();
+    expect (input).toHaveAttribute('type', 'password');
+    expect (input).not.toHaveClass('modified'); 
+});
+
 test('renders text field with modified', async () => {
     const formdata: TestObject = { testName: "" };
     render(

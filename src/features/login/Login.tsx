@@ -44,7 +44,7 @@ export default function Login() {
                     return (
                     <Form onSubmit={handleSubmit}>
                         <TextField name="userName" displayName="User Name" formProps={props}/>
-                        <TextField name="password" displayName="Password" formProps={props}/>
+                        <TextField name="password" displayName="Password" isPassword={true} formProps={props}/>
                         <div className='my-3'>
                             <Button type="submit" disabled={isSubmitting}>Login</Button>
                         </div>
