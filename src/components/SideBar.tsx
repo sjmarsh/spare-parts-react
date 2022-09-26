@@ -37,9 +37,14 @@ const SideBar = () => {
 
       <div className={navMenuClass}>
           <nav className="flex-column">
-          <div className="nav-item-cust px-3">
+            <div className="nav-item-cust px-3">
               <Link id="home" className={`nav-link-cust ${activeClass('home')}`} to="/" onClick={updateActiveLink}>
                 <span className="oi oi-home" aria-hidden="true"/>Home
+              </Link>
+            </div>
+            <div className="nav-item-cust px-3">
+              <Link id="login" className={`nav-link-cust ${activeClass('login')}`} to="/login" onClick={updateActiveLink}>
+                <span className="oi oi-lock-locked" aria-hidden="true"/>Login
               </Link>
             </div>
             <div className="nav-item-cust px-3">

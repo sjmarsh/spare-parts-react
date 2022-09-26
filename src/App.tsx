@@ -5,6 +5,7 @@ import {
 } from 'react-router-dom';
 
 import Home from './features/home/Home';
+import Login from './features/login/Login';
 import PartList from './features/parts/PartList';
 import Inventory from './features/inventory/Inventory';
 import Counter from './features/counter/Counter';
@@ -25,6 +26,7 @@ function App() {
           <article className='content px-4'>
             <Routes>
               <Route path="/" element={<Home/>} />
+              <Route path="/login" element={<Login />} />
               <Route path="/part-list" element={<PartList />} />
               <Route path="/inventory" element={<Inventory />} />
               <Route path="/counter" element={<Counter />} />
