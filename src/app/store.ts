@@ -4,6 +4,8 @@ import partsListReducer from '../features/parts/partListSlice';
 import partDetailReducer from '../features/parts/partDetailSlice';
 import inventoryReducer from '../features/inventory/inventorySlice';
 import loginReducer from '../features/login/loginSlice';
+import { saveAccessToken, refreshAccessToken } from './middleware/accessTokenMiddleware';
+
 
 export const store = configureStore({
   reducer: {
@@ -13,6 +15,7 @@ export const store = configureStore({
     inventory: inventoryReducer,
     login: loginReducer
   },
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(saveAccessToken).concat(refreshAccessToken)
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

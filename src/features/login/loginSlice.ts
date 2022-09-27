@@ -37,6 +37,11 @@ export const performLogin = createAsyncThunk<AuthenticationResponse, Authenticat
     return response.data;
 });
 
+export const performTokenRefresh = createAsyncThunk<AuthenticationResponse>('login/performTokenRefresh', async() => {
+    const response = await client.post(baseUrl + '/refresh', '');
+    return response.data;
+});
+
 export const loginSlice = createSlice({
     name: 'login',
     initialState,
@@ -54,6 +59,19 @@ export const loginSlice = createSlice({
                 state.hasTokenExpired = getTokenDetails(action.payload.accessToken).HasExpired;
             })
             .addCase(performLogin.rejected, (state, action) => {
+                state.status = FetchStatus.Failed;
+                state.error = action.error.message;
+            })
+            .addCase(performTokenRefresh.pending, (state, action) => {
+                state.status = FetchStatus.Loading;
+            })
+            .addCase(performTokenRefresh.fulfilled, (state, action) => {
+                state.status = FetchStatus.Succeeded;
+                state.authenticationResponse = action.payload;
+                state.accessToken = action.payload.accessToken;
+                state.hasTokenExpired = getTokenDetails(action.payload.accessToken).HasExpired;
+            })
+            .addCase(performTokenRefresh.rejected, (state, action) => {
                 state.status = FetchStatus.Failed;
                 state.error = action.error.message;
             })

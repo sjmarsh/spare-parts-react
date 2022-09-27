@@ -1,4 +1,3 @@
-import { store } from '../app/store';
 import config from '../config.json';
 
 // borrowed from Redux example app https://github.com/reduxjs/redux-essentials-example-app/blob/master/src/api/client.js
@@ -7,16 +6,19 @@ import config from '../config.json';
 
 // also some ideas on JWT tokens from https://jasonwatmore.com/post/2022/06/15/react-18-redux-jwt-authentication-example-tutorial 
 
+let accessToken : string | null = null;
+
 interface Headers {
   'Content-Type': string | null;
   Authorization: string | null;
 };
 
+
+
 function getAuthHeader(endpoint: string) : string {
   if(endpoint.includes(config.SERVER_URL)){
-    const token = store.getState().login.accessToken;        
-    if (token) {
-      return `Bearer ${token}`;
+    if (accessToken) {
+      return `Bearer ${accessToken}`;
     }
   }
   return '';
@@ -76,3 +78,7 @@ client.put = function <T>(endpoint: string, body: T, customConfig = {}) {
 client.delete = function (endpoint: string, customConfig = {}) {
   return client(endpoint, 'DELETE', null, { ...customConfig })
 };
+
+client.setAccessToken = function (token: string) {
+  accessToken = token;
+}
