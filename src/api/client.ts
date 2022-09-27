@@ -1,5 +1,4 @@
 import { store } from '../app/store';
-
 import config from '../config.json';
 
 // borrowed from Redux example app https://github.com/reduxjs/redux-essentials-example-app/blob/master/src/api/client.js
@@ -11,26 +10,24 @@ import config from '../config.json';
 interface Headers {
   'Content-Type': string | null;
   Authorization: string | null;
-}
+};
 
-function getAuthHeader(endpoint: string) {
+function getAuthHeader(endpoint: string) : string {
   if(endpoint.includes(config.SERVER_URL)){
-    
-    const authenticationResponse = store.getState().login.authenticationResponse;
-    
-    if (authenticationResponse && authenticationResponse.accessToken) {
-      return `Bearer ${authenticationResponse.accessToken}`;
+    const token = store.getState().login.accessToken;        
+    if (token) {
+      return `Bearer ${token}`;
     }
   }
   return '';
-}
+};
 
 export async function client<T>(endpoint: string, method: string, body?: T, ...customConfig: any) {
 
   const headers: Headers = {
     'Content-Type': 'application/json',
     Authorization: getAuthHeader(endpoint)
-  }
+  };
 
   const config = {
     method: method,
@@ -39,11 +36,11 @@ export async function client<T>(endpoint: string, method: string, body?: T, ...c
       ...headers,
       ...customConfig.headers,
     },
-  }
+  };
 
   if (body) {
     config.body = JSON.stringify(body)
-  }
+  };
 
   let data
   try {
@@ -62,20 +59,20 @@ export async function client<T>(endpoint: string, method: string, body?: T, ...c
   } catch (err: any) {
     return Promise.reject(err.message ? err.message : data)
   }
-}
+};
 
 client.get = function (endpoint: string, customConfig = {}) {
   return client(endpoint, 'GET', null, { ...customConfig })
-}
+};
 
 client.post = function <T>(endpoint: string, body: T, customConfig = {}) {
   return client(endpoint, 'POST', body, { ...customConfig })
-}
+};
 
 client.put = function <T>(endpoint: string, body: T, customConfig = {}) {
   return client(endpoint, 'PUT', body, { ...customConfig })
-}
+};
 
 client.delete = function (endpoint: string, customConfig = {}) {
   return client(endpoint, 'DELETE', null, { ...customConfig })
-}
+};

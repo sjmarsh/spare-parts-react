@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { client } from '../../api/client';
+import { getTokenDetails } from '../../app/helpers/jwtHelper';
 
 import config from '../../config.json';
 
@@ -11,14 +12,18 @@ const baseUrl = `${config.SERVER_URL}/api/user`;
 
 export interface LoginState {
     loginDetails: AuthenticationRequest;
-    authenticationResponse: AuthenticationResponse
+    authenticationResponse: AuthenticationResponse;
+    accessToken: string | null;
+    hasTokenExpired: boolean;
     status: FetchStatus;
-    error?: string | null
+    error?: string | null;
 }
 
 const initialState: LoginState = {
     loginDetails: {} as AuthenticationRequest,
     authenticationResponse: {} as AuthenticationResponse,
+    accessToken: null,
+    hasTokenExpired: false,
     status: FetchStatus.Idle,
     error: null
 }
@@ -45,6 +50,8 @@ export const loginSlice = createSlice({
             .addCase(performLogin.fulfilled, (state, action) => {
                 state.status = FetchStatus.Succeeded;
                 state.authenticationResponse = action.payload;
+                state.accessToken = action.payload.accessToken;
+                state.hasTokenExpired = getTokenDetails(action.payload.accessToken).HasExpired;
             })
             .addCase(performLogin.rejected, (state, action) => {
                 state.status = FetchStatus.Failed;
