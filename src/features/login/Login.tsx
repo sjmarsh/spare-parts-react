@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
+import { useNavigate } from 'react-router-dom';
 import { Formik, Form } from 'formik';
 
 import { Button, Spinner, Alert } from 'react-bootstrap';
@@ -14,13 +15,23 @@ import LoginSchema from './loginSchema';
 export default function Login() {
     const [hasSubmitted, setHasSubmitted] = useState(false);
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
     
     const loginFetchStatus = useAppSelector(state => state.login.fetchStatus);
     const isAuthenticated = useAppSelector(state => state.login.isAuthenticated);
 
     const handleFormSubmit = (request: AuthenticationRequest) => {
-        dispatch(performLogin(request));    
+        dispatch(performLogin(request))
+            .then((res) => {
+                if(res.meta.requestStatus === 'fulfilled' && isAuthenticated){
+                    console.log('navigate');
+                    navigate('/');
+                }
+            });    
         setHasSubmitted(true);
+        if(isAuthenticated){
+            navigate('/');
+        }
     }
 
     return (

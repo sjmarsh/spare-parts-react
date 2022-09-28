@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
+import Authorized from './Authorized'
 
 import './Sidebar.css'
 
@@ -47,16 +48,20 @@ const SideBar = () => {
                 <span className="oi oi-lock-locked" aria-hidden="true"/>Login
               </Link>
             </div>
-            <div className="nav-item-cust px-3">
-              <Link id="part-list" className={`nav-link-cust ${activeClass('part-list')}`} to="/part-list" onClick={updateActiveLink}>
-                <span className="oi oi-list" aria-hidden="true"/>Part List
-              </Link>
-            </div>
-            <div className="nav-item-cust px-3">
-              <Link id="inventory" className={`nav-link-cust ${activeClass('inventory')}`} to="/inventory" onClick={updateActiveLink}>
-              <span className="oi oi-spreadsheet" aria-hidden="true"/>Inventory
-              </Link>
-            </div>
+            <Authorized roles={['Administrator']}>
+              <div className="nav-item-cust px-3">
+                <Link id="part-list" className={`nav-link-cust ${activeClass('part-list')}`} to="/part-list" onClick={updateActiveLink}>
+                  <span className="oi oi-list" aria-hidden="true"/>Part List
+                </Link>
+              </div>
+            </Authorized>
+            <Authorized  roles={['Administrator', 'StocktakeUser']}>
+              <div className="nav-item-cust px-3">
+                <Link id="inventory" className={`nav-link-cust ${activeClass('inventory')}`} to="/inventory" onClick={updateActiveLink}>
+                <span className="oi oi-spreadsheet" aria-hidden="true"/>Inventory
+                </Link>
+              </div>
+            </Authorized>
             <div className="nav-item-cust px-3">
               <Link id="counter" className={`nav-link-cust ${activeClass('counter')}`} to="/counter" onClick={updateActiveLink}>
               <span className="oi oi-spreadsheet" aria-hidden="true"/>Counter
