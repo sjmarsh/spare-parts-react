@@ -6,6 +6,7 @@ import {
 
 import Home from './features/home/Home';
 import Login from './features/login/Login';
+import Logout from './features/login/Logout';
 import PartList from './features/parts/PartList';
 import Inventory from './features/inventory/Inventory';
 import Counter from './features/counter/Counter';
@@ -27,6 +28,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Home/>} />
               <Route path="/login" element={<Login />} />
+              <Route path="/logout" element={<Logout />} />
               <Route path="/part-list" element={<PartList />} />
               <Route path="/inventory" element={<Inventory />} />
               <Route path="/counter" element={<Counter />} />

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
 import { useNavigate } from 'react-router-dom';
 import { Formik, Form } from 'formik';
@@ -14,21 +14,21 @@ import LoginSchema from './loginSchema';
 
 export default function Login() {
     const [hasSubmitted, setHasSubmitted] = useState(false);
+
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     
     const loginFetchStatus = useAppSelector(state => state.login.fetchStatus);
     const isAuthenticated = useAppSelector(state => state.login.isAuthenticated);
 
+    useEffect(() => redirectIfAuthenticated());
+
     const handleFormSubmit = (request: AuthenticationRequest) => {
-        dispatch(performLogin(request))
-            .then((res) => {
-                if(res.meta.requestStatus === 'fulfilled' && isAuthenticated){
-                    console.log('navigate');
-                    navigate('/');
-                }
-            });    
+        dispatch(performLogin(request))    
         setHasSubmitted(true);
+    }
+
+    function redirectIfAuthenticated() {
         if(isAuthenticated){
             navigate('/');
         }
@@ -41,7 +41,6 @@ export default function Login() {
                     <span className="visually-hidden">Loading...</span>
                 </Spinner>
             }
-                                            
             <Formik
                 initialValues={{ userName: '', password: '' } as AuthenticationRequest}
                 validationSchema={LoginSchema}

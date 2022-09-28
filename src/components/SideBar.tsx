@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Authorized from './Authorized'
+import NotAuthorized from './NotAuthorized'
 
 import './Sidebar.css'
 
@@ -43,11 +44,20 @@ const SideBar = () => {
                 <span className="oi oi-home" aria-hidden="true"/>Home
               </Link>
             </div>
-            <div className="nav-item-cust px-3">
-              <Link id="login" className={`nav-link-cust ${activeClass('login')}`} to="/login" onClick={updateActiveLink}>
-                <span className="oi oi-lock-locked" aria-hidden="true"/>Login
-              </Link>
-            </div>
+            <NotAuthorized doRoleCheck={false}>
+              <div className="nav-item-cust px-3">
+                <Link id="login" className={`nav-link-cust ${activeClass('login')}`} to="/login" onClick={updateActiveLink}>
+                  <span className="oi oi-lock-locked" aria-hidden="true"/>Login
+                </Link>
+              </div>
+            </NotAuthorized>
+            <Authorized doRoleCheck={false}>
+              <div className="nav-item-cust px-3">
+                <Link id="logout" className={`nav-link-cust ${activeClass('logout')}`} to="/logout" onClick={updateActiveLink}>
+                  <span className="oi oi-lock-unlocked" aria-hidden="true"/>Logout
+                </Link>
+              </div>
+            </Authorized>
             <Authorized roles={['Administrator']}>
               <div className="nav-item-cust px-3">
                 <Link id="part-list" className={`nav-link-cust ${activeClass('part-list')}`} to="/part-list" onClick={updateActiveLink}>

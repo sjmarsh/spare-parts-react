@@ -7,11 +7,11 @@ interface InputProps {
     children: JSX.Element | null
 }
 
-const Authorized = ({roles = null, doRoleCheck = true, children = null}: InputProps) => {
+const NotAuthorized = ({roles = null, doRoleCheck = true, children = null}: InputProps) => {
     const isAuthenticated = useAppSelector(state => state.login.isAuthenticated);
     const userRoles = useAppSelector(state => state.login.roles);
 
-    let isAuthorized : boolean = true;
+    let isAuthorized : boolean = false;
     if(doRoleCheck) {    
         const intersectingRoles  = userRoles?.filter(x => roles?.includes(x));
         if(intersectingRoles && intersectingRoles.length > 0){
@@ -19,12 +19,12 @@ const Authorized = ({roles = null, doRoleCheck = true, children = null}: InputPr
         }
         else {
             isAuthorized = false;
-        }
+        }        
     }
-    
+        
     return(
         <div>
-            {isAuthenticated && isAuthorized &&  
+            {!isAuthenticated && !isAuthorized &&  
                 <div>
                     {children}
                 </div>
@@ -33,4 +33,4 @@ const Authorized = ({roles = null, doRoleCheck = true, children = null}: InputPr
     );
 };
 
-export default Authorized;
+export default NotAuthorized;

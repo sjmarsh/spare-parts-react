@@ -48,6 +48,14 @@ export const loginSlice = createSlice({
     name: 'login',
     initialState,
     reducers:{
+        performLogout: (state) => {
+            state.loginDetails = {};
+            state.authenticationResponse = {} as AuthenticationResponse;
+            state.error = null;
+            state.accessToken = null;
+            state.isAuthenticated = false;
+            state.roles = null;
+        }
     },
     extraReducers(builder){
         builder
@@ -64,6 +72,9 @@ export const loginSlice = createSlice({
             .addCase(performLogin.rejected, (state, action) => {
                 state.fetchStatus = FetchStatus.Failed;
                 state.error = action.error.message;
+                state.accessToken = null;
+                state.isAuthenticated = false;
+                state.roles = null;
             })
             .addCase(performTokenRefresh.pending, (state, action) => {
                 state.fetchStatus = FetchStatus.Loading;
@@ -78,8 +89,13 @@ export const loginSlice = createSlice({
             .addCase(performTokenRefresh.rejected, (state, action) => {
                 state.fetchStatus = FetchStatus.Failed;
                 state.error = action.error.message;
+                state.accessToken = null;
+                state.isAuthenticated = false;
+                state.roles = null;
             })
     }
 });
+
+export const { performLogout } = loginSlice.actions;
 
 export default loginSlice.reducer;
