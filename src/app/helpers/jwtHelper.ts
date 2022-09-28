@@ -42,16 +42,14 @@ const getRolesFromClaims = (claims: Array<Claim>) : Array<string> => {
 }
 
 const hasTokenExpired = (claims: Array<Claim>) : boolean => {
-    const expClaim = claims.filter(c => c.Key === 'exp');
-    
-    if(expClaim && expClaim.length === 1) {
-        const unixExpiryTime = Number(expClaim[0].Value);
-        const nowUnixTime = Math.floor(new Date().getTime() / 1000);
+    const expiryClaim = claims.filter(c => c.Key === 'exp');
+    if(expiryClaim && expiryClaim.length === 1) {
+        const unixExpiryTime = Number(expiryClaim[0].Value);
+        const nowUnixTime = Math.floor(new Date().getTime() / 1000);        
         return nowUnixTime >= unixExpiryTime;
     }
     return false;
 }
-
 
 export {
     getClaimsFromToken,

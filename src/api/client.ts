@@ -13,8 +13,6 @@ interface Headers {
   Authorization: string | null;
 };
 
-
-
 function getAuthHeader(endpoint: string) : string {
   if(endpoint.includes(config.SERVER_URL)){
     if (accessToken) {
@@ -33,6 +31,7 @@ export async function client<T>(endpoint: string, method: string, body?: T, ...c
 
   const config = {
     method: method,
+    credentials: "include",
     ...customConfig,
     headers: {
       ...headers,

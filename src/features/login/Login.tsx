@@ -15,7 +15,8 @@ export default function Login() {
     const [hasSubmitted, setHasSubmitted] = useState(false);
     const dispatch = useAppDispatch();
     
-    const loginStatus = useAppSelector(state => state.login.status);
+    const loginFetchStatus = useAppSelector(state => state.login.fetchStatus);
+    const isAuthenticated = useAppSelector(state => state.login.isAuthenticated);
 
     const handleFormSubmit = (request: AuthenticationRequest) => {
         dispatch(performLogin(request));    
@@ -24,7 +25,7 @@ export default function Login() {
 
     return (
         <div>
-            { loginStatus === FetchStatus.Loading && 
+            { loginFetchStatus === FetchStatus.Loading && 
                 <Spinner animation="border" role="status" >
                     <span className="visually-hidden">Loading...</span>
                 </Spinner>
@@ -52,10 +53,14 @@ export default function Login() {
                     )
                 }}
             </Formik>
-            { hasSubmitted && loginStatus === FetchStatus.Succeeded &&
+            { hasSubmitted && loginFetchStatus === FetchStatus.Succeeded && isAuthenticated && 
                 <Alert variant='success' className="py-1">Success</Alert>
             }
-            { loginStatus === FetchStatus.Failed && 
+            {
+                hasSubmitted && loginFetchStatus === FetchStatus.Succeeded && !isAuthenticated && 
+                <Alert variant='danger' className="py-1">Login failed</Alert>
+            }
+            { loginFetchStatus === FetchStatus.Failed && 
                 <Alert variant='danger' className="py-1">An error occurred logging in.</Alert>
             }
         </div>

@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { client } from '../../api/client';
-import { getTokenDetails } from '../../app/helpers/jwtHelper';
 
 import config from '../../config.json';
 
@@ -14,8 +13,8 @@ export interface LoginState {
     loginDetails: AuthenticationRequest;
     authenticationResponse: AuthenticationResponse;
     accessToken: string | null;
-    hasTokenExpired: boolean;
-    status: FetchStatus;
+    isAuthenticated: boolean;
+    fetchStatus: FetchStatus;
     error?: string | null;
 }
 
@@ -23,8 +22,8 @@ const initialState: LoginState = {
     loginDetails: {} as AuthenticationRequest,
     authenticationResponse: {} as AuthenticationResponse,
     accessToken: null,
-    hasTokenExpired: false,
-    status: FetchStatus.Idle,
+    isAuthenticated: false,
+    fetchStatus: FetchStatus.Idle,
     error: null
 }
 
@@ -50,29 +49,29 @@ export const loginSlice = createSlice({
     extraReducers(builder){
         builder
             .addCase(performLogin.pending, (state, action) => {
-                state.status = FetchStatus.Loading;
+                state.fetchStatus = FetchStatus.Loading;
             })
             .addCase(performLogin.fulfilled, (state, action) => {
-                state.status = FetchStatus.Succeeded;
+                state.fetchStatus = FetchStatus.Succeeded;
                 state.authenticationResponse = action.payload;
                 state.accessToken = action.payload.accessToken;
-                state.hasTokenExpired = getTokenDetails(action.payload.accessToken).HasExpired;
+                state.isAuthenticated = action.payload.isAuthenticated;
             })
             .addCase(performLogin.rejected, (state, action) => {
-                state.status = FetchStatus.Failed;
+                state.fetchStatus = FetchStatus.Failed;
                 state.error = action.error.message;
             })
             .addCase(performTokenRefresh.pending, (state, action) => {
-                state.status = FetchStatus.Loading;
+                state.fetchStatus = FetchStatus.Loading;
             })
             .addCase(performTokenRefresh.fulfilled, (state, action) => {
-                state.status = FetchStatus.Succeeded;
+                state.fetchStatus = FetchStatus.Succeeded;
                 state.authenticationResponse = action.payload;
                 state.accessToken = action.payload.accessToken;
-                state.hasTokenExpired = getTokenDetails(action.payload.accessToken).HasExpired;
+                state.isAuthenticated = action.payload.isAuthenticated;
             })
             .addCase(performTokenRefresh.rejected, (state, action) => {
-                state.status = FetchStatus.Failed;
+                state.fetchStatus = FetchStatus.Failed;
                 state.error = action.error.message;
             })
     }
