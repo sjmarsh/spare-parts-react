@@ -3,8 +3,10 @@ import { Claim, TokenDetails } from '../jwtHelper';
 
 describe('jwtHelper', () => {
 
+    //ref: use https://jwt.io to generate tokens
+
     it('should get claims from JWT', () => {
-        const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE2NjQyNTQ1MzV9.XjJuiSLXwEv1V2tTq2dvnC1vozzqT9pb2sybZgigbSo';
+        const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJyb2xlIjoiQWRtaW5pc3RyYXRvciIsImV4cCI6MTY2NDI1NDUzNX0.2PmRA33kdwGlFG7O71ZIqp37lTWSUGbNLMFKCflvKPc';
 
         const actualClaims = getClaimsFromToken(token);
 
@@ -12,6 +14,7 @@ describe('jwtHelper', () => {
             { Key: "sub", Value: "1234567890" },
             { Key: "name", Value: "John Doe" },
             { Key: "iat", Value: 1516239022 },
+            { Key: "role", Value: "Administrator" },
             { Key: "exp", Value: 1664254535 }
         ];
 
@@ -19,12 +22,12 @@ describe('jwtHelper', () => {
     });
 
     it('should get details from token', () => {
-        const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE2NjQyNTQ1MzV9.XjJuiSLXwEv1V2tTq2dvnC1vozzqT9pb2sybZgigbSo';
+        const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJyb2xlIjoiQWRtaW5pc3RyYXRvciIsImV4cCI6MTY2NDI1NDUzNX0.2PmRA33kdwGlFG7O71ZIqp37lTWSUGbNLMFKCflvKPc';
 
         const actualDetails = getTokenDetails(token);
 
         const expectedDetails: TokenDetails = {
-            Roles: [],
+            Roles: ['Administrator'],
             HasExpired: true
         };
 

@@ -1,8 +1,5 @@
 import React from 'react';
-import {
-  Routes,
-  Route
-} from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 
 import Home from './features/home/Home';
 import Login from './features/login/Login';
@@ -10,10 +7,12 @@ import Logout from './features/login/Logout';
 import PartList from './features/parts/PartList';
 import Inventory from './features/inventory/Inventory';
 import Counter from './features/counter/Counter';
+import AuthrorizedRoute from './components/authorization/AuthorizedRoute';
+import SideBar from './components/SideBar';
+
+import UserRoles from './app/constants/userRoles';
 
 import './App.css';
-
-import SideBar from './components/SideBar';
 
 function App() {
   return (
@@ -29,8 +28,8 @@ function App() {
               <Route path="/" element={<Home/>} />
               <Route path="/login" element={<Login />} />
               <Route path="/logout" element={<Logout />} />
-              <Route path="/part-list" element={<PartList />} />
-              <Route path="/inventory" element={<Inventory />} />
+              <Route path="/part-list" element={ <AuthrorizedRoute roles={[UserRoles.Administrator]}><PartList/></AuthrorizedRoute> } />
+              <Route path="/inventory" element={ <AuthrorizedRoute roles={[UserRoles.Administrator, UserRoles.StocktakeUser]}><Inventory/></AuthrorizedRoute> } />
               <Route path="/counter" element={<Counter />} />
             </Routes>    
           </article>

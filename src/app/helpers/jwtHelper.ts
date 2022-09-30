@@ -36,7 +36,7 @@ const getClaimsFromToken = (token: string) : Array<Claim> => {
 
 const getRolesFromClaims = (claims: Array<Claim>) : Array<string> => {
     const roles : Array<string> = [];
-    claims.filter(c => c.Key.includes('role')).forEach(element => {
+    claims.filter(c => c.Key.toLowerCase().includes('role')).forEach(element => {
         const role : string = element.Value as string;
         if(role){
             roles.push(role);

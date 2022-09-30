@@ -11,8 +11,6 @@ import FetchStatus from '../../app/constants/fetchStatus';
 const baseUrl = `${config.SERVER_URL}/api/user`;
 
 export interface LoginState {
-    loginDetails: AuthenticationRequest;
-    authenticationResponse: AuthenticationResponse;
     accessToken: string | null;
     isAuthenticated: boolean;
     roles: Array<string> | null;
@@ -21,8 +19,6 @@ export interface LoginState {
 }
 
 const initialState: LoginState = {
-    loginDetails: {} as AuthenticationRequest,
-    authenticationResponse: {} as AuthenticationResponse,
     accessToken: null,
     isAuthenticated: false,
     roles: null,
@@ -49,8 +45,6 @@ export const loginSlice = createSlice({
     initialState,
     reducers:{
         performLogout: (state) => {
-            state.loginDetails = {};
-            state.authenticationResponse = {} as AuthenticationResponse;
             state.error = null;
             state.accessToken = null;
             state.isAuthenticated = false;
@@ -64,7 +58,6 @@ export const loginSlice = createSlice({
             })
             .addCase(performLogin.fulfilled, (state, action) => {
                 state.fetchStatus = FetchStatus.Succeeded;
-                state.authenticationResponse = action.payload;
                 state.accessToken = action.payload.accessToken;
                 state.isAuthenticated = action.payload.isAuthenticated;
                 state.roles = getTokenDetails(action.payload.accessToken).Roles;
@@ -81,7 +74,6 @@ export const loginSlice = createSlice({
             })
             .addCase(performTokenRefresh.fulfilled, (state, action) => {
                 state.fetchStatus = FetchStatus.Succeeded;
-                state.authenticationResponse = action.payload;
                 state.accessToken = action.payload.accessToken;
                 state.isAuthenticated = action.payload.isAuthenticated;
                 state.roles = getTokenDetails(action.payload.accessToken).Roles;

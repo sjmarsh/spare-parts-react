@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import Authorized from './Authorized'
-import NotAuthorized from './NotAuthorized'
+
+import AuthorizedView from './authorization/AuthorizedView'
+import NotAuthorizedView from './authorization/NotAuthorizedView'
+import UserRoles from '../app/constants/userRoles'
 
 import './Sidebar.css'
 
@@ -44,34 +46,34 @@ const SideBar = () => {
                 <span className="oi oi-home" aria-hidden="true"/>Home
               </Link>
             </div>
-            <NotAuthorized doRoleCheck={false}>
+            <NotAuthorizedView>
               <div className="nav-item-cust px-3">
                 <Link id="login" className={`nav-link-cust ${activeClass('login')}`} to="/login" onClick={updateActiveLink}>
                   <span className="oi oi-lock-locked" aria-hidden="true"/>Login
                 </Link>
               </div>
-            </NotAuthorized>
-            <Authorized doRoleCheck={false}>
+            </NotAuthorizedView>
+            <AuthorizedView doRoleCheck={false}>
               <div className="nav-item-cust px-3">
                 <Link id="logout" className={`nav-link-cust ${activeClass('logout')}`} to="/logout" onClick={updateActiveLink}>
                   <span className="oi oi-lock-unlocked" aria-hidden="true"/>Logout
                 </Link>
               </div>
-            </Authorized>
-            <Authorized roles={['Administrator']}>
+            </AuthorizedView>
+            <AuthorizedView roles={[UserRoles.Administrator]}>
               <div className="nav-item-cust px-3">
                 <Link id="part-list" className={`nav-link-cust ${activeClass('part-list')}`} to="/part-list" onClick={updateActiveLink}>
                   <span className="oi oi-list" aria-hidden="true"/>Part List
                 </Link>
               </div>
-            </Authorized>
-            <Authorized  roles={['Administrator', 'StocktakeUser']}>
+            </AuthorizedView>
+            <AuthorizedView  roles={[UserRoles.Administrator, UserRoles.StocktakeUser]}>
               <div className="nav-item-cust px-3">
                 <Link id="inventory" className={`nav-link-cust ${activeClass('inventory')}`} to="/inventory" onClick={updateActiveLink}>
                 <span className="oi oi-spreadsheet" aria-hidden="true"/>Inventory
                 </Link>
               </div>
-            </Authorized>
+            </AuthorizedView>
             <div className="nav-item-cust px-3">
               <Link id="counter" className={`nav-link-cust ${activeClass('counter')}`} to="/counter" onClick={updateActiveLink}>
               <span className="oi oi-spreadsheet" aria-hidden="true"/>Counter
