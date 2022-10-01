@@ -1,3 +1,5 @@
+import { test, expect } from 'vitest';
+
 import PartDetailSchema from '../partDetailSchema';
 
 const getTestPart = () => {

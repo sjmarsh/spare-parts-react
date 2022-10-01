@@ -10,12 +10,14 @@ This is a React based client for the Spare Parts .Net API [https://github.com/sj
 - Yup
 - Typescript
 - Bootstrap
+- Vite
 
 ## Testing:
+- Vitest
 - Jest
 
 ## Dependencies / Setup
 - Requires Node to be installed
 - The Spare Parts .Net Web API should be running 
 - Self-signed SSL certificates should be created.  eg. [https://www.makeuseof.com/create-react-app-ssl-https/](https://www.makeuseof.com/create-react-app-ssl-https/)
-    - The npm start script currently requires the certificate files to be located at ..\reactcert\  (relative to this repo location).
+    - The vite.config.ts file has been configured to load certificates from a ../reactcert folder (relative to this project folder).

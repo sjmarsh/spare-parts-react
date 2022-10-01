@@ -1,4 +1,5 @@
 import InventoryItemSchmea from "../inventoryItemSchema";
+import { test, expect } from 'vitest';
 
 const getInventoryItem = () => {
     return {

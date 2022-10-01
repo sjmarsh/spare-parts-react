@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
 
 import NotAuthorizedView from '../NotAuthorizedView';
 
@@ -10,8 +11,8 @@ describe('NotAuthorizedView', () => {
     const message: string = "I'm Not Authroized";
     
     it('should not render child when user is authenticated and has required roles', () => {
-        hooks.useAppSelector = jest.fn(() => true);
-        authHelper.userHasRequiredRoles = jest.fn(() => true);
+        hooks.useAppSelector = vi.fn(() => true);
+        authHelper.userHasRequiredRoles = vi.fn(() => true);
 
         render(
             <NotAuthorizedView>
@@ -24,8 +25,8 @@ describe('NotAuthorizedView', () => {
     });
 
     it('should render child when user is authenticated but does not have required roles', () => {
-        hooks.useAppSelector = jest.fn(() => true);
-        authHelper.userHasRequiredRoles = jest.fn(() => false);
+        hooks.useAppSelector = vi.fn(() => true);
+        authHelper.userHasRequiredRoles = vi.fn(() => false);
 
         render(
             <NotAuthorizedView>
@@ -38,8 +39,8 @@ describe('NotAuthorizedView', () => {
     });
 
     it('should render child when user is not authenticated', () => {
-        hooks.useAppSelector = jest.fn(() => false);
-        authHelper.userHasRequiredRoles = jest.fn(() => true); // this should never happen but testing just in case
+        hooks.useAppSelector = vi.fn(() => false);
+        authHelper.userHasRequiredRoles = vi.fn(() => true); // this should never happen but testing just in case
 
         render(
             <NotAuthorizedView>
@@ -52,8 +53,8 @@ describe('NotAuthorizedView', () => {
     });
 
     it('should render child when user is not authenticated and user does not have required roles', () => {
-        hooks.useAppSelector = jest.fn(() => false);
-        authHelper.userHasRequiredRoles = jest.fn(() => false);
+        hooks.useAppSelector = vi.fn(() => false);
+        authHelper.userHasRequiredRoles = vi.fn(() => false);
 
         render(
             <NotAuthorizedView>

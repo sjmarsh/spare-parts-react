@@ -1,5 +1,10 @@
+/**
+ * @vitest-environment jsdom
+ */
+
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { Formik, Form } from 'formik';
+import { test, expect } from 'vitest';
 
 import NumericField from '../NumericField';
 

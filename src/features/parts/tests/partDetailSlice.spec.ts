@@ -5,6 +5,7 @@ import partDetailReducer, {
     fetchPart
 } from '../partDetailSlice';
 import { client } from '../../../api/client';
+import { describe, it, expect, afterEach, vi } from 'vitest';
 
 import Part from '../types/Part';
 import DetailMode from '../../../app/constants/detailMode';
@@ -20,7 +21,7 @@ describe('partDetail reducer', () => {
     };
 
     afterEach(() => {
-        jest.resetAllMocks();
+        vi.resetAllMocks();
     })
 
     it('should handle initial state', () => {
@@ -55,7 +56,7 @@ describe('partDetail reducer', () => {
     it('should handle successful fetch part', async () => {
         const partId = 1;
         const fakeResponse = { status: 200, data: { value: { id: partId }}, headers: {} as Headers, url: ""};
-        jest.spyOn(client, 'get').mockResolvedValueOnce(fakeResponse);
+        vi.spyOn(client, 'get').mockResolvedValueOnce(fakeResponse);
         const store = configureStore({reducer: partDetailReducer});
         await store.dispatch(fetchPart(partId));
         expect(store.getState()).toEqual({
@@ -70,7 +71,7 @@ describe('partDetail reducer', () => {
     it('should handle erroneous fetch part', async () => {
         const partId = 1;
         const errorMessage = 'Oh no it all went wrong!';
-        jest.spyOn(client, 'get').mockRejectedValueOnce(new Error(errorMessage));
+        vi.spyOn(client, 'get').mockRejectedValueOnce(new Error(errorMessage));
         const store = configureStore({reducer: partDetailReducer});
         await store.dispatch(fetchPart(partId));
         expect(store.getState()).toEqual({
