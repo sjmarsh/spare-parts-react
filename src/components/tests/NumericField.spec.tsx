@@ -54,8 +54,8 @@ test('renders numeric field with modified', async () => {
  
     await waitFor(() => { expect(screen.getByText(/Test Name/i)).toBeInTheDocument(); });
     input = await screen.findByRole('textbox', {name: 'testName'});
-    await waitFor(() => { expect(input.classList).toContain('valid'); });
-    expect(input.classList).toContain('modified');    
+    expect(input.classList.contains('valid')).toBeTruthy();
+    expect(input.classList.contains('modified')).toBeTruthy();
 });
 
 test('renders numeric field with validation error', async () => {
@@ -89,7 +89,7 @@ test('renders numeric field with validation error', async () => {
     
     await waitFor(() => { expect(screen.getByText(/Test Name/i)).toBeInTheDocument(); });
     input = await screen.findByRole('textbox', {name: 'testName'});
-    await waitFor(() => { expect(input.classList).toContain('invalid'); });
+    expect(input.classList.contains('invalid')).toBeTruthy();
     const validationMessage = await screen.findByTestId('error-testName');
     expect(validationMessage.innerHTML).toBe(errorMessage); 
 });
