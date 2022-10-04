@@ -1,10 +1,8 @@
-/**
- * @vitest-environment jsdom
- */
-
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, act, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { Formik, Form } from 'formik';
 import { test, expect } from 'vitest';
+
 
 import DateField from '../DateField';
 
@@ -61,7 +59,9 @@ test('renders date field with modified', async () => {
 
 test('renders date field with validation error', async () => {
     const errorMessage = 'Required';
+    const invalidValue = '2020-01-01';
     const formdata: TestObject = { testName: "" };
+    const user = userEvent.setup();
     
     render(
         <Formik 
@@ -69,7 +69,7 @@ test('renders date field with validation error', async () => {
             onSubmit={()=> {}} 
             validate={(values) => {
                 let errors: any = {};
-                if(!values?.testName){
+                if(values?.testName == invalidValue){
                     errors.testName = errorMessage;
                 }
                 return errors;
@@ -85,12 +85,17 @@ test('renders date field with validation error', async () => {
  
     await waitFor(() => { expect(screen.getByText(/Test Name/i)).toBeInTheDocument(); });
     let input = await screen.findByLabelText('Test Name');
+  
+    await user.type(input, invalidValue);
     
-    fireEvent.blur(input);
+    let updatedInput = await screen.findByLabelText('Test Name');
+    await waitFor(() => {
+        expect(updatedInput.classList.contains('invalid')).toBeTruthy();
+    });
     
-    await waitFor(() => { expect(screen.getByText(/Test Name/i)).toBeInTheDocument(); });
-    input = await screen.findByLabelText('Test Name');
-    expect(input.classList.contains('invalid')).toBeTruthy();
+    await user.tab();
+
     const validationMessage = await screen.findByTestId('error-testName');
     expect(validationMessage.innerHTML).toBe(errorMessage); 
+       
 });

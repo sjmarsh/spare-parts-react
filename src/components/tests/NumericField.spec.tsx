@@ -1,8 +1,5 @@
-/**
- * @vitest-environment jsdom
- */
-
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, act, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { Formik, Form } from 'formik';
 import { test, expect } from 'vitest';
 
@@ -61,6 +58,7 @@ test('renders numeric field with modified', async () => {
 test('renders numeric field with validation error', async () => {
     const errorMessage = 'Required';
     const formdata: TestObject = { testName: 0 };
+    const user = userEvent.setup();
 
     render(
         <Formik 
@@ -85,11 +83,15 @@ test('renders numeric field with validation error', async () => {
     await waitFor(() => { expect(screen.getByText(/Test Name/i)).toBeInTheDocument(); });
     let input = await screen.findByRole('textbox', {name: 'testName'});
     
-    fireEvent.blur(input);
+    await user.type(input, '-2');
     
-    await waitFor(() => { expect(screen.getByText(/Test Name/i)).toBeInTheDocument(); });
-    input = await screen.findByRole('textbox', {name: 'testName'});
-    expect(input.classList.contains('invalid')).toBeTruthy();
+    let updatedInput = await screen.findByLabelText('Test Name');
+    await waitFor(() => {
+        expect(updatedInput.classList.contains('invalid')).toBeTruthy();
+    });
+    
+    await user.tab();
+
     const validationMessage = await screen.findByTestId('error-testName');
     expect(validationMessage.innerHTML).toBe(errorMessage); 
 });

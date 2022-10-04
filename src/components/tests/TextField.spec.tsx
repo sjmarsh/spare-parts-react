@@ -1,8 +1,5 @@
-/**
- * @vitest-environment jsdom
- */
-
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { Formik, Form } from 'formik';
 import { test, expect } from 'vitest';
 
@@ -80,13 +77,13 @@ test('renders text field with modified', async () => {
     input = await screen.findByRole('textbox', {name: 'testName'});
     expect(input.classList.contains('valid')).toBeTruthy();
     expect(input.classList.contains('modified')).toBeTruthy();
-    //await waitFor(() => { expect(input.classList).toContain('valid'); });
-    //expect(input.classList).toContain('modified');    
 });
 
 test('renders text field with validation error', async () => {
-    const errorMessage = 'Required';
+    const errorMessage = 'Invalid Value';
+    const invalidValue = "invalid";
     const formdata: TestObject = { testName: "" };
+    const user = userEvent.setup();
         
     render(
         <Formik 
@@ -94,7 +91,7 @@ test('renders text field with validation error', async () => {
             onSubmit={()=> {}} 
             validate={(values) => {
                 let errors: any = {};
-                if(!values?.testName){
+                if(values?.testName == invalidValue){
                     errors.testName = errorMessage;
                 }
                 return errors;
@@ -110,14 +107,16 @@ test('renders text field with validation error', async () => {
     
     await waitFor(() => { expect(screen.getByText(/Test Name/i)).toBeInTheDocument(); });
     let input = await screen.findByRole('textbox', {name: 'testName'});
+        
+    await user.type(input, invalidValue);
     
-    input.innerText = 'abc';
-    input.innerText = '';
+    let updatedInput = await screen.findByLabelText('Test Name');
+    await waitFor(() => {
+        expect(updatedInput.classList.contains('invalid')).toBeTruthy();
+    });
     
-    await waitFor(() => { expect(screen.getByText(/Test Name/i)).toBeInTheDocument(); });
-    input = await screen.findByRole('textbox', {name: 'testName'});
-    //await waitFor(() => { expect(input.classList).toContain('invalid'); });
-    expect(input.classList.contains('invalid')).toBeTruthy();
+    await user.tab();
+
     const validationMessage = await screen.findByTestId('error-testName');
     expect(validationMessage.innerHTML).toBe(errorMessage); 
 });
