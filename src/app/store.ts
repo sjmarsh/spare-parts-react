@@ -4,6 +4,7 @@ import partsListReducer from '../features/parts/partListSlice';
 import partDetailReducer from '../features/parts/partDetailSlice';
 import partReportReducer from '../features/parts/partReportSlice';
 import inventoryReducer from '../features/inventory/inventorySlice';
+import inventoryReportReducer from '../features/inventory/inventoryReportSlice';
 import loginReducer from '../features/login/loginSlice';
 import { saveAccessToken, refreshAccessToken } from './middleware/accessTokenMiddleware';
 
@@ -15,11 +16,12 @@ export const store = configureStore({
     partDetail: partDetailReducer, 
     partReport: partReportReducer,
     inventory: inventoryReducer,
+    inventoryReport: inventoryReportReducer,
     login: loginReducer
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware({
     serializableCheck: {
-      ignoredActions: ['partReport/fetchReport/fulfilled']
+      ignoredActions: ['partReport/fetchReport/fulfilled', 'inventoryReport/fetchReport/fulfilled'] // to allow for storing blobs in state
     }
   })
   .concat(saveAccessToken)

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
+import { useNavigate } from "react-router-dom";
 
 import Table from 'react-bootstrap/Table';
 import Spinner from 'react-bootstrap/Spinner';
@@ -17,6 +18,7 @@ interface InputProps {
 
 export default function IventoryTable(props: InputProps) {
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
     const pageOfInventory = useAppSelector(selectPageOfInventory);
     const totalItemCount = useAppSelector(state => state.inventory.totalItemCount);
     const historyStockPage = useAppSelector(state => state.inventory.historyStockPage);
@@ -50,6 +52,11 @@ export default function IventoryTable(props: InputProps) {
         });
     }
 
+    const handleFetchReport = () => {
+        const historyMode = isCurrent ? 'current' : 'history';        
+        navigate(`/inventory-report/${historyMode}`);
+    }
+
     return (
         <div>
             { inventoryStatus === FetchStatus.Loading && 
@@ -60,6 +67,10 @@ export default function IventoryTable(props: InputProps) {
             { inventoryStatus === FetchStatus.Failed && 
                 <Alert variant='danger'>An error occurred fetching inventory.</Alert>
             }
+
+            <div className='tool-container'>
+                <button className="btn btn-outline-dark tool-button" onClick={handleFetchReport}><span className="oi oi-print tool-button-image" title="Report" aria-hidden="true"/><span>Report</span></button>
+            </div>
           
             <Table hover>
                 <thead>
