@@ -5,6 +5,7 @@ import Home from './features/home/Home';
 import Login from './features/login/Login';
 import Logout from './features/login/Logout';
 import PartList from './features/parts/PartList';
+import PartReport from './features/parts/PartReport';
 import Inventory from './features/inventory/Inventory';
 import Counter from './features/counter/Counter';
 import AuthrorizedRoute from './components/authorization/AuthorizedRoute';
@@ -29,6 +30,7 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/logout" element={<Logout />} />
               <Route path="/part-list" element={ <AuthrorizedRoute roles={[UserRoles.Administrator]}><PartList/></AuthrorizedRoute> } />
+              <Route path="/part-report" element={ <AuthrorizedRoute roles={[UserRoles.Administrator]}><PartReport/></AuthrorizedRoute> } />
               <Route path="/inventory" element={ <AuthrorizedRoute roles={[UserRoles.Administrator, UserRoles.StocktakeUser]}><Inventory/></AuthrorizedRoute> } />
               <Route path="/counter" element={<Counter />} />
             </Routes>    

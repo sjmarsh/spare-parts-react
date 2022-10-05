@@ -48,6 +48,32 @@ main {
         text-overflow: ellipsis;
     }
 
+.tool-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+.tool-button {
+    margin-right: 5px;
+}
+
+.tool-button-image {
+    margin-right: 10px;
+}
+
+.pdf-container {
+    height: 85vh;
+    width: 100%;
+}
+
+.pdf-view {
+    height: 100%;
+    width: 100%;
+}
+
 @media (max-width: 640.98px) {
      .top-row {
         display: none;

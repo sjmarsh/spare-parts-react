@@ -22,7 +22,7 @@ function getAuthHeader(endpoint: string) : string {
   return '';
 };
 
-export async function client<T>(endpoint: string, method: string, body?: T, ...customConfig: any) {
+export async function client<T>(endpoint: string, isBlob: boolean, method: string, body?: T, ...customConfig: any) {
 
   const headers: Headers = {
     'Content-Type': 'application/json',
@@ -46,7 +46,14 @@ export async function client<T>(endpoint: string, method: string, body?: T, ...c
   let data
   try {
     const response = await window.fetch(endpoint, config)
-    data = await response.json()
+
+    if(isBlob){
+      data = await response.blob()
+    }
+    else {
+      data = await response.json()
+    }
+
     if (response.ok) {
       // Return a result object similar to Axios
       return {
@@ -63,19 +70,23 @@ export async function client<T>(endpoint: string, method: string, body?: T, ...c
 };
 
 client.get = function (endpoint: string, customConfig = {}) {
-  return client(endpoint, 'GET', null, { ...customConfig })
+  return client(endpoint, false, 'GET', null, { ...customConfig })
+};
+
+client.getBlob = function (endpoint: string, customConfig = {}) {
+  return client(endpoint, true, 'GET', null, { ...customConfig })
 };
 
 client.post = function <T>(endpoint: string, body: T, customConfig = {}) {
-  return client(endpoint, 'POST', body, { ...customConfig })
+  return client(endpoint, false, 'POST', body, { ...customConfig })
 };
 
 client.put = function <T>(endpoint: string, body: T, customConfig = {}) {
-  return client(endpoint, 'PUT', body, { ...customConfig })
+  return client(endpoint, false, 'PUT', body, { ...customConfig })
 };
 
 client.delete = function (endpoint: string, customConfig = {}) {
-  return client(endpoint, 'DELETE', null, { ...customConfig })
+  return client(endpoint, false, 'DELETE', null, { ...customConfig })
 };
 
 client.setAccessToken = function (token: string) {

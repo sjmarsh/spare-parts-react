@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
 
 import Table from 'react-bootstrap/Table';
@@ -15,6 +16,7 @@ import { showDetail, fetchPart } from './partDetailSlice';
 
 const PartTable = () => {
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
     const pageOfParts = useAppSelector(selectPageOfParts);
     const totalItemCount = useAppSelector(state => state.partsList.totalItemCount);
     const currentPage = useAppSelector(state => state.partsList.currentPage);
@@ -48,6 +50,10 @@ const PartTable = () => {
         });
     }
 
+    const handleFetchReport = () => {
+        navigate('/part-report');
+    }
+
     const handleOnPageClick = (pageNumber: number) => {
         dispatch(fetchParts(pageNumber)).then((re) => {
             dispatch(setCurrentPage(pageNumber));
@@ -70,6 +76,11 @@ const PartTable = () => {
             <Alert variant='danger'>An error occurred fetching parts.</Alert>
         }
        
+        <div className='tool-container'>
+            <button className="btn btn-outline-dark tool-button" onClick={handleFetchReport}><span className="oi oi-print tool-button-image" title="Report" aria-hidden="true"/><span>Report</span></button>
+            <button className="btn btn-outline-dark tool-button" onClick={handleOnAddPart}><span class="oi oi-plus tool-button-image" title="Add Part" aria-hidden="true"/><span>Add Part</span></button>
+        </div>
+
         <Table hover>
             <thead>
                 <tr>
@@ -101,7 +112,6 @@ const PartTable = () => {
         
         <Pager totalItemCount={totalItemCount} pageSize={TableSettings.PageSize} currentPage={currentPage} onPageClick={handleOnPageClick} />
         
-        <Button variant="primary" onClick={handleOnAddPart}>Add Part</Button>
     </div>
     )
 }
