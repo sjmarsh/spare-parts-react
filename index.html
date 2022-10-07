@@ -5,10 +5,23 @@
     <link rel="icon" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Web site created using create-react-app"
-    />
+    <meta name="description" content="Web site created using create-react-app then migrated to Vite" />
+    <!--Content Security Policy.
+      Note: style-src is using 'unsafe-inline' to support the PDF viewer for chrome -->
+    <meta http-equiv="Content-Security-Policy" content="
+    base-uri 'self'; 
+    object-src 'none'; 
+    default-src 'self'; 
+    script-src 'unsafe-eval' 'self'; 
+    script-src-elem 'self'; 
+    style-src 'self' 'unsafe-inline'; 
+    style-src-elem 'self' 'sha256-yJ6oZiTdvMSICeAesZJ2cuwBma9FwmAXqXnW7d4i3NY=' 'sha256-pv0ToSVU8JjLzNQm0cuPdPXmHUTNUyiWPCdPk4hNmWg=' 'sha256-VSE4dmx5ECtIWfEEZSTwzFvZAQur+iLJEris+vcwEp0=' 'sha256-7ZWbZUAi97rkirk4DcEp4GWDPkWpRMcNaEyXGsNXjLg=' 'sha256-xt2TSE0qWUoy+WwIhxcC6h1wmoYT2lsQ/szpmrXD+1I=' 'sha256-Htcrr0ntdv5TYVUW8YJk8vgzT+4ucu4ScrXO3lhnm7k='; 
+    connect-src 'self' ws: wss: https://localhost:7104/; 
+    frame-src 'self' blob: data:; 
+    img-src 'self' data: https:; 
+    form-action 'none'; 
+    block-all-mixed-content; 
+    upgrade-insecure-requests;"/>
     <link rel="apple-touch-icon" href="/logo192.png" />
     <!--
       manifest.json provides metadata used when your web app is installed on a

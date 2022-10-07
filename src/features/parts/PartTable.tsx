@@ -78,7 +78,7 @@ const PartTable = () => {
        
         <div className='tool-container'>
             <button className="btn btn-outline-dark tool-button" onClick={handleFetchReport}><span className="oi oi-print tool-button-image" title="Report" aria-hidden="true"/><span>Report</span></button>
-            <button className="btn btn-outline-dark tool-button" onClick={handleOnAddPart}><span class="oi oi-plus tool-button-image" title="Add Part" aria-hidden="true"/><span>Add Part</span></button>
+            <button className="btn btn-outline-dark tool-button" onClick={handleOnAddPart}><span className="oi oi-plus tool-button-image" title="Add Part" aria-hidden="true"/><span>Add Part</span></button>
         </div>
 
         <Table hover>
