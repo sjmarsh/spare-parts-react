@@ -1,4 +1,5 @@
-import { render, fireEvent, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { test, expect } from 'vitest';
 
 import Pager from '../Pager';
@@ -43,7 +44,8 @@ test('should set current page from props to active', async () => {
 });
 
 test('should fire page click event', async () => {
-    
+    const user = userEvent.setup();
+
     let page = 0;
     const handlePageClick = (pageNumber: number) => {
         page = pageNumber;
@@ -56,12 +58,14 @@ test('should fire page click event', async () => {
     const page2 = screen.getAllByText('2')[0];
     expect(page2).toHaveClass('page-link');
     
-    fireEvent.click(page2);
+    await user.click(page2);
     
     expect(page).toBe(2);
 });
 
 test('should set page to active when clicked', async () => {
+
+    const user = userEvent.setup();
         
     const handlePageClick = (pageNumber: number) => {
         // do nothing
@@ -76,7 +80,7 @@ test('should set page to active when clicked', async () => {
     expect(page2).toHaveClass('page-link');
     expect(pager.childNodes[2].textContent).toBe('2');
 
-    fireEvent.click(page2);
+    await user.click(page2);
         
     expect(pager.childNodes[2].textContent).toBe('2(current)');
 });

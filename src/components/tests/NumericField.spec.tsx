@@ -47,7 +47,7 @@ test('renders numeric field with modified', async () => {
     let input = await screen.findByRole('textbox', {name: 'testName'});
         
     fireEvent.blur(input);
-    fireEvent.change(input, {target: {value: 123}});
+    fireEvent.change(input, {target: {value: 123}});  // NOTE: Still using fireEvent here (instead of userEvent) due to issue where userEvent.type not picking up changed value for numeric input
  
     await waitFor(() => { expect(screen.getByText(/Test Name/i)).toBeInTheDocument(); });
     input = await screen.findByRole('textbox', {name: 'testName'});

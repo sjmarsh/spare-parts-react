@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Formik, Form } from 'formik';
 import { test, expect } from 'vitest';
@@ -54,9 +54,20 @@ test('renders password field', async() => {
 
 test('renders text field with modified', async () => {
     const formdata: TestObject = { testName: "" };
+    const user = userEvent.setup();
+        
     render(
-        <Formik initialValues={formdata} onSubmit={()=> {}}>
-            {(props) => {
+        <Formik 
+            initialValues={formdata} 
+            onSubmit={()=> {}} 
+            validate={(values) => {
+                let errors: any = {};
+                if(values?.testName == ""){
+                    errors.testName = "error";
+                }
+                return errors;
+            }}>
+            {(props) => {     
             return (
                 <Form>
                     <TextField name="testName" displayName = "Test Name" formProps={props}/>
@@ -66,15 +77,16 @@ test('renders text field with modified', async () => {
     );
     
     await waitFor(() => { expect(screen.getByText(/Test Name/i)).toBeInTheDocument(); });
-    
     let input = await screen.findByRole('textbox', {name: 'testName'});
         
-    fireEvent.blur(input);
-    fireEvent.change(input, {target: {value: "abc"}});
- 
-    await waitFor(() => { expect(screen.getByText(/Test Name/i)).toBeInTheDocument(); });
-        
-    input = await screen.findByRole('textbox', {name: 'testName'});
+    await user.type(input, "abcd");
+    
+    let updatedInput = await screen.findByLabelText('Test Name');
+    await user.tab();
+    await waitFor(() => {
+        expect(updatedInput.classList.contains('valid')).toBeTruthy();
+    });
+    
     expect(input.classList.contains('valid')).toBeTruthy();
     expect(input.classList.contains('modified')).toBeTruthy();
 });
@@ -111,12 +123,13 @@ test('renders text field with validation error', async () => {
     await user.type(input, invalidValue);
     
     let updatedInput = await screen.findByLabelText('Test Name');
+    await user.tab();
     await waitFor(() => {
         expect(updatedInput.classList.contains('invalid')).toBeTruthy();
     });
     
-    await user.tab();
-
+    expect(input.classList.contains('invalid')).toBeTruthy();
+    expect(input.classList.contains('modified')).toBeTruthy();
     const validationMessage = await screen.findByTestId('error-testName');
     expect(validationMessage.innerHTML).toBe(errorMessage); 
 });

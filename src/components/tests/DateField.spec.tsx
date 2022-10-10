@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, act, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Formik, Form } from 'formik';
 import { test, expect } from 'vitest';
@@ -33,8 +33,18 @@ test('renders date field', async() => {
 
 test('renders date field with modified', async () => {
     const formdata: TestObject = { testName: "" };
+    const user = userEvent.setup();
+
     render(
-        <Formik initialValues={formdata} onSubmit={()=> {}}>
+        <Formik initialValues={formdata} 
+                onSubmit={()=> {}}
+                validate={(values) => {
+                    let errors: any = {};
+                    if(values?.testName == "1990-01-01"){
+                        errors.testName = "error";
+                    }
+                    return errors;
+                }}>
             {(props) => {
             return (
                 <Form>
@@ -44,17 +54,19 @@ test('renders date field with modified', async () => {
         </Formik>
     );
     
+    
     await waitFor(() => { expect(screen.getByText(/Test Name/i)).toBeInTheDocument(); });
-
     let input = await screen.findByLabelText('Test Name');
-        
-    fireEvent.blur(input);
-    fireEvent.change(input, {target: {value: "2020-01-01"}});
- 
-    await waitFor(() => { expect(screen.getByText(/Test Name/i)).toBeInTheDocument(); });
-    input = await screen.findByLabelText('Test Name');
+  
+    await user.type(input, "01/01/2022");
+    await user.tab();
+
+    let updatedInput = await screen.findByLabelText('Test Name');
+    await waitFor(() => {
+        expect(updatedInput.classList.contains('valid')).toBeTruthy();
+    });
+    
     expect(input.classList.contains('valid')).toBeTruthy();
-    expect(input.classList.contains('modified')).toBeTruthy();
 });
 
 test('renders date field with validation error', async () => {
@@ -87,14 +99,14 @@ test('renders date field with validation error', async () => {
     let input = await screen.findByLabelText('Test Name');
   
     await user.type(input, invalidValue);
-    
+    await user.tab();
     let updatedInput = await screen.findByLabelText('Test Name');
     await waitFor(() => {
         expect(updatedInput.classList.contains('invalid')).toBeTruthy();
     });
-    
-    await user.tab();
-
+        
+    expect(input.classList.contains('valid')).toBeFalsy();
+    expect(input.classList.contains('modified')).toBeTruthy();
     const validationMessage = await screen.findByTestId('error-testName');
     expect(validationMessage.innerHTML).toBe(errorMessage); 
        
