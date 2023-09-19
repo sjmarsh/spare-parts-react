@@ -4,6 +4,7 @@ import { Formik, Form } from 'formik';
 
 import { Button, Modal, Spinner, Alert } from 'react-bootstrap';
 import TextField from '../../components/TextField';
+import SelectField from '../../components/SelectField';
 import NumericField from '../../components/NumericField';
 import DateField from '../../components/DateField';
 
@@ -14,6 +15,7 @@ import FetchStatus from '../../app/constants/fetchStatus';
 
 import { showDetail, createPart, updatePart } from './partDetailSlice';
 import { fetchParts } from './partListSlice';
+import PartCategory from './types/partCategory';
 
 const PartDetail = () => {
     
@@ -76,6 +78,7 @@ const PartDetail = () => {
                             <Form onSubmit={handleSubmit}>
                                 <TextField name="name" displayName="Name" formProps={props}/>
                                 <TextField name="description" displayName="Description" formProps={props}/>
+                                <SelectField name="category" displayName="Category" selectOptions={Object.keys(PartCategory)} formProps={props}/>
                                 <NumericField name="weight" displayName="Weight" formProps={props}/>
                                 <NumericField name="price" displayName="Price" formProps={props}/>
                                 <DateField name="startDate" displayName="Start Date" formProps={props}/>
