@@ -86,6 +86,7 @@ const PartTable = () => {
                 <tr>
                     <th>Name</th>
                     <th>Description</th>
+                    <th>Category</th>
                     <th>Weight</th>
                     <th>Price</th>
                     <th>Start Date</th>
@@ -99,6 +100,7 @@ const PartTable = () => {
                 <tr key={index}>
                     <td>{part.name}</td>
                     <td>{part.description}</td>
+                    <td>{part.category}</td>
                     <td>{Number(part.weight).toFixed(2)}</td>
                     <td>{new Intl.NumberFormat('en-AU', {style: 'currency', currency: 'AUD'}).format(part.price)}</td>
                     <td>{new Date(part.startDate).toLocaleDateString('en-au')}</td>
