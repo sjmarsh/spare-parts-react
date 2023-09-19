@@ -1,11 +1,13 @@
 import { test, expect } from 'vitest';
 
+import PartCategory from '../types/partCategory';
 import PartDetailSchema from '../partDetailSchema';
 
 const getTestPart = () => {
     return {
         name: "name",
         description: "description", 
+        category: PartCategory.Software,
         weight: 1.1,
         price: 2.2,
         startDate: '2020-12-31',
