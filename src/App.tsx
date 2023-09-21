@@ -8,6 +8,7 @@ import PartList from './features/parts/PartList';
 import PartReport from './features/parts/PartReport';
 import Inventory from './features/inventory/Inventory';
 import InventoryReport from './features/inventory/InventoryReport';
+import PartSearch from './features/search/PartSearch';
 import Counter from './features/counter/Counter';
 import AuthrorizedRoute from './components/authorization/AuthorizedRoute';
 import SideBar from './components/SideBar';
@@ -15,6 +16,7 @@ import SideBar from './components/SideBar';
 import UserRoles from './app/constants/userRoles';
 
 import './App.css';
+
 
 function App() {
     
@@ -35,6 +37,7 @@ function App() {
               <Route path="/part-report" element={ <AuthrorizedRoute roles={[UserRoles.Administrator]}><PartReport/></AuthrorizedRoute> } />
               <Route path="/inventory" element={ <AuthrorizedRoute roles={[UserRoles.Administrator, UserRoles.StocktakeUser]}><Inventory/></AuthrorizedRoute> } />
               <Route path="/inventory-report/:historyMode" element={ <AuthrorizedRoute roles={[UserRoles.Administrator, UserRoles.StocktakeUser]}><InventoryReport/></AuthrorizedRoute> } />
+              <Route path="/part-search" element={ <AuthrorizedRoute roles={[UserRoles.Administrator]}><PartSearch/></AuthrorizedRoute> } />
               <Route path="/counter" element={<Counter />} />
             </Routes>    
           </article>

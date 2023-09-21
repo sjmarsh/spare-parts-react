@@ -74,6 +74,14 @@ const SideBar = () => {
                 </Link>
               </div>
             </AuthorizedView>
+            <AuthorizedView roles={[UserRoles.Administrator]}>
+              <div className="nav-item-cust px-3">
+                <Link id="part-search" className={`nav-link-cust ${activeClass('part-search')}`} to="/part-search" onClick={updateActiveLink}>
+                  <span className="oi oi-magnifying-glass" aria-hidden="true"/>Part Search
+                </Link>
+              </div>
+            </AuthorizedView>
+
             <div className="nav-item-cust px-3">
               <Link id="counter" className={`nav-link-cust ${activeClass('counter')}`} to="/counter" onClick={updateActiveLink}>
               <span className="oi oi-spreadsheet" aria-hidden="true"/>Counter

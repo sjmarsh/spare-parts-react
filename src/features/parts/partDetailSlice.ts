@@ -29,7 +29,7 @@ const baseUrl = `${config.SERVER_URL}/api/part`;
 
 export const fetchPart = createAsyncThunk<PartResponse, number>('partDetail/fetchPart', async (partId: number) => {
     if(partId === 0) {
-        const emptyPart: Part = { id: 0, name: "", description: "", weight: 0, price: 0, startDate: "", endDate: null };
+        const emptyPart: Part = { id: 0, name: "", description: "", category: null, weight: 0, price: 0, startDate: "", endDate: null };
         return { value: emptyPart, hasError: false, error: null } as PartResponse;
     }
     const response = await client.get(`${baseUrl}/?id=${partId}`);

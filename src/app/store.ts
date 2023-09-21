@@ -3,6 +3,7 @@ import counterReducer from '../features/counter/counterSlice';
 import partsListReducer from '../features/parts/partListSlice';
 import partDetailReducer from '../features/parts/partDetailSlice';
 import partReportReducer from '../features/parts/partReportSlice';
+import partSearchReducer from '../features/search/partSearchSlice';
 import inventoryReducer from '../features/inventory/inventorySlice';
 import inventoryReportReducer from '../features/inventory/inventoryReportSlice';
 import loginReducer from '../features/login/loginSlice';
@@ -15,6 +16,7 @@ export const store = configureStore({
     partsList: partsListReducer,
     partDetail: partDetailReducer, 
     partReport: partReportReducer,
+    partSearch: partSearchReducer,
     inventory: inventoryReducer,
     inventoryReport: inventoryReportReducer,
     login: loginReducer
