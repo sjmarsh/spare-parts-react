@@ -1,8 +1,7 @@
 import React from "react";
 
 import Chip from './types/chip';
-
-import './ChipList.css';
+import styles from './ChipList.module.css';
 
 interface InputProps {
     chips: Array<Chip>;
@@ -14,10 +13,9 @@ interface InputProps {
 const ChipList = (props: InputProps) => {
 
     const getChipClass = (chip: Chip) : string => {
-        let chipClass = chip.color === null ? "chip chip-color-default" : `chip chip-color-${chip.color?.toLowerCase()}`;
-        if(!chip.isActive) {
-            chipClass = `${chipClass}-outlined`;
-        }
+
+        let outlined = chip.isActive ? '' : 'Outlined';
+        let chipClass = chip.color === null ? `${styles.chip} ${styles.chipColorDefault}` : `${styles.chip} ${styles[`chipColor${chip.color}${outlined}`]}`;
         return chipClass;
     }    
 
@@ -31,7 +29,7 @@ const ChipList = (props: InputProps) => {
     return (
         <div aria-label="Chip List">
             { props.chips.map((chip, index) => 
-                <span className={getChipClass(chip)} key={index}>{chip.name}<span className="chip-icon"><a onClick={(e) => handleToggleChip(chip)}><span className="oi oi-circle-x"></span></a></span></span>
+                <span className={getChipClass(chip)} key={index}>{chip.name}<span className={styles.chipIcon}><a onClick={(e) => handleToggleChip(chip)}><span className="oi oi-circle-x"></span></a></span></span>
             )}
         </div>
     )

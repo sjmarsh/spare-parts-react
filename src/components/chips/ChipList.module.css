@@ -18,7 +18,7 @@
     margin: 4px;
 }
 
-    .chip > .chip-content {
+    .chip > .chipContent {
         align-items: center;
         display: inline-flex;
         height: 100%;
@@ -26,92 +26,92 @@
         user-select: none;
     }
 
-.chip-size-medium {
+.chipSizeMedium {
     height: 32px;
     font-size: 14px;
     border-radius: 16px;
 }
 
-.chip-icon:hover {
+.chipIcon:hover {
     cursor: pointer;
 }
 
-.chip-icon > a {
+.chipIcon > a {
     margin-left: 6px;
 }
 
-.chip-color-default {
+.chipColorDefault {
     color: black;
     background-color: lightgray;
 }
 
-.chip-color-default-outlined {
+.chipColorDefaultOutlined {
     color: black;
     background-color: white;
     border: 1px solid black;
 }
 
-.chip-color-aliceblue {
+.chipColorAliceblue {
     color: cornflowerblue;
     background-color: aliceblue;
 }
 
-.chip-color-aliceblue-outlined {
+.chipColorAliceblueOutlined {
     color: cornflowerblue;
     background-color: white;
     border: 1px solid cornflowerblue;
 }
 
-.chip-color-honeydew {
+.chipColorHoneydew {
     color: darkgreen;
     background-color: honeydew;
 }
 
-.chip-color-honeydew-outlined {
+.chipColorHoneydewOutlined {
     color: darkgreen;
     background-color: white;
     border: 1px solid darkgreen;
 }
 
-.chip-color-lavender {
+.chipColorLavender {
     color: rebeccapurple;
     background-color: lavender;
 }
 
-.chip-color-lavender-outlined {
+.chipColorLavenderOutlined {
     color: rebeccapurple;
     background-color: white;
     border: 1px solid rebeccapurple;
 }
 
-.chip-color-lavenderblush {
+.chipColorLavenderblush {
     color: maroon;
     background-color: lavenderblush;
 }
 
-.chip-color-lavenderblush-outlined {
+.chipColorLavenderblushOutlined {
     color: maroon;
     background-color: white;
     border: 1px solid maroon;
 }
 
-.chip-color-powderblue {
+.chipColorPowderblue {
     color: navy;
     background-color: powderblue;
 }
 
-.chip-color-powderblue-outlined {
+.chipColorPowderblueOutlined {
     color: navy;
     background-color: white;
     border: 1px solid navy;
 }
 
-.chip-color-thistle {
+.chipColorThistle {
     color: maroon;
     background-color: thistle;
 }
 
-.chip-color-thistle-outlined {
+.chipColorThistleOutlined {
     color: maroon;
     background-color: white;
     border: 1px solid maroon;
