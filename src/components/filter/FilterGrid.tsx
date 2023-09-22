@@ -7,8 +7,10 @@ import ChipColor from "../chips/types/chipColor";
 import ChipList from '../chips/ChipList';
 import FilterGridState from "./types/filterGridState";
 import FilterField from "./types/filterField";
+import FilterLine from "./types/filterLine";
 import { randomInt } from "../../app/helpers/randomHelper";
 import { updateArrayItem } from "../../app/helpers/arrayHelper";
+import FilterSelector from "./FilterSelector";
 
 interface InputProps {
     filterGridState : FilterGridState
@@ -95,6 +97,10 @@ const FilterGrid = (props: InputProps) => {
         }
     }
 
+    const handleFilterLineChanged = (filterLine: FilterLine) => {
+        console.log('filterline changed');
+        console.log(filterLine);
+    }
 
     return(
         <div>
@@ -113,7 +119,12 @@ const FilterGrid = (props: InputProps) => {
                     props.filterGridState.filterLines && props.filterGridState.filterFields &&
                     <details open={isFilterEntryVisible} onToggle={e => handleFilterEntryToggle()}>
                         <summary>Filters</summary>
-                        <p>Filter selector placeholder</p>
+                        { 
+                            props.filterGridState.filterLines.map((line, index) => (
+                                <FilterSelector key={index} fields={props.filterGridState.filterFields} filterLine={line} onFilterLineChanged={filterLine => handleFilterLineChanged(filterLine)} />
+                            ))
+                        }
+
                     </details>
                 }
             </div>
