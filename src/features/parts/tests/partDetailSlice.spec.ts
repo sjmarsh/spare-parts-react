@@ -49,7 +49,7 @@ describe('partDetail reducer', () => {
             id: 0, 
             mode: DetailMode.Closed, 
             status: FetchStatus.Succeeded, 
-            value: { id: 0, name: "", description: "", weight: 0, price: 0, startDate: "", endDate: null }
+            value: { id: 0, name: "", description: "", category: null, weight: 0, price: 0, startDate: "", endDate: null }
         });
     })
 

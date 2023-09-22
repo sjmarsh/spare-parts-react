@@ -1,6 +1,7 @@
 import { Type } from "typescript";
+import WithId from "../../../app/types/withId";
 
-interface FilterField {
+interface FilterField extends WithId {
     id: string; // guid
     name: string;
     type: Type | any;

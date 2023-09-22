@@ -8,6 +8,7 @@ import Part from '../parts/types/Part';
 import PartCategory from '../parts/types/partCategory';
 
 import { getUUid } from '../../app/helpers/uuidHelper';
+import FieldChipColor from '../../components/filter/types/fieldChipColor';
 
 export interface PartSearchState {
     filterGridState: FilterGridState
@@ -28,7 +29,7 @@ const partInstance : Part = {
 const getFilterFields = () : Array<FilterField> => {
     const partKeys = Object.keys(partInstance);
     return partKeys.map((field) => { 
-        return { id: getUUid(), name: field, type: typeof (partInstance), isSelected: false };
+        return { id: getUUid(), name: field, type: typeof (partInstance), isSelected: true };
     });
 }
 
@@ -38,7 +39,8 @@ const initialState : PartSearchState = {
         filterLines: new Array<FilterLine>,
         currentResultPage: 1,
         isFieldsSelectionVisible: true,
-        isFiltersEntryVisible: true
+        isFiltersEntryVisible: true,
+        chipColors: new Array<FieldChipColor>
     }
 }
 
