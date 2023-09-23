@@ -5,7 +5,6 @@ import FilterGridState from '../../components/filter/types/filterGridState';
 import FilterField from '../../components/filter/types/filterField';
 import FilterLine from '../../components/filter/types/filterLine';
 import Part from '../parts/types/Part';
-import PartCategory from '../parts/types/partCategory';
 
 import { getUUid } from '../../app/helpers/uuidHelper';
 import FieldChipColor from '../../components/filter/types/fieldChipColor';

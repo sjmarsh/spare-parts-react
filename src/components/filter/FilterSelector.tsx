@@ -9,7 +9,8 @@ import { namedFilterOperators } from "./types/filterOperators";
 interface inputProps {
     fields: Array<FilterField>,
     filterLine: FilterLine,
-    onFilterLineChanged?: (filterLine: FilterLine) => void | null; 
+    onFilterLineChanged?: (filterLine: FilterLine) => void | null;
+    onRemoveFilter?: (filterLine: FilterLine) => void | null;
 }
 
 const FilterSelector = (props: inputProps) => {
@@ -35,7 +36,13 @@ const FilterSelector = (props: inputProps) => {
     }
 
     const handleValueChanged = (newValue: string) => {
-        setFilterLine({...filterLine, value: newValue})
+        setFilterLine({...filterLine, value: newValue});
+    }
+
+    const handleRemoveFilter = () => {
+        if(props.onRemoveFilter) {
+            props.onRemoveFilter(filterLine);
+        }
     }
 
     return(
@@ -66,6 +73,12 @@ const FilterSelector = (props: inputProps) => {
             <div className="col">
                 <div className="form-group my-2">
                     <input id="value" type="text" className="form-control valid" value={filterLine.value} onChange={v => handleValueChanged(v.target.value)} />
+                </div>
+            </div>
+
+            <div className="col">
+                <div className="form-group my-2">
+                    <a id="remove" onClick={handleRemoveFilter}><span className="oi oi-x"></span></a>
                 </div>
             </div>
 

@@ -10,7 +10,12 @@ import FilterField from "./types/filterField";
 import FilterLine from "./types/filterLine";
 import { randomInt } from "../../app/helpers/randomHelper";
 import { updateArrayItem } from "../../app/helpers/arrayHelper";
+import { FilterOperator } from '../../components/filter/types/filterOperators';
 import FilterSelector from "./FilterSelector";
+import IconButton from "../buttons/IconButton";
+import ButtonIcon from "../buttons/buttonIcon";
+
+import { getUUid } from '../../app/helpers/uuidHelper';
 
 interface InputProps {
     filterGridState : FilterGridState
@@ -23,6 +28,7 @@ const FilterGrid = (props: InputProps) => {
     
     const [isFieldsSelectionVisible, setIsFieldSelectionVisible] = useState(true);
     const [isFilterEntryVisible, setIsFilterEntryVisible] = useState(true);
+    const [filterLines, setFilterLines] = useState(props.filterGridState.filterLines);
 
     useEffect(() => {
         setIsFieldSelectionVisible(props.filterGridState.isFieldsSelectionVisible);
@@ -102,6 +108,22 @@ const FilterGrid = (props: InputProps) => {
         console.log(filterLine);
     }
 
+    const handleRemoveFilter = (filterLine: FilterLine) => {
+        setFilterLines(filterLines.filter(f => f.id !== filterLine.id));
+    }
+
+    const MAX_FILTER_LINE_COUNT = 5;
+    const addEmptyFilter = () => {
+       if(filterLines.length < MAX_FILTER_LINE_COUNT) {
+        const newLine = { id: getUUid(), selectedField: props.filterGridState.filterFields[0], selectedOperator: FilterOperator.Equal, value: '' } as FilterLine
+        setFilterLines([...filterLines, newLine])
+       }
+    }
+
+    const search = () => {
+
+    }
+
     return(
         <div>
             <p>Filter Grid</p>
@@ -116,15 +138,22 @@ const FilterGrid = (props: InputProps) => {
             
             <div className="mt-4">
                 {
-                    props.filterGridState.filterLines && props.filterGridState.filterFields &&
+                    filterLines && props.filterGridState.filterFields &&
                     <details open={isFilterEntryVisible} onToggle={e => handleFilterEntryToggle()}>
                         <summary>Filters</summary>
-                        { 
-                            props.filterGridState.filterLines.map((line, index) => (
-                                <FilterSelector key={index} fields={props.filterGridState.filterFields} filterLine={line} onFilterLineChanged={filterLine => handleFilterLineChanged(filterLine)} />
-                            ))
-                        }
-
+                        <div className="card">
+                            <div className="card-body">
+                            { 
+                                filterLines.map((line, index) => (
+                                    <FilterSelector key={index} fields={props.filterGridState.filterFields} filterLine={line} onFilterLineChanged={filterLine => handleFilterLineChanged(filterLine)} onRemoveFilter={filterLine => handleRemoveFilter(filterLine)} />
+                                ))
+                            }
+                            <div className="mt-2">
+                                <IconButton buttonTitle="Add Filter" buttonClassName="btn-outline-dark tool-button" onClick={addEmptyFilter} icon={ButtonIcon.Plus} iconClassName="tool-button-image" />
+                                <IconButton buttonTitle="Search" buttonClassName="btn-outline-dark tool-button" onClick={search} icon={ButtonIcon.MagnifyingGlass} iconClassName="tool-button-image" />
+                            </div>
+                            </div>
+                        </div>
                     </details>
                 }
             </div>
