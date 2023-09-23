@@ -1,10 +1,10 @@
-import { Type } from "typescript";
 import WithId from "../../../app/types/withId";
+import FilterFieldType from "./filterFieldType";
 
 interface FilterField extends WithId {
     id: string; // guid
     name: string;
-    type: Type | any;
+    type: FilterFieldType;
     isSelected: boolean;
     parentFieldName?: string | null;
 }

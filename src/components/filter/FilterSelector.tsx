@@ -28,7 +28,8 @@ const FilterSelector = (props: inputProps) => {
         const selectedField = fields.find(f => f.id === fieldId);
         if(selectedField) {
             setFilterLine({...filterLine, selectedField: selectedField});
-        }        
+        }
+        console.log(selectedField?.type);
     }
 
     const handleOperatorChanged = (operator: string) => {
