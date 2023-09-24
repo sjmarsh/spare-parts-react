@@ -103,13 +103,25 @@ const FilterGrid = (props: InputProps) => {
         }
     }
 
-    const handleFilterLineChanged = (filterLine: FilterLine) => {
-        console.log('filterline changed');
-        console.log(filterLine);
+    const handleFilterLineChanged = (filterLine: FilterLine) => {        
+        if(filterLines.find(f => f.id == filterLine.id)) {
+            // update
+            const state = updateArrayItem<FilterLine>(filterLines, filterLine);
+            updateFilterGridState({ ... props.filterGridState, filterLines: state });
+            setFilterLines(state);
+        }
+        else {
+            // add
+            const state = [ ... filterLines, filterLine ];
+            updateFilterGridState({ ... props.filterGridState, filterLines: state });
+            setFilterLines(state);
+        }
     }
 
     const handleRemoveFilter = (filterLine: FilterLine) => {
-        setFilterLines(filterLines.filter(f => f.id !== filterLine.id));
+        const state = filterLines.filter(f => f.id !== filterLine.id);
+        updateFilterGridState({ ... props.filterGridState, filterLines: state });
+        setFilterLines(state);
     }
 
     const MAX_FILTER_LINE_COUNT = 5;

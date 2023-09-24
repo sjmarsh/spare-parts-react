@@ -1,10 +1,11 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 
 import humanizeString from "humanize-string";
 
 import FilterField from "./types/filterField";
 import FilterLine from "./types/filterLine";
-import { namedFilterOperators } from "./types/filterOperators";
+import { namedFilterOperators, namedFilterOperatorsForDatesAndNumbers, nameFilterOperatorsForStrings } from "./types/filterOperators";
+import FilterFieldType from "./types/filterFieldType";
 
 interface inputProps {
     fields: Array<FilterField>,
@@ -24,20 +25,44 @@ const FilterSelector = (props: inputProps) => {
     const [fields, setFields] = useState(getDefaultFields());
     const [operators, setOperators] = useState(namedFilterOperators());
    
+    useEffect(() => {
+        updateOperators(props.filterLine.selectedField);
+    }, [filterLine])
+
+    const updateOperators = (selectedField?: FilterField) => {
+        if(selectedField && selectedField.type === FilterFieldType.DateOrNumber) {
+            setOperators(namedFilterOperatorsForDatesAndNumbers());
+        }
+        else {
+            setOperators(nameFilterOperatorsForStrings());
+        }
+    }
+
     const handleFieldChanged = (fieldId: string) => {
         const selectedField = fields.find(f => f.id === fieldId);
         if(selectedField) {
-            setFilterLine({...filterLine, selectedField: selectedField});
-        }
-        console.log(selectedField?.type);
+            const state = {...filterLine, selectedField: selectedField};
+            setFilterLine(state);
+            if(props.onFilterLineChanged){
+                props.onFilterLineChanged(state);
+            }
+        }        
     }
 
     const handleOperatorChanged = (operator: string) => {
-        setFilterLine({...filterLine, selectedOperator: operator});
+        const state = {...filterLine, selectedOperator: operator};
+        if(props.onFilterLineChanged){
+            props.onFilterLineChanged(state);
+        }
+        setFilterLine(state);
     }
 
     const handleValueChanged = (newValue: string) => {
-        setFilterLine({...filterLine, value: newValue});
+        const state = {...filterLine, value: newValue};
+        if(props.onFilterLineChanged){
+            props.onFilterLineChanged(state);
+        }
+        setFilterLine(state);
     }
 
     const handleRemoveFilter = () => {
@@ -53,7 +78,7 @@ const FilterSelector = (props: inputProps) => {
             <div className="col">
                 
                 <div className="form-group my-2">
-                    <select id="field" className="form-select valid" value={filterLine.selectedField.id} onChange={f => handleFieldChanged(f.target.value)}>
+                    <select id={`field-${filterLine.id}`} className="form-select valid" value={filterLine.selectedField.id} onChange={f => handleFieldChanged(f.target.value)}>
                     {fields.map((field, index) => (
                         <option value={field.id} key={index}>{humanizeString(field.name)}</option>
                     ))}
@@ -63,7 +88,7 @@ const FilterSelector = (props: inputProps) => {
 
             <div className="col">
                 <div className="form-group my-2">
-                    <select id="operator" className="form-select valid" value={filterLine.selectedOperator} onChange={o => handleOperatorChanged(o.target.value)}>
+                    <select id={`operator-${filterLine.id}`} className="form-select valid" value={filterLine.selectedOperator} onChange={o => handleOperatorChanged(o.target.value)}>
                     {operators.map((op, index) => (
                         <option value={op.filterOperator} key={index}>{humanizeString(op.name)}</option>
                     ))}
@@ -73,13 +98,13 @@ const FilterSelector = (props: inputProps) => {
 
             <div className="col">
                 <div className="form-group my-2">
-                    <input id="value" type="text" className="form-control valid" value={filterLine.value} onChange={v => handleValueChanged(v.target.value)} />
+                    <input id={`value-${filterLine.id}`} type="text" className="form-control valid" value={filterLine.value} onChange={v => handleValueChanged(v.target.value)} />
                 </div>
             </div>
 
             <div className="col">
                 <div className="form-group my-2">
-                    <a id="remove" onClick={handleRemoveFilter}><span className="oi oi-x"></span></a>
+                    <a id={`remove-${filterLine.id}`} onClick={handleRemoveFilter}><span className="oi oi-x"></span></a>
                 </div>
             </div>
 
