@@ -2,24 +2,24 @@ import React, { useState, useEffect } from "react";
 
 import humanizeString from "humanize-string";
 
+import { buildGraphQLRequest } from "./graphQLRequestBuilder";
 import Chip from '../chips/types/chip';
 import ChipColor from "../chips/types/chipColor";
 import ChipList from '../chips/ChipList';
 import FilterGridState from "./types/filterGridState";
 import FilterField from "./types/filterField";
 import FilterLine from "./types/filterLine";
-import { randomInt } from "../../app/helpers/randomHelper";
-import { updateArrayItem } from "../../app/helpers/arrayHelper";
-import { FilterOperator } from '../../components/filter/types/filterOperators';
+import { FilterOperator } from './types/filterOperators';
 import FilterSelector from "./FilterSelector";
-import IconButton from "../buttons/IconButton";
-import ButtonIcon from "../buttons/buttonIcon";
-
-import { getUUid } from '../../app/helpers/uuidHelper';
-import PageOffset from "./types/pageOffset";
-import { buildGraphQLRequest } from "./graphQLRequestBuilder";
 import GraphQLRequest from "./types/graphQLRequest";
 import { PagedData } from "./types/pagedData";
+import PageOffset from "./types/pageOffset";
+
+import IconButton from "../buttons/IconButton";
+import ButtonIcon from "../buttons/buttonIcon";
+import { getUUid } from '../../app/helpers/uuidHelper';
+import { randomInt } from "../../app/helpers/randomHelper";
+import { updateArrayItem } from "../../app/helpers/arrayHelper";
 
 interface InputProps<T> {
     filterGridState : FilterGridState
@@ -33,6 +33,11 @@ const FilterGrid = <T,>(props: InputProps<T>) => {
     const [isFieldsSelectionVisible, setIsFieldSelectionVisible] = useState(true);
     const [isFilterEntryVisible, setIsFilterEntryVisible] = useState(true);
     const [filterLines, setFilterLines] = useState(props.filterGridState.filterLines);
+    const [filterResults, setFilterResults] = useState(Array<T>);
+    const [totalCount, setTotalCount] = useState(0);
+    const [numberOfPages, setNumberOfPages] = useState(0);
+    const [hasError, setHasError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     useEffect(() => {
         setIsFieldSelectionVisible(props.filterGridState.isFieldsSelectionVisible);
@@ -41,6 +46,9 @@ const FilterGrid = <T,>(props: InputProps<T>) => {
     useEffect(() => {
         setIsFilterEntryVisible(props.filterGridState.isFiltersEntryVisible);
     }, [props.filterGridState]);
+
+    const MAX_FILTER_LINE_COUNT = 5;
+    const PAGE_SIZE = 10;
 
     const updateFilterGridState = (filterGridState: FilterGridState) => {
         if(props.onFilterStateChanged){
@@ -127,8 +135,7 @@ const FilterGrid = <T,>(props: InputProps<T>) => {
         updateFilterGridState({ ... props.filterGridState, filterLines: state });
         setFilterLines(state);
     }
-
-    const MAX_FILTER_LINE_COUNT = 5;
+    
     const addEmptyFilter = () => {
        if(filterLines.length < MAX_FILTER_LINE_COUNT) {
         const newLine = { id: getUUid(), selectedField: props.filterGridState.filterFields[0], selectedOperator: FilterOperator.Equal, value: '' } as FilterLine
@@ -136,7 +143,14 @@ const FilterGrid = <T,>(props: InputProps<T>) => {
        }
     }
 
-    const PAGE_SIZE = 10;
+    const getNumberOfPages = (totalItemCount: number) => {
+        if(totalItemCount > PAGE_SIZE) {
+            var pageCount = totalItemCount / PAGE_SIZE;
+            return Math.ceil(pageCount);
+        }
+        return 0;
+    }
+    
     const search = () => {
         // TODO: validate filter lines
         const isValid = true;
@@ -147,9 +161,21 @@ const FilterGrid = <T,>(props: InputProps<T>) => {
             const serviceResult = props.serviceCall(graphQLRequest);
 
             // TODO: handle result
+            if(serviceResult && serviceResult.items && serviceResult.items.length > 0) {
+                setFilterResults(serviceResult.items);
+                setTotalCount(serviceResult.totalCount);
+                setNumberOfPages(getNumberOfPages(serviceResult.totalCount));
+                setHasError(false);
+                setErrorMessage("");
+            } else {
+                setHasError(true);
+                setErrorMessage("No results found.");
+            }
+        } else {
+            setHasError(true);
+            setErrorMessage("Filter selections are invalid.");
+            // TODO: expand on validation error.
         }
-        // TODO: show error message
-
     }
 
     return(
