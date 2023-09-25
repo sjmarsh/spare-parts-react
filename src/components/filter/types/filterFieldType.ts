@@ -1,6 +1,7 @@
 enum FilterFieldType {
     StringType = "StringType",
-    DateOrNumber = "DateOrNumber",
+    NumberType = "NumberType",
+    DateType = "DateType",
     EnumType = "EnumType",
     ArrayType = "ArrayType",
     ObjectType = "ObjectType"

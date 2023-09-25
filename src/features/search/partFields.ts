@@ -8,10 +8,10 @@ const partFields = () : Array<FilterField> => {
         { id: getUUid(), name: "name", type: FilterFieldType.StringType, isSelected: true },
         { id: getUUid(), name: "description", type: FilterFieldType.StringType, isSelected: true },
         { id: getUUid(), name: "category", type: FilterFieldType.EnumType, isSelected: true },
-        { id: getUUid(), name: "weight", type: FilterFieldType.DateOrNumber, isSelected: true },
-        { id: getUUid(), name: "price", type: FilterFieldType.DateOrNumber, isSelected: true },
-        { id: getUUid(), name: "startDate", type: FilterFieldType.DateOrNumber, isSelected: true },
-        { id: getUUid(), name: "endDate", type: FilterFieldType.DateOrNumber, isSelected: true }
+        { id: getUUid(), name: "weight", type: FilterFieldType.NumberType, isSelected: true },
+        { id: getUUid(), name: "price", type: FilterFieldType.NumberType, isSelected: true },
+        { id: getUUid(), name: "startDate", type: FilterFieldType.DateType, isSelected: true },
+        { id: getUUid(), name: "endDate", type: FilterFieldType.DateType, isSelected: true }
     );
 }
 

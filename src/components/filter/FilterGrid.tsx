@@ -16,15 +16,19 @@ import IconButton from "../buttons/IconButton";
 import ButtonIcon from "../buttons/buttonIcon";
 
 import { getUUid } from '../../app/helpers/uuidHelper';
+import PageOffset from "./types/pageOffset";
+import { buildGraphQLRequest } from "./graphQLRequestBuilder";
+import GraphQLRequest from "./types/graphQLRequest";
+import { PagedData } from "./types/pagedData";
 
-interface InputProps {
+interface InputProps<T> {
     filterGridState : FilterGridState
     onFilterStateChanged?: (filterGridState: FilterGridState) => void | null;
-    rootGraphQLField? : string | null;
-    // service call 
+    rootGraphQLField: string;
+    serviceCall?: (graphQLRequest: GraphQLRequest) => PagedData<T> | null;
 }
 
-const FilterGrid = (props: InputProps) => {
+const FilterGrid = <T,>(props: InputProps<T>) => {
     
     const [isFieldsSelectionVisible, setIsFieldSelectionVisible] = useState(true);
     const [isFilterEntryVisible, setIsFilterEntryVisible] = useState(true);
@@ -132,42 +136,53 @@ const FilterGrid = (props: InputProps) => {
        }
     }
 
+    const PAGE_SIZE = 10;
     const search = () => {
+        // TODO: validate filter lines
+        const isValid = true;
+        if(props.serviceCall && isValid){
+            const pageOffset = { skip: props.filterGridState.currentResultPage * PAGE_SIZE - PAGE_SIZE, take: PAGE_SIZE } as PageOffset;
+            const graphQLRequest = buildGraphQLRequest(filterLines, props.filterGridState.filterFields, props.rootGraphQLField, pageOffset);
+
+            const serviceResult = props.serviceCall(graphQLRequest);
+
+            // TODO: handle result
+        }
+        // TODO: show error message
 
     }
 
     return(
         <div>
-            <p>Filter Grid</p>
             <div>
-                { props.filterGridState.filterFields &&
-                    <details open={isFieldsSelectionVisible} onToggle={e => handleFieldSelectionToggle()}>
-                        <summary>Fields</summary>
-                        <ChipList chips={getChipFields()} onToggleChip={chip => handleToggleField(chip)} ></ChipList>
-                    </details>
-                }
+            { props.filterGridState.filterFields &&
+                <details open={isFieldsSelectionVisible} onToggle={e => handleFieldSelectionToggle()}>
+                    <summary>Fields</summary>
+                    <ChipList chips={getChipFields()} onToggleChip={chip => handleToggleField(chip)} ></ChipList>
+                </details>
+            }
             </div>
             
             <div className="mt-4">
-                {
-                    filterLines && props.filterGridState.filterFields &&
-                    <details open={isFilterEntryVisible} onToggle={e => handleFilterEntryToggle()}>
-                        <summary>Filters</summary>
-                        <div className="card">
-                            <div className="card-body">
-                            { 
-                                filterLines.map((line, index) => (
-                                    <FilterSelector key={index} fields={props.filterGridState.filterFields} filterLine={line} onFilterLineChanged={filterLine => handleFilterLineChanged(filterLine)} onRemoveFilter={filterLine => handleRemoveFilter(filterLine)} />
-                                ))
-                            }
-                            <div className="mt-2">
-                                <IconButton buttonTitle="Add Filter" buttonClassName="btn-outline-dark tool-button" onClick={addEmptyFilter} icon={ButtonIcon.Plus} iconClassName="tool-button-image" />
-                                <IconButton buttonTitle="Search" buttonClassName="btn-outline-dark tool-button" onClick={search} icon={ButtonIcon.MagnifyingGlass} iconClassName="tool-button-image" />
-                            </div>
-                            </div>
+            {
+                filterLines && props.filterGridState.filterFields &&
+                <details open={isFilterEntryVisible} onToggle={e => handleFilterEntryToggle()}>
+                    <summary>Filters</summary>
+                    <div className="card">
+                        <div className="card-body">
+                        { 
+                            filterLines.map((line, index) => (
+                                <FilterSelector key={index} fields={props.filterGridState.filterFields} filterLine={line} onFilterLineChanged={filterLine => handleFilterLineChanged(filterLine)} onRemoveFilter={filterLine => handleRemoveFilter(filterLine)} />
+                            ))
+                        }
+                        <div className="mt-2">
+                            <IconButton buttonTitle="Add Filter" buttonClassName="btn-outline-dark tool-button" onClick={addEmptyFilter} icon={ButtonIcon.Plus} iconClassName="tool-button-image" />
+                            <IconButton buttonTitle="Search" buttonClassName="btn-outline-dark tool-button" onClick={search} icon={ButtonIcon.MagnifyingGlass} iconClassName="tool-button-image" />
                         </div>
-                    </details>
-                }
+                        </div>
+                    </div>
+                </details>
+            }
             </div>
 
             <div className="alert alert-danger py-1">

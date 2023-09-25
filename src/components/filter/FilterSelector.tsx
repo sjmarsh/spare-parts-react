@@ -30,7 +30,7 @@ const FilterSelector = (props: inputProps) => {
     }, [filterLine])
 
     const updateOperators = (selectedField?: FilterField) => {
-        if(selectedField && selectedField.type === FilterFieldType.DateOrNumber) {
+        if(selectedField && (selectedField.type === FilterFieldType.NumberType || selectedField.type === FilterFieldType.DateType)) {
             setOperators(namedFilterOperatorsForDatesAndNumbers());
         }
         else {
