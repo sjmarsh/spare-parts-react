@@ -20,6 +20,59 @@ const camelize = (target: string) : string => {
         });
 }
 
+/** Attempts to convert value to date and return a locally formated string. Returns null if value is not a date.*/
+const getFormattedDate = (target: any | null) : string | null => {
+    if(!target){
+        return null;
+    }
+    
+    try {
+        if(!isNaN(Date.parse(target))) {
+            let date = new Date(target);
+            return date.toLocaleDateString('en-au');
+        }
+    } catch(e) {
+        console.log('not a date');
+        return null;
+    } 
+    return null;
+}
+
+const getFormattedNumber = (target: any | null) : string | null => {
+    if(!target){
+        return null;
+    }
+
+    if(!isNaN(parseFloat(target))){
+        try{
+            return Number(target).toFixed(2);
+        } catch(e) {
+            console.log('not a number');
+            return null;
+        }
+    }
+
+    return null;
+}
+
+const getFormattedValue = (target: any | null) : string => {
+    if(!target){
+        return "";
+    }
+    let date = getFormattedDate(target);
+    if(date) {
+        return date;
+    }
+    let number = getFormattedNumber(target);
+    if(number) {
+        return number;
+    }
+    return target;
+}
+
 export {
-    camelize
+    camelize,
+    getFormattedDate,
+    getFormattedNumber,
+    getFormattedValue
 }
