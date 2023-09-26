@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
 
-import humanizeString from "humanize-string";
-
 import { buildGraphQLRequest } from "./graphQLRequestBuilder";
 import Chip from '../chips/types/chip';
 import ChipColor from "../chips/types/chipColor";
 import ChipList from '../chips/ChipList';
+import ColumnHeader from "../datagrid/types/columnHeader";
 import FilterGridState from "./types/filterGridState";
 import FilterField from "./types/filterField";
 import FilterLine from "./types/filterLine";
@@ -14,12 +13,15 @@ import FilterSelector from "./FilterSelector";
 import GraphQLRequest from "./types/graphQLRequest";
 import { PagedData } from "./types/pagedData";
 import PageOffset from "./types/pageOffset";
+import SimpleDataGrid from "../datagrid/simpleDataGrid";
 
 import IconButton from "../buttons/IconButton";
 import ButtonIcon from "../buttons/buttonIcon";
 import { getUUid } from '../../app/helpers/uuidHelper';
 import { randomInt } from "../../app/helpers/randomHelper";
 import { updateArrayItem } from "../../app/helpers/arrayHelper";
+
+import humanizeString from "humanize-string";
 
 interface InputProps<T> {
     filterGridState : FilterGridState
@@ -151,6 +153,10 @@ const FilterGrid = <T,>(props: InputProps<T>) => {
         return 0;
     }
     
+    const getColumnList = () : Array<ColumnHeader> => {
+        return props.filterGridState.filterFields.filter(f => f.isSelected).map(f => { return { columnName: f.name, parentColumnName: f.parentFieldName} as ColumnHeader });
+    }
+
     const search = () => {
         // TODO: validate filter lines
         const isValid = true;
@@ -215,9 +221,13 @@ const FilterGrid = <T,>(props: InputProps<T>) => {
             <p>Error message placeholder</p>
             </div>
 
-            <div className="mt-6">
-                <p>results placeholder</p>
-            </div>
+            {
+                filterResults && filterResults.length > 0 &&
+                <div className="mt-6">
+                    <SimpleDataGrid<T> dataSource={filterResults} columnList={getColumnList()} />
+                </div>
+            }
+            
 
         </div>
     )
