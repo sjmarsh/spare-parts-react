@@ -8,6 +8,7 @@ import Spinner from 'react-bootstrap/Spinner';
 import Alert from 'react-bootstrap/Alert';
 import DetailMode from '../../app/constants/detailMode';
 import FetchStatus from '../../app/constants/fetchStatus';
+import RequestStatus from '../../app/constants/requestStatus';
 import TableSettings from '../../app/constants/tableSettings';
 import Pager from '../../components/Pager';
 
@@ -44,7 +45,7 @@ const PartTable = () => {
 
     const handleOnDeletePart = (partId: number) => {
         dispatch(deletePart(partId)).then((res) => {
-            if(res.meta.requestStatus === 'fulfilled') {
+            if(res.meta.requestStatus === RequestStatus.Fulfilled) {
                 dispatch(fetchParts(currentPage));
             };
         });

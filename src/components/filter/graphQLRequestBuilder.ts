@@ -54,10 +54,9 @@ const buildQueryFilterComponents = (filterLines: Array<FilterLine>, filter: stri
 }
 
 const buildQueryFilter = (filterLines: Array<FilterLine>) => {
-    let filter = "";
+    let filter = "";    
     if(filterLines && filterLines.length > 0) {
-        filter = buildQueryFilterComponents(filterLines.filter(f => f.selectedField.parentFieldName === null), filter, true);
-
+        filter = buildQueryFilterComponents(filterLines.filter(f => f.selectedField.parentFieldName === null || f.selectedField.parentFieldName === undefined), filter, true);
         const groupedChildFilterFields = groupByFunc(filterLines.filter(f => f.selectedField.parentFieldName), (filter) => filter.selectedField.parentFieldName ?? "");
         groupedChildFilterFields.forEach(grp => {
             const prefix = filter.length > 0 ? AND_FILTER_PREFIX : "";
@@ -115,7 +114,7 @@ const build = (filterLines: Array<FilterLine>, filterFields: Array<FilterField>,
 
     const sortOrder = `, order:[{${camelize(filterFields[0].name)}: ASC }]`;
     const filterPageOffset = (pageOffset) ? `, skip: ${pageOffset.skip}, take: ${pageOffset.take}` : "";
-    const pagingItemsStart = isPagingEnabled ? "items: {" : "";
+    const pagingItemsStart = isPagingEnabled ? "items {" : "";
     const pagingItemsEnd = isPagingEnabled ? `} 
     pageInfo {
         hasNextPage

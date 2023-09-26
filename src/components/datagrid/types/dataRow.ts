@@ -24,7 +24,7 @@ class DataRow<T> {
                     let value = "";
                     let entry = entries.find(e => e[0] == columnName);
                     if(entry) {
-                        value = String(entry[1]); // todo format
+                        value = entry[1] ? String(entry[1]) : ""; // todo format
                     }
                     myData?.set(columnName,value);
                 }

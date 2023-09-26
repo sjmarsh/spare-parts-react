@@ -27,7 +27,7 @@ interface InputProps<T> {
     filterGridState : FilterGridState
     onFilterStateChanged?: (filterGridState: FilterGridState) => void | null;
     rootGraphQLField: string;
-    serviceCall?: (graphQLRequest: GraphQLRequest) => PagedData<T> | null;
+    serviceCall?: (graphQLRequest: GraphQLRequest) => Promise<PagedData<T>> | null;
 }
 
 const FilterGrid = <T,>(props: InputProps<T>) => {
@@ -48,6 +48,12 @@ const FilterGrid = <T,>(props: InputProps<T>) => {
     useEffect(() => {
         setIsFilterEntryVisible(props.filterGridState.isFiltersEntryVisible);
     }, [props.filterGridState]);
+
+    useEffect(() => {
+        if(filterLines.length > 0) {
+            search();
+        }
+    },[filterLines]);
 
     const MAX_FILTER_LINE_COUNT = 5;
     const PAGE_SIZE = 10;
@@ -164,19 +170,24 @@ const FilterGrid = <T,>(props: InputProps<T>) => {
             const pageOffset = { skip: props.filterGridState.currentResultPage * PAGE_SIZE - PAGE_SIZE, take: PAGE_SIZE } as PageOffset;
             const graphQLRequest = buildGraphQLRequest(filterLines, props.filterGridState.filterFields, props.rootGraphQLField, pageOffset);
 
-            const serviceResult = props.serviceCall(graphQLRequest);
-
-            // TODO: handle result
-            if(serviceResult && serviceResult.items && serviceResult.items.length > 0) {
-                setFilterResults(serviceResult.items);
-                setTotalCount(serviceResult.totalCount);
-                setNumberOfPages(getNumberOfPages(serviceResult.totalCount));
-                setHasError(false);
-                setErrorMessage("");
-            } else {
+            props.serviceCall(graphQLRequest)?.then((serviceResult) => {
+                if(serviceResult && serviceResult.items && serviceResult.items.length > 0) {
+                    setFilterResults(serviceResult.items);
+                    setTotalCount(serviceResult.totalCount);
+                    setNumberOfPages(getNumberOfPages(serviceResult.totalCount));
+                    setHasError(false);
+                    setErrorMessage("");
+                } else {
+                    const error = serviceResult.error ?? "No results found";
+                    setHasError(true);
+                    setErrorMessage(error);
+                }
+            }).catch((e) => {
+                console.log(e);
                 setHasError(true);
                 setErrorMessage("No results found.");
-            }
+            });
+           
         } else {
             setHasError(true);
             setErrorMessage("Filter selections are invalid.");
@@ -217,10 +228,13 @@ const FilterGrid = <T,>(props: InputProps<T>) => {
             }
             </div>
 
-            <div className="alert alert-danger py-1">
-            <p>Error message placeholder</p>
-            </div>
-
+            {
+                hasError && 
+                <div className="alert alert-danger py-1">
+                    <p>{errorMessage}</p>
+                </div>
+            }
+            
             {
                 filterResults && filterResults.length > 0 &&
                 <div className="mt-6">

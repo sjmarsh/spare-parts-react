@@ -12,6 +12,7 @@ import Part from './types/Part';
 import PartDetailSchema from './partDetailSchema';
 import DetailMode from '../../app/constants/detailMode';
 import FetchStatus from '../../app/constants/fetchStatus';
+import RequestStatus from '../../app/constants/requestStatus';
 
 import { showDetail, createPart, updatePart } from './partDetailSlice';
 import { fetchParts } from './partListSlice';
@@ -34,14 +35,14 @@ const PartDetail = () => {
         if(detailMode === DetailMode.Add) {
             dispatch(createPart(part))
             .then((res) => {
-                if(res.meta.requestStatus === 'fulfilled') dispatch(fetchParts(currentPage));
+                if(res.meta.requestStatus === RequestStatus.Fulfilled) dispatch(fetchParts(currentPage));
             });    
         }
 
         if(detailMode === DetailMode.Edit) {
             dispatch(updatePart(part))
             .then((res) => {
-                if(res.meta.requestStatus === 'fulfilled') dispatch(fetchParts(currentPage));
+                if(res.meta.requestStatus === RequestStatus.Fulfilled) dispatch(fetchParts(currentPage));
             });
         }
         setHasSubmitted(true);
