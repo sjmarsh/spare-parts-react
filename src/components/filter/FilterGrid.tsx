@@ -24,10 +24,10 @@ import { updateArrayItem } from "../../app/helpers/arrayHelper";
 import humanizeString from "humanize-string";
 
 interface InputProps<T> {
-    filterGridState : FilterGridState
-    onFilterStateChanged?: (filterGridState: FilterGridState) => void | null;
+    filterGridState : FilterGridState<T>
+    onFilterStateChanged?: (filterGridState: FilterGridState<T>) => void | null;
     rootGraphQLField: string;
-    serviceCall?: (graphQLRequest: GraphQLRequest) => Promise<PagedData<T>> | null;
+    triggerServiceCall?: (graphQLRequest: GraphQLRequest) => void | null;
 }
 
 const FilterGrid = <T,>(props: InputProps<T>) => {
@@ -35,9 +35,6 @@ const FilterGrid = <T,>(props: InputProps<T>) => {
     const [isFieldsSelectionVisible, setIsFieldSelectionVisible] = useState(true);
     const [isFilterEntryVisible, setIsFilterEntryVisible] = useState(true);
     const [filterLines, setFilterLines] = useState(props.filterGridState.filterLines);
-    const [filterResults, setFilterResults] = useState(Array<T>);
-    const [totalCount, setTotalCount] = useState(0);
-    const [numberOfPages, setNumberOfPages] = useState(0);
     const [hasError, setHasError] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
 
@@ -49,18 +46,10 @@ const FilterGrid = <T,>(props: InputProps<T>) => {
         setIsFilterEntryVisible(props.filterGridState.isFiltersEntryVisible);
     }, [props.filterGridState]);
 
-    /*
-    useEffect(() => {
-        if(filterLines.length > 0) {
-            search();
-        }
-    },[filterLines]);
-*/
-
     const MAX_FILTER_LINE_COUNT = 5;
     const PAGE_SIZE = 10;
 
-    const updateFilterGridState = (filterGridState: FilterGridState) => {
+    const updateFilterGridState = (filterGridState: FilterGridState<T>) => {
         if(props.onFilterStateChanged){
             props.onFilterStateChanged(filterGridState);
         }
@@ -168,27 +157,10 @@ const FilterGrid = <T,>(props: InputProps<T>) => {
     const search = () => {
         // TODO: validate filter lines
         const isValid = true;
-        if(props.serviceCall && isValid){
+        if(props.triggerServiceCall && isValid){
             const pageOffset = { skip: props.filterGridState.currentResultPage * PAGE_SIZE - PAGE_SIZE, take: PAGE_SIZE } as PageOffset;
             const graphQLRequest = buildGraphQLRequest(filterLines, props.filterGridState.filterFields, props.rootGraphQLField, pageOffset);
-
-            props.serviceCall(graphQLRequest)?.then((serviceResult) => {
-                if(serviceResult && serviceResult.items && serviceResult.items.length > 0) {
-                    setFilterResults(serviceResult.items);
-                    setTotalCount(serviceResult.totalCount);
-                    setNumberOfPages(getNumberOfPages(serviceResult.totalCount));
-                    setHasError(false);
-                    setErrorMessage("");
-                } else {
-                    const error = serviceResult.error ?? "No results found";
-                    setHasError(true);
-                    setErrorMessage(error);
-                }
-            }).catch((e) => {
-                console.log(e);
-                setHasError(true);
-                setErrorMessage("No results found.");
-            });
+            props.triggerServiceCall(graphQLRequest);
            
         } else {
             setHasError(true);
@@ -238,9 +210,9 @@ const FilterGrid = <T,>(props: InputProps<T>) => {
             }
             
             {
-                filterResults && filterResults.length > 0 &&
+                props.filterGridState.filterResults && props.filterGridState.filterResults.items.length > 0 &&
                 <div className="mt-6">
-                    <SimpleDataGrid<T> dataSource={filterResults} columnList={getColumnList()} />
+                    <SimpleDataGrid<T> dataSource={props.filterGridState.filterResults.items} columnList={getColumnList()} />
                 </div>
             }
             

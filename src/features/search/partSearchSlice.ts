@@ -13,10 +13,10 @@ import { getUUid } from '../../app/helpers/uuidHelper';
 import GraphQLRequest from '../../components/filter/types/graphQLRequest';
 import { PartGraphQLResponsePaged, PartGraphQLResponsePagedItems } from './types/partGraphQLResponse';
 import FetchStatus from '../../app/constants/fetchStatus';
+import Part from '../parts/types/Part';
 
 export interface PartSearchState {
-    filterGridState: FilterGridState
-    searchResult?: PartGraphQLResponsePagedItems | null
+    filterGridState: FilterGridState<Part>
     status: FetchStatus
     error?: string | null
 }
@@ -28,7 +28,8 @@ const initialState : PartSearchState = {
         currentResultPage: 1,
         isFieldsSelectionVisible: true,
         isFiltersEntryVisible: true,
-        chipColors: new Array<FieldChipColor>
+        chipColors: new Array<FieldChipColor>,
+        filterResults: null
     },
     status: FetchStatus.Idle,
     error: null
@@ -47,7 +48,7 @@ export const partSearchSlice = createSlice({
     name: "partSearch",
     initialState,
     reducers: {
-        updateFilterGridState: (state, action: PayloadAction<FilterGridState>) => {
+        updateFilterGridState: (state, action: PayloadAction<FilterGridState<Part>>) => {
             state.filterGridState = { ... action.payload };
             return state;
         }
@@ -59,7 +60,9 @@ export const partSearchSlice = createSlice({
             })
             .addCase(partSearch.fulfilled, (state, action: PayloadAction<PartGraphQLResponsePaged>) => {
                 state.status = FetchStatus.Succeeded;
-                state.searchResult = action.payload.data?.parts
+                const filterGridState = { ... state.filterGridState };
+                filterGridState.filterResults = action.payload.data?.parts;
+                state.filterGridState = { ... filterGridState };
             })
             .addCase(partSearch.rejected, (state, action) => {
                 state.status = FetchStatus.Failed;
@@ -69,7 +72,6 @@ export const partSearchSlice = createSlice({
 })
 
 export const selectFilterGridState = (state: RootState) => state.partSearch.filterGridState;
-export const selectPartSearchResult = (state: RootState) => state.partSearch.searchResult;
 
 export const { updateFilterGridState } = partSearchSlice.actions;
 
