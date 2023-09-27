@@ -85,7 +85,8 @@ const FilterGrid = <T,>(props: InputProps<T>) => {
 
         const chipColors = Object.values(ChipColor);
         var color = chipColors[randomInt(chipColors.length)];
-        props.filterGridState.chipColors.push({fieldId: filterField.id, chipColor: color});
+        let state = [...props.filterGridState.chipColors, {fieldId: filterField.id, chipColor: color}];
+        updateFilterGridState({ ... props.filterGridState, chipColors: state });
         return color;
     }
 

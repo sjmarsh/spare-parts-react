@@ -1,3 +1,4 @@
+import PartAttribute from "./PartAttribute";
 import PartCategory from "./partCategory";
 
 interface Part {
@@ -9,6 +10,7 @@ interface Part {
     price: number;
     startDate: string;
     endDate?: string | null;
+    attributes?: Array<PartAttribute>;
 }
 
 export default Part;
