@@ -49,11 +49,13 @@ const FilterGrid = <T,>(props: InputProps<T>) => {
         setIsFilterEntryVisible(props.filterGridState.isFiltersEntryVisible);
     }, [props.filterGridState]);
 
+    /*
     useEffect(() => {
         if(filterLines.length > 0) {
             search();
         }
     },[filterLines]);
+*/
 
     const MAX_FILTER_LINE_COUNT = 5;
     const PAGE_SIZE = 10;

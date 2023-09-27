@@ -24,7 +24,7 @@ describe('camelize', () => {
     
 });
 
-describe('getFormattedDate_other', () => {
+describe('getFormattedDate', () => {
     
     it('should return null when input is null', () => {   
         const actualResult = getFormattedDate(null);
@@ -32,7 +32,7 @@ describe('getFormattedDate_other', () => {
     });
 
     it('should return null when input is invalid date string', () => {   
-        const actualResult = getFormattedDate("notADate");
+        const actualResult = getFormattedDate("notADate 12");
         expect(actualResult).toBeNull(); 
     });
 
@@ -78,8 +78,7 @@ describe('getFormattedNumber', () => {
         const actualResult = getFormattedNumber('1.225');
         expect(actualResult).toBe('1.23'); 
     });
-
-    // TODO - probalby don't want inteters to be formatted like floats.  Flesh this out a bit more.
+    
     it('should return formatted number when input is number', () => {   
         const actualResult = getFormattedNumber(1);
         expect(actualResult).toBe('1.00'); 
@@ -89,7 +88,7 @@ describe('getFormattedNumber', () => {
 describe('getFormattedValue', () => {
     const cases = [
         [null, ''],
-        ['string value', 'string value'],
+        ['string value 12', 'string value 12'],
         ['2020-02-02', '02/02/2020'],
         ['10.205', '10.21'],
     ]
@@ -97,5 +96,22 @@ describe('getFormattedValue', () => {
     test.each(cases)("it should convert %s to %s",(input, expectedResult) => {
         const actualResult = getFormattedValue(input);
         expect(actualResult).toBe(expectedResult);
+    })
+})
+
+describe('getFromattedValue_otherTypes', () => {
+    it('should return formatted number', () => {
+        const actualResult = getFormattedValue(20.239);
+        expect(actualResult).toBe('20.24');
+    })
+
+    it('should return stringified boolean', () => {
+        const actualResult = getFormattedValue(true);
+        expect(actualResult).toBe('true');
+    })
+
+    it('should return formatted date', () => {
+        const actualResult = getFormattedValue(new Date('2020-10-01'));
+        expect(actualResult).toBe('01/10/2020');
     })
 })

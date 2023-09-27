@@ -25,16 +25,19 @@ const getFormattedDate = (target: any | null) : string | null => {
     if(!target){
         return null;
     }
+
+    if(target instanceof Date) {
+        return target.toLocaleDateString('en-au');
+    }
     
-    try {
-        if(!isNaN(Date.parse(target))) {
-            let date = new Date(target);
-            return date.toLocaleDateString('en-au');
-        }
-    } catch(e) {
-        console.log('not a date');
-        return null;
-    } 
+    // expects yyyy/MM/dd or dd/MM/yyy or yyyy-MM-dd or dd-MM-yyyy (and variations of single or double digit days/months)
+    const dateFormatExp = /(\d{1,4})(\/|-)(\d{1,2})(\/|-)(\d{1,4})/;  
+    const targetStr = target.toString() as string;
+    if(dateFormatExp.test(targetStr)) {
+        const date = new Date(target);
+        return date.toLocaleDateString('en-au');    
+    }
+
     return null;
 }
 
@@ -59,6 +62,11 @@ const getFormattedValue = (target: any | null) : string => {
     if(!target){
         return "";
     }
+    
+    if(typeof target === 'boolean') {
+        return `${target}`;
+    }
+
     let date = getFormattedDate(target);
     if(date) {
         return date;
