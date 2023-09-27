@@ -11,7 +11,6 @@ import FilterLine from "./types/filterLine";
 import { FilterOperator } from './types/filterOperators';
 import FilterSelector from "./FilterSelector";
 import GraphQLRequest from "./types/graphQLRequest";
-import { PagedData } from "./types/pagedData";
 import PageOffset from "./types/pageOffset";
 import SimpleDataGrid from "../datagrid/simpleDataGrid";
 
@@ -132,7 +131,7 @@ const FilterGrid = <T,>(props: InputProps<T>) => {
     const handleRemoveFilter = (filterLine: FilterLine) => {
         const state = filterLines.filter(f => f.id !== filterLine.id);
         updateFilterGridState({ ... props.filterGridState, filterLines: state });
-        setFilterLines(state);
+        setFilterLines(state);     
     }
     
     const addEmptyFilter = () => {

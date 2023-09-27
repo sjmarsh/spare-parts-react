@@ -5,6 +5,7 @@ interface FilterField extends WithId {
     id: string; // guid
     name: string;
     type: FilterFieldType;
+    enumType? : object;
     isSelected: boolean;
     parentFieldName?: string | null;
 }

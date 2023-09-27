@@ -15,14 +15,9 @@ interface inputProps {
 }
 
 const FilterSelector = (props: inputProps) => {
-
-    const getDefaultFields = () : Array<FilterField> => {
-        return props.fields.map((field) => { 
-            return { id: field.id, name: field.name, type: field.type, isSelected: field.isSelected, parentFieldName: field.parentFieldName } as FilterField });
-    }
-
+    
     const [filterLine, setFilterLine] = useState(props.filterLine);
-    const [fields, setFields] = useState(getDefaultFields());
+    const [fields, setFields] = useState(props.fields);
     const [operators, setOperators] = useState(namedFilterOperators());
    
     useEffect(() => {
@@ -39,7 +34,7 @@ const FilterSelector = (props: inputProps) => {
     }
 
     const handleFieldChanged = (fieldId: string) => {
-        const selectedField = fields.find(f => f.id === fieldId);
+        const selectedField = fields.find(f => f.id === fieldId)
         if(selectedField) {
             const state = {...filterLine, selectedField: selectedField};
             setFilterLine(state);
@@ -71,6 +66,14 @@ const FilterSelector = (props: inputProps) => {
         }
     }
 
+    const getEnumItems = (enumType: object) : Array<string> => {
+        let items = new Array<string>();
+        for(const item in enumType){
+            items.push(item);
+        }
+        return items;
+    }
+
     return(
         props.fields && 
         <div className="row mt-2" >
@@ -98,7 +101,18 @@ const FilterSelector = (props: inputProps) => {
 
             <div className="col">
                 <div className="form-group my-2">
+                {  filterLine.selectedField.type === FilterFieldType.EnumType && filterLine.selectedField.enumType &&
+                    <select id={`value-${filterLine.id}`} className="form-select valid" value={filterLine.value} onChange={o => handleValueChanged(o.target.value)}>
+                    {
+                        getEnumItems(filterLine.selectedField.enumType).map((enumValue, index) => (
+                            <option value={enumValue} key={index}>{humanizeString(enumValue)}</option>    
+                        ))
+                    }
+                    </select>
+                }
+                {  filterLine.selectedField.type !== FilterFieldType.EnumType &&
                     <input id={`value-${filterLine.id}`} type="text" className="form-control valid" value={filterLine.value} onChange={v => handleValueChanged(v.target.value)} />
+                }
                 </div>
             </div>
 
