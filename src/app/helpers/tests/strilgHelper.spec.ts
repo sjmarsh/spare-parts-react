@@ -4,13 +4,17 @@ import { describe, it, expect } from 'vitest';
 describe('camelize', () => {
         
     const cases = [
+        ['t', 't'], 
         ['the', 'the'], 
         ['The', 'the'], 
         [' the', 'the'], 
-        ['the ', 'the'], 
+        ['the ', 'the'],
+        ['ABC', 'aBC'],  
+        ['theString', 'theString'],
         ['the string', 'theString'],
         ['The string', 'theString'],
         ['The String', 'theString'],
+        ['The String123', 'theString123'],
         ['THE STRING', 'theString'],
         ['THE_String', 'theString'],
         ['THE-String', 'theString'],

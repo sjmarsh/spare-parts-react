@@ -46,7 +46,7 @@ const buildQueryFilterComponents = (filterLines: Array<FilterLine>, filter: stri
         filterLines.forEach(filterLine => {
             filterComponent += `${AND_FILTER_PREFIX}${getFilterString(filterLine)}`;
         });
-        filterComponent = filterComponent.slice(0, AND_FILTER_PREFIX.length);
+        filterComponent = filterComponent.slice(AND_FILTER_PREFIX.length, filterComponent.length);
         filter += filterComponent;
     }
 

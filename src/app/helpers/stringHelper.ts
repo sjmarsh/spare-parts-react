@@ -1,23 +1,16 @@
-// ref: https://stackoverflow.com/questions/2970525/converting-any-string-into-camel-case?page=1&tab=scoredesc#tab-top
-const underscoreRegex = /(?:[^\w\s]|_)+/g,
-    sandwichNumberRegex = /(\d)\s+(?=\d)/g,
-    camelCaseRegex = /(?:^\s*\w|\b\w|\W+)/g;
-
 const camelize = (target: string) : string => {
-    if (/^\s*_[\s_]*$/g.test(target)) {
-        return '_';
+    const parts = target.split(/[\s-:_]/);  // split string on - : _ or space
+    if(parts.length === 1) {
+        return`${target.charAt(0).toLowerCase()}${target.slice(1, target.length)}`;    
     }
-
-    target = target.toLowerCase();
-
-    return target.replace(underscoreRegex, ' ')
-        .replace(sandwichNumberRegex, '$1_')
-        .replace(camelCaseRegex, function(match, index) {
-            if (/^\W+$/.test(match)) {
-                return '';
-            }
-            return index == 0 ? match.trimStart().toLowerCase() : match.toUpperCase();
-        });
+    const camelizedParts = parts.map(p => {
+        const part = p.toLowerCase();
+        const titlizedPart = part.length === 1 ? `${part.charAt(0).toUpperCase()}` : `${part.charAt(0).toUpperCase()}${part.slice(1, part.length)}`;
+        return titlizedPart;
+    });
+    const combinedParts = camelizedParts.join('');
+    const camelized = `${combinedParts.charAt(0).toLowerCase()}${combinedParts.slice(1, combinedParts.length)}`;
+    return camelized;
 }
 
 /** Attempts to convert value to date and return a locally formated string. Returns null if value is not a date.*/

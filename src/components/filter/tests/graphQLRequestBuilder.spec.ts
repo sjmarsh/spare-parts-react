@@ -1,0 +1,137 @@
+import { describe, it, expect } from 'vitest';
+
+import { buildGraphQLRequest } from '../graphQLRequestBuilder';
+import FilterField from '../types/filterField';
+import FilterFieldType from '../types/filterFieldType';
+import FilterLine from '../types/filterLine';
+import PageOffset from '../types/pageOffset';
+import { getUUid } from '../../../app/helpers/uuidHelper';
+import { FilterOperator, NamedFilterOperator } from '../types/filterOperators';
+
+describe('graphQLRequestBuilder', () => {
+    
+    it('should build graphQL request', () => {
+
+        const theFields = new Array<FilterField>(
+            { id: getUUid(), name: "field1", type: FilterFieldType.StringType, isSelected: true } as FilterField,
+            { id: getUUid(), name: "field2", type: FilterFieldType.NumberType, isSelected: true } as FilterField,
+            { id: getUUid(), name: "field3", type: FilterFieldType.DateType, isSelected: true } as FilterField
+        );
+
+        const theOperators = new Array<NamedFilterOperator>(
+            { name: "Equals", filterOperator: FilterOperator.Equal } as NamedFilterOperator,
+            { name: "Contains", filterOperator: FilterOperator.Contains } as NamedFilterOperator
+        );
+
+        const theValue = "The Value";
+
+        const filterLine1 = { selectedField: theFields[0], selectedOperator: theOperators[0].filterOperator, value: theValue } as FilterLine
+        const theFilterLines = new Array<FilterLine>(
+            filterLine1
+        );
+
+        const rootGraphQLField = "Things";
+
+        var result = buildGraphQLRequest(theFilterLines, theFields, rootGraphQLField);
+        
+        expect(result.query.length).toBeGreaterThan(0);
+        expect(result.query).toContain(`${rootGraphQLField} (where: {  field1: { eq: \"${theValue}\" }}`);
+        expect(result.query).toContain("field1\r\nfield2\r\nfield3");       
+    })
+
+    it('should build graphQL request with more than one filter', () => {
+
+        const theFields = new Array<FilterField>(
+            { id: getUUid(), name: "field1", type: FilterFieldType.StringType, isSelected: true } as FilterField,
+            { id: getUUid(), name: "field2", type: FilterFieldType.NumberType, isSelected: true } as FilterField,
+            { id: getUUid(), name: "field3", type: FilterFieldType.DateType, isSelected: true } as FilterField
+        );
+
+        const theOperators = new Array<NamedFilterOperator>(
+            { name: "Equals", filterOperator: FilterOperator.Equal } as NamedFilterOperator,
+            { name: "Contains", filterOperator: FilterOperator.Contains } as NamedFilterOperator
+        );
+
+        const theValue = "The Value";
+        const theOtherValue = "3";
+
+        const filterLine1 = { selectedField: theFields[0], selectedOperator: theOperators[0].filterOperator, value: theValue } as FilterLine
+        const filterLine2 = { selectedField: theFields[1], selectedOperator: theOperators[1].filterOperator, value: theOtherValue } as FilterLine
+        const theFilterLines = new Array<FilterLine>(
+            filterLine1,
+            filterLine2
+        );
+
+        const rootGraphQLField = "Things";
+
+        var result = buildGraphQLRequest(theFilterLines, theFields, rootGraphQLField);
+
+        expect(result.query.length).toBeGreaterThan(0);
+        expect(result.query).toContain(`${rootGraphQLField} (where: {  field1: { eq: \"${theValue}\" `);
+        expect(result.query).toContain("and: { field2: { contains: 3");
+        expect(result.query).toContain("field1\r\nfield2\r\nfield3");       
+    })
+
+    it('should build graphQL request for selected fields', () => {
+
+        const theFields = new Array<FilterField>(
+            { id: getUUid(), name: "field1", type: FilterFieldType.StringType, isSelected: true } as FilterField,
+            { id: getUUid(), name: "field2", type: FilterFieldType.NumberType, isSelected: false } as FilterField, // not selected
+            { id: getUUid(), name: "field3", type: FilterFieldType.DateType, isSelected: false } as FilterField // not selected
+        );
+
+        const theOperators = new Array<NamedFilterOperator>(
+            { name: "Equals", filterOperator: FilterOperator.Equal } as NamedFilterOperator,
+            { name: "Contains", filterOperator: FilterOperator.Contains } as NamedFilterOperator
+        );
+
+        const theValue = "The Value";
+
+        const filterLine1 = { selectedField: theFields[0], selectedOperator: theOperators[0].filterOperator, value: theValue } as FilterLine
+        const theFilterLines = new Array<FilterLine>(
+            filterLine1
+        );
+
+        const rootGraphQLField = "Things";
+
+        var result = buildGraphQLRequest(theFilterLines, theFields, rootGraphQLField);
+        
+        expect(result.query.length).toBeGreaterThan(0);
+        expect(result.query).toContain(`${rootGraphQLField} (where: {  field1: { eq: \"${theValue}\" }}`);
+        expect(result.query).toContain("field1\r\n");
+        expect(result.query).not.toContain("field2");
+        expect(result.query).not.toContain("field3");
+    })
+
+    it('should build graphQL request with page offset', () => {
+
+        const theFields = new Array<FilterField>(
+            { id: getUUid(), name: "field1", type: FilterFieldType.StringType, isSelected: true } as FilterField,
+            { id: getUUid(), name: "field2", type: FilterFieldType.NumberType, isSelected: true } as FilterField,
+            { id: getUUid(), name: "field3", type: FilterFieldType.DateType, isSelected: true } as FilterField
+        );
+
+        const theOperators = new Array<NamedFilterOperator>(
+            { name: "Equals", filterOperator: FilterOperator.Equal } as NamedFilterOperator,
+            { name: "Contains", filterOperator: FilterOperator.Contains } as NamedFilterOperator
+        );
+
+        const theValue = "The Value";
+
+        const filterLine1 = { selectedField: theFields[0], selectedOperator: theOperators[0].filterOperator, value: theValue } as FilterLine
+        const theFilterLines = new Array<FilterLine>(
+            filterLine1
+        );
+
+        const rootGraphQLField = "Things";
+
+        const pageOffset = { skip: 1, take: 5 } as PageOffset
+
+        var result = buildGraphQLRequest(theFilterLines, theFields, rootGraphQLField, pageOffset);
+       
+        expect(result.query.length).toBeGreaterThan(0);
+        expect(result.query).toContain(`${rootGraphQLField} (where: {  field1: { eq: \"${theValue}\" }}`);
+        expect(result.query).toContain(`, skip: ${pageOffset.skip}, take: ${pageOffset.take}`);
+    })
+
+})
