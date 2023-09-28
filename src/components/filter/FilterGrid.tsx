@@ -9,6 +9,7 @@ import FieldChipColor from "./types/fieldChipColor";
 import FilterGridState from "./types/filterGridState";
 import FilterField from "./types/filterField";
 import FilterLine from "./types/filterLine";
+import FilterLineSchema from "./types/filterLineSchema";
 import { FilterOperator } from './types/filterOperators';
 import FilterSelector from "./FilterSelector";
 import GraphQLRequest from "./types/graphQLRequest";
@@ -18,10 +19,10 @@ import SimpleDataGrid from "../datagrid/simpleDataGrid";
 import IconButton from "../buttons/IconButton";
 import ButtonIcon from "../buttons/buttonIcon";
 import { getUUid } from '../../app/helpers/uuidHelper';
+import humanizeString from "humanize-string";
 import { randomInt } from "../../app/helpers/randomHelper";
 import { updateArrayItem } from "../../app/helpers/arrayHelper";
-
-import humanizeString from "humanize-string";
+import { ValidationError } from "yup";
 
 interface InputProps<T> {
     filterGridState : FilterGridState<T>
@@ -155,8 +156,23 @@ const FilterGrid = <T,>(props: InputProps<T>) => {
     }
 
     const search = () => {
-        // TODO: validate filter lines
-        const isValid = true;
+        setHasError(false);
+        setErrorMessage("");                
+        let validationErrors = "";
+        filterLines.forEach(f => {
+            try {
+                FilterLineSchema.validateSync(f);
+            } catch (e: any) {
+                const validationError = e as ValidationError;
+                if(validationError) {
+                    validationErrors += validationError.message + '. ';
+                } else {
+                    console.log(`Unknown validation error: ${e}`);
+                }
+            }
+        })
+        const isValid = validationErrors.length === 0;
+        
         if(props.triggerServiceCall && isValid){
             const pageOffset = { skip: props.filterGridState.currentResultPage * PAGE_SIZE - PAGE_SIZE, take: PAGE_SIZE } as PageOffset;
             const graphQLRequest = buildGraphQLRequest(filterLines, props.filterGridState.filterFields, props.rootGraphQLField, pageOffset);
@@ -164,8 +180,7 @@ const FilterGrid = <T,>(props: InputProps<T>) => {
            
         } else {
             setHasError(true);
-            setErrorMessage("Filter selections are invalid.");
-            // TODO: expand on validation error.
+            setErrorMessage(`Filter selections are invalid. ${validationErrors}`);
         }
     }
 
@@ -204,8 +219,10 @@ const FilterGrid = <T,>(props: InputProps<T>) => {
 
             {
                 hasError && 
-                <div className="alert alert-danger py-1">
-                    <p>{errorMessage}</p>
+                <div className="mt-4">
+                    <div className="alert alert-danger py-1">
+                        <p>{errorMessage}</p>
+                    </div>
                 </div>
             }
             
