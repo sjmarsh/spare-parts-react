@@ -5,6 +5,7 @@ import Chip from '../chips/types/chip';
 import ChipColor from "../chips/types/chipColor";
 import ChipList from '../chips/ChipList';
 import ColumnHeader from "../datagrid/types/columnHeader";
+import FieldChipColor from "./types/fieldChipColor";
 import FilterGridState from "./types/filterGridState";
 import FilterField from "./types/filterField";
 import FilterLine from "./types/filterLine";
@@ -33,6 +34,7 @@ const FilterGrid = <T,>(props: InputProps<T>) => {
     
     const [isFieldsSelectionVisible, setIsFieldSelectionVisible] = useState(true);
     const [isFilterEntryVisible, setIsFilterEntryVisible] = useState(true);
+    const [chipColors, setChipColors] = useState(new Array<FieldChipColor>());
     const [filterLines, setFilterLines] = useState(props.filterGridState.filterLines);
     const [hasError, setHasError] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
@@ -78,21 +80,19 @@ const FilterGrid = <T,>(props: InputProps<T>) => {
         if(!filterField.parentFieldName) {
             return ChipColor.Default;
         }
-        const existingColor = props.filterGridState.chipColors.find(f => f.fieldId == filterField.id);
+        const existingColor = chipColors.find(f => f.parentName == filterField.parentFieldName);
         if(existingColor) {
             return existingColor.chipColor;
         }
-
-        const chipColors = Object.values(ChipColor);
-        var color = chipColors[randomInt(chipColors.length)];
-        let state = [...props.filterGridState.chipColors, {fieldId: filterField.id, chipColor: color}];
-        updateFilterGridState({ ... props.filterGridState, chipColors: state });
+        var colors = Object.values(ChipColor).filter(c => c !== ChipColor.Default);
+        var color = colors[randomInt(colors.length)];
+        setChipColors([... chipColors, { parentName: filterField.parentFieldName, chipColor: color}]);
         return color;
     }
 
     const getChipFields = () : Array<Chip> => {
         const chips = props.filterGridState.filterFields.map((f) => {
-            const chip : Chip = { id: f.id, name: humanizeString(f.name), isActive: f.isSelected, color: getChipColor(f) }
+            const chip : Chip = { id: f.id, name: humanizeString(f.name), tooltip: humanizeString(f.parentFieldName ?? ""), isActive: f.isSelected, color: getChipColor(f) }
             return chip;
         })
         return chips;

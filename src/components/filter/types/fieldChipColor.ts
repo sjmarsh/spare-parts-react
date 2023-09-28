@@ -1,7 +1,7 @@
 import ChipColor from "../../chips/types/chipColor";
 
 interface FieldChipColor {
-    fieldId: string,
+    parentName: string,
     chipColor: ChipColor
 }
 

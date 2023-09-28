@@ -13,10 +13,9 @@ interface InputProps {
 const ChipList = (props: InputProps) => {
 
     const getChipClass = (chip: Chip) : string => {
-
         let outlined = chip.isActive ? '' : 'Outlined';
-        let chipClass = chip.color === null ? `${styles.chip} ${styles.chipColorDefault}` : `${styles.chip} ${styles[`chipColor${chip.color}${outlined}`]}`;
-        return chipClass;
+        const chipColorClass = `chipColor${chip.color}${outlined}`;
+        return (chip.color === null || chip.color === undefined) ? `${styles.chip} ${styles.chipColorDefault}` : `${styles.chip} ${styles[chipColorClass]}`;
     }    
 
     const handleToggleChip = (chip: Chip) => {
@@ -29,7 +28,7 @@ const ChipList = (props: InputProps) => {
     return (
         <div aria-label="Chip List">
             { props.chips.map((chip, index) => 
-                <span className={getChipClass(chip)} key={index}>{chip.name}<span className={styles.chipIcon}><a onClick={(e) => handleToggleChip(chip)}><span className="oi oi-circle-x"></span></a></span></span>
+                <span className={getChipClass(chip)} key={index} title={chip.tooltip ?? ""}>{chip.name}<span className={styles.chipIcon}><a onClick={(e) => handleToggleChip(chip)}><span className="oi oi-circle-x"></span></a></span></span>
             )}
         </div>
     )

@@ -51,23 +51,23 @@
     border: 1px solid black;
 }
 
-.chipColorAliceblue {
+.chipColorAliceBlue {
     color: cornflowerblue;
     background-color: aliceblue;
 }
 
-.chipColorAliceblueOutlined {
+.chipColorAliceBlueOutlined {
     color: cornflowerblue;
     background-color: white;
     border: 1px solid cornflowerblue;
 }
 
-.chipColorHoneydew {
+.chipColorHoneyDew {
     color: darkgreen;
     background-color: honeydew;
 }
 
-.chipColorHoneydewOutlined {
+.chipColorHoneyDewOutlined {
     color: darkgreen;
     background-color: white;
     border: 1px solid darkgreen;
@@ -84,23 +84,34 @@
     border: 1px solid rebeccapurple;
 }
 
-.chipColorLavenderblush {
+.chipColorLavenderBlush {
     color: maroon;
     background-color: lavenderblush;
 }
 
-.chipColorLavenderblushOutlined {
+.chipColorLavenderBlushOutlined {
     color: maroon;
     background-color: white;
     border: 1px solid maroon;
 }
 
-.chipColorPowderblue {
+.chipColorLinen {
+    color: saddlebrown;
+    background-color: linen;
+}
+
+.chipColorLinenOutlined {
+    color: saddlebrown;
+    background-color: white;
+    border: 1px solid saddlebrown;
+}
+
+.chipColorPowderBlue {
     color: navy;
     background-color: powderblue;
 }
 
-.chipColorPowderblueOutlined {
+.chipColorPowderBlueOutlined {
     color: navy;
     background-color: white;
     border: 1px solid navy;
