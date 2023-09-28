@@ -17,6 +17,9 @@ import RequestStatus from '../../app/constants/requestStatus';
 import { showDetail, createPart, updatePart } from './partDetailSlice';
 import { fetchParts } from './partListSlice';
 import PartCategory from './types/partCategory';
+import IconButton from '../../components/buttons/IconButton';
+import ButtonIcon from '../../components/buttons/buttonIcon';
+import PartAttribute from './types/PartAttribute';
 
 const PartDetail = () => {
     
@@ -75,6 +78,11 @@ const PartDetail = () => {
                     >
                         {(props) => {
                             const { isSubmitting, handleSubmit } = props;
+                            const addAttribute = () => {
+                                // TODO - THIS IS NOT WORKING
+                                let newAttributes = [...props.values.attributes ?? [], {} as PartAttribute];
+                                props.values ={...props.values, attributes: newAttributes}
+                            };
                             return (
                             <Form onSubmit={handleSubmit}>
                                 <TextField name="name" displayName="Name" formProps={props}/>
@@ -84,6 +92,41 @@ const PartDetail = () => {
                                 <NumericField name="price" displayName="Price" formProps={props}/>
                                 <DateField name="startDate" displayName="Start Date" formProps={props}/>
                                 <DateField name="endDate" displayName="End Date" formProps={props}/>
+                                <div className="my-3">
+                                    <details>
+                                        <summary>Attributes</summary>
+                                        <div className="card card-body">
+                                        <IconButton buttonTitle='Add Attribute' icon={ButtonIcon.Plus} buttonClassName="btn-outline-dark tool-button w-50" iconClassName='tool-button-image' onClick={addAttribute}/>
+                                        {
+                                            selectedPart.attributes && selectedPart.attributes.length > 0 && 
+                                            <div>
+                                                <table>
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Name</th>
+                                                            <th>Description</th>
+                                                            <th>Value</th>
+                                                            <th></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {
+                                                            selectedPart.attributes.map((attribute, index) => (
+                                                                <tr key={index}>
+                                                                    <td><TextField name={`attributes[${index}].name`} displayName="Name" isLabelVisible={false} formProps={props}/></td>
+                                                                    <td><TextField name={`attributes[${index}].description`} displayName="Description" isLabelVisible={false} formProps={props}/></td>
+                                                                    <td><TextField name={`attributes[${index}].value`} displayName="Value" isLabelVisible={false} formProps={props}/></td>
+                                                                </tr>       
+                                                            ))
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        }
+                                        </div>
+                                    </details>
+
+                                </div>
                                 <div className='my-3'>
                                     <Button type="submit" disabled={isSubmitting}>Submit</Button>
                                 </div>
