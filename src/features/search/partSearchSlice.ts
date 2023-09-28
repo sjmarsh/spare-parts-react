@@ -14,6 +14,7 @@ import GraphQLRequest from '../../components/filter/types/graphQLRequest';
 import { PartGraphQLResponsePaged, PartGraphQLResponsePagedItems } from './types/partGraphQLResponse';
 import FetchStatus from '../../app/constants/fetchStatus';
 import Part from '../parts/types/Part';
+import { PageInfo, PagedData } from '../../components/filter/types/pagedData';
 
 export interface PartSearchState {
     filterGridState: FilterGridState<Part>
@@ -28,9 +29,8 @@ const initialState : PartSearchState = {
         currentResultPage: 1,
         isFieldsSelectionVisible: true,
         isFiltersEntryVisible: true,
-        chipColors: new Array<FieldChipColor>,
-        filterResults: null
-    },
+        filterResults: { items: new Array<Part>(), pageInfo: { hasNextPage: false } as PageInfo, totalCount: 0 } as PagedData<Part>
+    } as FilterGridState<Part>,
     status: FetchStatus.Idle,
     error: null
 }

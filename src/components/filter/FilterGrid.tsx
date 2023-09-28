@@ -14,6 +14,7 @@ import { FilterOperator } from './types/filterOperators';
 import FilterSelector from "./FilterSelector";
 import GraphQLRequest from "./types/graphQLRequest";
 import PageOffset from "./types/pageOffset";
+import Pager from "../Pager";
 import SimpleDataGrid from "../datagrid/simpleDataGrid";
 
 import IconButton from "../buttons/IconButton";
@@ -23,6 +24,8 @@ import humanizeString from "humanize-string";
 import { randomInt } from "../../app/helpers/randomHelper";
 import { updateArrayItem } from "../../app/helpers/arrayHelper";
 import { ValidationError } from "yup";
+
+
 
 interface InputProps<T> {
     filterGridState : FilterGridState<T>
@@ -37,6 +40,8 @@ const FilterGrid = <T,>(props: InputProps<T>) => {
     const [isFilterEntryVisible, setIsFilterEntryVisible] = useState(true);
     const [chipColors, setChipColors] = useState(new Array<FieldChipColor>());
     const [filterLines, setFilterLines] = useState(props.filterGridState.filterLines);
+    const [filterResults, setFilterResults] = useState(props.filterGridState.filterResults);
+    const [numberOfPages, setNumberOfPages] = useState(0);
     const [hasError, setHasError] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
 
@@ -48,13 +53,22 @@ const FilterGrid = <T,>(props: InputProps<T>) => {
         setIsFilterEntryVisible(props.filterGridState.isFiltersEntryVisible);
     }, [props.filterGridState]);
 
+    useEffect(() => {
+        setNumberOfPages(getNumberOfPages(props.filterGridState.filterResults?.totalCount ?? 0));
+    }, [props.filterGridState]);
+
+    useEffect(() => {
+        setFilterResults(props.filterGridState.filterResults);
+    }, [props.filterGridState])
+
+
     const MAX_FILTER_LINE_COUNT = 5;
     const PAGE_SIZE = 10;
 
     const updateFilterGridState = (filterGridState: FilterGridState<T>) => {
-        if(props.onFilterStateChanged){
-            props.onFilterStateChanged(filterGridState);
-        }
+        if(props.onFilterStateChanged) {
+            return props.onFilterStateChanged(filterGridState);
+        }        
     }
 
     let isStartUpFieldSelectionToggle = true;  // required to avoid infinite loop caused by delails element init behaviour
@@ -143,19 +157,7 @@ const FilterGrid = <T,>(props: InputProps<T>) => {
        }
     }
 
-    const getNumberOfPages = (totalItemCount: number) => {
-        if(totalItemCount > PAGE_SIZE) {
-            var pageCount = totalItemCount / PAGE_SIZE;
-            return Math.ceil(pageCount);
-        }
-        return 0;
-    }
-    
-    const getColumnList = () : Array<ColumnHeader> => {
-        return props.filterGridState.filterFields.filter(f => f.isSelected).map(f => { return { columnName: f.name, parentColumnName: f.parentFieldName} as ColumnHeader });
-    }
-
-    const search = () => {
+    const search = (currentPage?: number | null) => {
         setHasError(false);
         setErrorMessage("");                
         let validationErrors = "";
@@ -174,14 +176,31 @@ const FilterGrid = <T,>(props: InputProps<T>) => {
         const isValid = validationErrors.length === 0;
         
         if(props.triggerServiceCall && isValid){
-            const pageOffset = { skip: props.filterGridState.currentResultPage * PAGE_SIZE - PAGE_SIZE, take: PAGE_SIZE } as PageOffset;
+            const currentResultPage = currentPage ?? props.filterGridState.currentResultPage;
+            const pageOffset = { skip: currentResultPage * PAGE_SIZE - PAGE_SIZE, take: PAGE_SIZE } as PageOffset;
             const graphQLRequest = buildGraphQLRequest(filterLines, props.filterGridState.filterFields, props.rootGraphQLField, pageOffset);
             props.triggerServiceCall(graphQLRequest);
-           
         } else {
             setHasError(true);
             setErrorMessage(`Filter selections are invalid. ${validationErrors}`);
         }
+    }
+
+    const getNumberOfPages = (totalItemCount: number) => {
+        if(totalItemCount > PAGE_SIZE) {
+            var pageCount = totalItemCount / PAGE_SIZE;
+            return Math.ceil(pageCount);
+        }
+        return 0;
+    }
+
+    const handlePageClick = (pageNumber: number) => {
+        updateFilterGridState({ ... props.filterGridState, currentResultPage: pageNumber });
+        search(pageNumber);
+    }
+    
+    const getColumnList = () : Array<ColumnHeader> => {
+        return props.filterGridState.filterFields.filter(f => f.isSelected).map(f => { return { columnName: f.name, parentColumnName: f.parentFieldName} as ColumnHeader });
     }
 
     return(
@@ -227,9 +246,15 @@ const FilterGrid = <T,>(props: InputProps<T>) => {
             }
             
             {
-                props.filterGridState.filterResults && props.filterGridState.filterResults.items.length > 0 &&
+                filterResults && filterResults.items.length > 0 &&
                 <div className="mt-6">
-                    <SimpleDataGrid<T> dataSource={props.filterGridState.filterResults.items} columnList={getColumnList()} />
+                    <SimpleDataGrid<T> dataSource={filterResults.items} columnList={getColumnList()} />
+                </div>
+            }
+            {
+                filterResults && numberOfPages > 0 && 
+                <div>
+                    <Pager currentPage={props.filterGridState.currentResultPage} pageSize={PAGE_SIZE} totalItemCount={filterResults.totalCount} onPageClick={pageNumber => handlePageClick(pageNumber)}></Pager>
                 </div>
             }
             

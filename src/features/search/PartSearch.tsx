@@ -13,10 +13,8 @@ export default function PartSearch() {
 
     const filterGridState = useAppSelector(selectFilterGridState);
     
-    const handleOnFilterGridStateChanged = (filterGridState: FilterGridState<Part>) => {
-        if(filterGridState){
-            dispatch(updateFilterGridState(filterGridState));
-        }
+    const handleOnFilterGridStateChanged = (filterGridState: FilterGridState<Part>)  => {
+        dispatch(updateFilterGridState(filterGridState));        
     }
 
     const handleTriggerServiceCall = (graphQLRequest: GraphQLRequest) => {
