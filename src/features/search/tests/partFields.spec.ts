@@ -16,12 +16,20 @@ describe('partFields', () => {
         
         // extract the field names from the file contents
         const regex = /\w+(?=.*:)/g;
-        var expectedFields = [...partTsFileContent.matchAll(regex)].map(f => f[0]).filter(f => f !== "id");
+        var expectedFields = [...partTsFileContent.matchAll(regex)].map(f => f[0]).filter(f => f !== "id" && f !== "attributes");
         expect(expectedFields.length).toBe(7);
+
+        // read teh contents of the PartAttribute.ts file
+        const partAttributesTsFilePath = path.join(__dirname, '../../parts/types/PartAttribute.ts');
+        const partAttributesTsFileContent = fs.readFileSync(partAttributesTsFilePath, 'utf8');
+        expect(partAttributesTsFileContent.length).toBeGreaterThan(0);
+        var expectedAttributeFields = [...partAttributesTsFileContent.matchAll(regex)].map(f => f[0]).filter(f => f !== "id");
+        expect(expectedAttributeFields.length).toBe(3);
+        expectedFields = expectedFields.concat(expectedAttributeFields);
 
         // compare with the fields defined in partFields
         const actualFields = partFields().map(f => f.name);
-        expect(actualFields).toHaveLength(7);
+        expect(actualFields).toHaveLength(10);
         expect(actualFields).toEqual(expectedFields);
     })
 
