@@ -62,7 +62,8 @@ const buildQueryFilter = (filterLines: Array<FilterLine>) => {
             const prefix = filter.length > 0 ? AND_FILTER_PREFIX : "";
             let childFilter = ` ${prefix} ${camelize(grp.key)}: { some: { `;
             childFilter = buildQueryFilterComponents(grp.values, childFilter, false);
-            childFilter += "}";
+            childFilter += "}}";
+            filter += childFilter;
         });
         
         // build end braces
