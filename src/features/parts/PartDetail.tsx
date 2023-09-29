@@ -53,7 +53,7 @@ const PartDetail = () => {
 
     return (
         <div>
-            <Modal show={true} onHide={handleCloseModal}>
+            <Modal show={true} onHide={handleCloseModal} className='modal-lg'>
                 <Modal.Body>
                     <h3>{detailMode} Part</h3>
                     { detailStatus === FetchStatus.Loading && 
@@ -79,9 +79,14 @@ const PartDetail = () => {
                         {(props) => {
                             const { isSubmitting, handleSubmit } = props;
                             const addAttribute = () => {
-                                // TODO - THIS IS NOT WORKING
-                                let newAttributes = [...props.values.attributes ?? [], {} as PartAttribute];
-                                props.values ={...props.values, attributes: newAttributes}
+                                let stateValues = {...props.values};
+                                stateValues.attributes = [...stateValues.attributes ?? [], {} as PartAttribute]
+                                props.setValues(stateValues);
+                            };
+                            const deleteAttribute = (attribute: PartAttribute) => {
+                                let stateValues = {...props.values};
+                                stateValues.attributes = stateValues.attributes?.filter(a => a !== attribute);
+                                props.setValues(stateValues, true);
                             };
                             return (
                             <Form onSubmit={handleSubmit}>
@@ -96,9 +101,9 @@ const PartDetail = () => {
                                     <details>
                                         <summary>Attributes</summary>
                                         <div className="card card-body">
-                                        <IconButton buttonTitle='Add Attribute' icon={ButtonIcon.Plus} buttonClassName="btn-outline-dark tool-button w-50" iconClassName='tool-button-image' onClick={addAttribute}/>
+                                        <IconButton buttonTitle='Add Attribute' icon={ButtonIcon.Plus} buttonClassName="btn-outline-dark tool-button w-25" iconClassName='tool-button-image' onClick={addAttribute}/>
                                         {
-                                            selectedPart.attributes && selectedPart.attributes.length > 0 && 
+                                            props.values.attributes && props.values.attributes.length > 0 && 
                                             <div>
                                                 <table>
                                                     <thead>
@@ -111,11 +116,12 @@ const PartDetail = () => {
                                                     </thead>
                                                     <tbody>
                                                         {
-                                                            selectedPart.attributes.map((attribute, index) => (
+                                                            props.values.attributes.map((attribute, index) => (
                                                                 <tr key={index}>
                                                                     <td><TextField name={`attributes[${index}].name`} displayName="Name" isLabelVisible={false} formProps={props}/></td>
                                                                     <td><TextField name={`attributes[${index}].description`} displayName="Description" isLabelVisible={false} formProps={props}/></td>
                                                                     <td><TextField name={`attributes[${index}].value`} displayName="Value" isLabelVisible={false} formProps={props}/></td>
+                                                                    <td><Button id={`delete-${index}`} variant='link' onClick={() => deleteAttribute(attribute)} >Delete</Button></td>
                                                                 </tr>       
                                                             ))
                                                         }

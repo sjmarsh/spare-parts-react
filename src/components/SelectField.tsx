@@ -8,7 +8,7 @@ interface InputProps<T> {
     formProps: FormikProps<T>; 
 }
 
-const TextField = <T,>(props: InputProps<T>) => {
+const SelectField = <T,>(props: InputProps<T>) => {
     const { touched, errors, initialValues, values } = props.formProps;
     
     const isTouched: boolean = getIn(touched, props.name);
@@ -17,12 +17,12 @@ const TextField = <T,>(props: InputProps<T>) => {
     const currValue: string = getIn(values, props.name);
     const modifiedClass = isTouched && initValue !== currValue ? 'modified' : '';
     const errorClass = hasError ? 'invalid' : 'valid';
-  
+   
     const fieldClass = `form-control ${modifiedClass} ${errorClass}`;
-    
+
     const { setFieldValue } = useFormikContext(); 
-    const handleThis = (newValue: string) => {
-        console.log(newValue);
+    
+    const handleThis = (newValue: string | null) => {
         if(newValue === ''){
             setFieldValue(props.name, null);
         }
@@ -34,10 +34,11 @@ const TextField = <T,>(props: InputProps<T>) => {
     return (
         <div className='form-group  my-2'>
             <label htmlFor={props.name} aria-labelledby={props.name}>{props.displayName}</label>
+            
             <Field as="select" id={props.name} name={props.name} className={fieldClass} aria-label={props.name} 
-                onChange={(e: any) => handleThis(e.target.value)}>
-               {<option value={''}></option>}
-               { 
+                onChange={(e: any) => handleThis(e.target.value)} value={props.formProps.getFieldProps(props.name).value ?? ""}>
+                <option value={''}></option>
+                { 
                     props.selectOptions.map((key, index) => 
                     <option key={index}>{key}</option>
                )}
@@ -47,4 +48,4 @@ const TextField = <T,>(props: InputProps<T>) => {
     );
 };
 
-export default TextField;
+export default SelectField;

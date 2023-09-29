@@ -8,6 +8,7 @@ import PartResponse from './types/PartResponse';
 import ShowDetailPayload from './types/ShowDetailPayload';
 import DetailMode from '../../app/constants/detailMode';
 import FetchStatus from '../../app/constants/fetchStatus';
+import PartAttribute from './types/PartAttribute';
 
 export interface PartDetailState {
     id: number
@@ -19,7 +20,7 @@ export interface PartDetailState {
 
 const initialState : PartDetailState = {
     id: 0,
-    value: {} as Part,
+    value: { attributes: new Array<PartAttribute> } as Part,
     mode: DetailMode.Closed,
     status: FetchStatus.Idle,
     error: null

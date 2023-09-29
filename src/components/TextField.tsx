@@ -28,7 +28,7 @@ const TextField = <T,>(props: InputProps<T>) => {
                 (props.isLabelVisible === undefined || props.isLabelVisible === null || props.isLabelVisible === true) &&
                 <label htmlFor={props.name} aria-labelledby={props.name}>{props.displayName}</label>
             }
-            <Field type={fieldType} id={props.name} name={props.name} className={fieldClass} aria-label={props.name} />
+            <Field type={fieldType} id={props.name} name={props.name} className={fieldClass} aria-label={props.name} value={props.formProps.getFieldProps(props.name).value ?? ""} />
             <ErrorMessage name={props.name} component="div" className="validation-message" data-testid={'error-' + props.name} />
         </div>
     );
