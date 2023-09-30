@@ -60,7 +60,7 @@ const FilterGrid = <T,>(props: InputProps<T>) => {
 
     useEffect(() => {
         setFilterResults(props.filterGridState.filterResults);
-    }, [props.filterGridState])
+    }, [props.filterGridState.filterResults])
 
 
     const MAX_FILTER_LINE_COUNT = 5;
@@ -149,7 +149,7 @@ const FilterGrid = <T,>(props: InputProps<T>) => {
     const handleRemoveFilter = (filterLine: FilterLine) => {
         const state = filterLines.filter(f => f.id !== filterLine.id);
         updateFilterGridState({ ... props.filterGridState, filterLines: state });
-        setFilterLines(state);     
+        setFilterLines(state);
     }
     
     const addEmptyFilter = () => {
