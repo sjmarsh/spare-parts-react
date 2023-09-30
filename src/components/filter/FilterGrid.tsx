@@ -115,7 +115,7 @@ const FilterGrid = <T,>(props: InputProps<T>) => {
     
     const handleToggleField = (chip: Chip) => {
         if(chip) {
-            const isFilterSelected = props.filterGridState.filterLines.find(f => f.selectedField.id === chip.id);
+            const isFilterSelected = filterLines.find(f => f.selectedField.id === chip.id);
             if(!isFilterSelected) {  // don't toggle chip if the filter is in use
                 let itemToToggle = props.filterGridState.filterFields.find(f => f.id === chip.id);
                 if(itemToToggle) {

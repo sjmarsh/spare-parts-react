@@ -50,24 +50,23 @@ class DataRow<T> implements WithId {
     private getDetailRows = () : Array<DataRowDetail> | null => {
         let detailRows = new Array<DataRowDetail>;
         if(this.sourceItem && this.columnList) {
-            const keys = Object.keys(this.sourceItem);
-            keys.forEach(key => {
-                const columnName = key;
+            const props = Object.entries(this.sourceItem);
+            props.forEach(prop => {
+                const columnName = prop[0];
+                const columnValue = prop[1];
                 if(this.columnList.find(c => c.columnName === columnName && c.parentColumnName === undefined) === undefined) {
-                    detailRows.push(this.getRowDetails(this.sourceItem, columnName));                   
+                    detailRows.push(this.getRowDetails(this.sourceItem, columnName, columnValue));                   
                 }
             });
         }
         return detailRows;
     }
 
-    private getRowDetails = (sourceItem : T, columnName : string) : DataRowDetail => {
+    private getRowDetails = (sourceItem : T, columnName: string, columnValue: any) : DataRowDetail => {
         let detailData = new Array<Map<string, string>>();
         if(sourceItem){
-            const entries = Object.entries(sourceItem);
-            const entry = entries.find(e => e[0] == columnName);
-            if(entry) {
-                const arrayValue = entry[1] as Array<any>;
+            if(columnValue && Array.isArray(columnValue)) {
+                const arrayValue = columnValue as Array<any>;
                 if(arrayValue){
                     arrayValue.forEach(item => {
                         const itemRow = new Map<string, string>();
@@ -83,6 +82,7 @@ class DataRow<T> implements WithId {
                     });
                 }
             }
+            // TODO handle detail objects other than arrays
         }
              
         return { detailHeader: columnName, data: detailData } as DataRowDetail;
