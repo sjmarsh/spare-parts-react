@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import humanizeString from "humanize-string";
 
 import ButtonIcon from "../buttons/buttonIcon";
@@ -15,7 +15,12 @@ interface InputProps<T> {
 
 const SimpleDataGrid = <T,>(props: InputProps<T>) => {
 
-    const [dataRows, setDataRows] = useState(props.dataSource.map(d => new DataRow(d, props.columnList)));
+    const [dataRows, setDataRows] = useState(new Array<DataRow<T>>);
+    
+    useEffect(() => {
+        setDataRows(props.dataSource.map(d => new DataRow(d, props.columnList)));
+    },[props, props.dataSource, props.columnList]);
+
     
     const handleShowDetail = (row: DataRow<T>) => {
         row.isDetailsisible = !row.isDetailsisible;
@@ -24,7 +29,7 @@ const SimpleDataGrid = <T,>(props: InputProps<T>) => {
     }
 
     return(
-        props.dataSource !== null && <div>
+        dataRows !== null && dataRows.length > 0 && <div>
             <table className="table">
                 <thead>
                     <tr>

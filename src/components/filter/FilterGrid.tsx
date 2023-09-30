@@ -40,7 +40,8 @@ const FilterGrid = <T,>(props: InputProps<T>) => {
     const [isFilterEntryVisible, setIsFilterEntryVisible] = useState(true);
     const [chipColors, setChipColors] = useState(new Array<FieldChipColor>());
     const [filterLines, setFilterLines] = useState(props.filterGridState.filterLines);
-    const [filterResults, setFilterResults] = useState(props.filterGridState.filterResults);
+    const [filterResults, setFilterResults] = useState(props.filterGridState.filterResults)
+    const [filterFields, setFilterFields] = useState(props.filterGridState.filterFields);
     const [numberOfPages, setNumberOfPages] = useState(0);
     const [hasError, setHasError] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
@@ -106,7 +107,7 @@ const FilterGrid = <T,>(props: InputProps<T>) => {
     }
 
     const getChipFields = () : Array<Chip> => {
-        const chips = props.filterGridState.filterFields.map((f) => {
+        const chips = filterFields.map((f) => {
             const chip : Chip = { id: f.id, name: humanizeString(f.name), tooltip: humanizeString(f.parentFieldName ?? ""), isActive: f.isSelected, color: getChipColor(f) }
             return chip;
         })
@@ -117,13 +118,14 @@ const FilterGrid = <T,>(props: InputProps<T>) => {
         if(chip) {
             const isFilterSelected = filterLines.find(f => f.selectedField.id === chip.id);
             if(!isFilterSelected) {  // don't toggle chip if the filter is in use
-                let itemToToggle = props.filterGridState.filterFields.find(f => f.id === chip.id);
+                let itemToToggle = filterFields.find(f => f.id === chip.id);
                 if(itemToToggle) {
                     const itemToUpdate = { ... itemToToggle };
                     itemToUpdate.isSelected = !itemToToggle.isSelected;
                     let state = { ... props.filterGridState };
                     state.filterFields = updateArrayItem<FilterField>(state.filterFields, itemToUpdate);                    
                     updateFilterGridState(state);
+                    setFilterFields(state.filterFields);
                 }
             }
         }
@@ -152,7 +154,7 @@ const FilterGrid = <T,>(props: InputProps<T>) => {
     
     const addEmptyFilter = () => {
        if(filterLines.length < MAX_FILTER_LINE_COUNT) {
-        const newLine = { id: getUUid(), selectedField: props.filterGridState.filterFields[0], selectedOperator: FilterOperator.Equal, value: '' } as FilterLine
+        const newLine = { id: getUUid(), selectedField: filterFields[0], selectedOperator: FilterOperator.Equal, value: '' } as FilterLine
         setFilterLines([...filterLines, newLine])
        }
     }
@@ -178,7 +180,7 @@ const FilterGrid = <T,>(props: InputProps<T>) => {
         if(props.triggerServiceCall && isValid){
             const currentResultPage = currentPage ?? props.filterGridState.currentResultPage;
             const pageOffset = { skip: currentResultPage * PAGE_SIZE - PAGE_SIZE, take: PAGE_SIZE } as PageOffset;
-            const graphQLRequest = buildGraphQLRequest(filterLines, props.filterGridState.filterFields, props.rootGraphQLField, pageOffset);
+            const graphQLRequest = buildGraphQLRequest(filterLines, filterFields, props.rootGraphQLField, pageOffset);
             props.triggerServiceCall(graphQLRequest);
         } else {
             setHasError(true);
@@ -200,13 +202,13 @@ const FilterGrid = <T,>(props: InputProps<T>) => {
     }
     
     const getColumnList = () : Array<ColumnHeader> => {
-        return props.filterGridState.filterFields.filter(f => f.isSelected).map(f => { return { columnName: f.name, parentColumnName: f.parentFieldName} as ColumnHeader });
+        return filterFields.filter(f => f.isSelected).map(f => { return { columnName: f.name, parentColumnName: f.parentFieldName} as ColumnHeader });
     }
 
     return(
         <div>
             <div>
-            { props.filterGridState.filterFields &&
+            { filterFields &&
                 <details open={isFieldsSelectionVisible} onToggle={e => handleFieldSelectionToggle()}>
                     <summary>Fields</summary>
                     <ChipList chips={getChipFields()} onToggleChip={chip => handleToggleField(chip)} ></ChipList>
@@ -216,14 +218,14 @@ const FilterGrid = <T,>(props: InputProps<T>) => {
             
             <div className="mt-4">
             {
-                filterLines && props.filterGridState.filterFields &&
+                filterLines && filterFields &&
                 <details open={isFilterEntryVisible} onToggle={e => handleFilterEntryToggle()}>
                     <summary>Filters</summary>
                     <div className="card">
                         <div className="card-body">
                         { 
                             filterLines.map((line, index) => (
-                                <FilterSelector key={index} fields={props.filterGridState.filterFields} filterLine={line} onFilterLineChanged={filterLine => handleFilterLineChanged(filterLine)} onRemoveFilter={filterLine => handleRemoveFilter(filterLine)} />
+                                <FilterSelector key={index} fields={filterFields} filterLine={line} onFilterLineChanged={filterLine => handleFilterLineChanged(filterLine)} onRemoveFilter={filterLine => handleRemoveFilter(filterLine)} />
                             ))
                         }
                         <div className="mt-2">
