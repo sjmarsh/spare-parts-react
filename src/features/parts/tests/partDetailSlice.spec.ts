@@ -8,6 +8,7 @@ import { client } from '../../../api/client';
 import { describe, it, expect, afterEach, vi } from 'vitest';
 
 import Part from '../types/Part';
+import PartAttribute from '../types/PartAttribute';
 import DetailMode from '../../../app/constants/detailMode';
 import FetchStatus from '../../../app/constants/fetchStatus';
 
@@ -27,7 +28,7 @@ describe('partDetail reducer', () => {
     it('should handle initial state', () => {
         expect(partDetailReducer(undefined, { type: 'unknown' })).toEqual({
             id: 0,
-            value: {},
+            value: { attributes: new Array<PartAttribute> },
             mode: DetailMode.Closed,
             status: FetchStatus.Idle,
             error: null
@@ -79,7 +80,7 @@ describe('partDetail reducer', () => {
             id: 0, 
             mode: DetailMode.Closed, 
             status: FetchStatus.Failed, 
-            value: {}
+            value: { attributes: new Array<PartAttribute> }
         });
     });
 
