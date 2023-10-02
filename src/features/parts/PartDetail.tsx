@@ -84,9 +84,11 @@ const PartDetail = () => {
                                 props.setValues(stateValues);
                             };
                             const deleteAttribute = (attribute: PartAttribute) => {
-                                let stateValues = {...props.values};
-                                stateValues.attributes = stateValues.attributes?.filter(a => a !== attribute);
-                                props.setValues(stateValues, true);
+                                if(confirm("Are you sure you want to delete this attribute?")){
+                                    let stateValues = {...props.values};
+                                    stateValues.attributes = stateValues.attributes?.filter(a => a !== attribute);
+                                    props.setValues(stateValues, true);
+                                }
                             };
                             return (
                             <Form onSubmit={handleSubmit}>

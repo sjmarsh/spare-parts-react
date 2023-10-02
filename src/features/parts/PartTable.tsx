@@ -44,11 +44,14 @@ const PartTable = () => {
     }
 
     const handleOnDeletePart = (partId: number) => {
-        dispatch(deletePart(partId)).then((res) => {
-            if(res.meta.requestStatus === RequestStatus.Fulfilled) {
-                dispatch(fetchParts(currentPage));
-            };
-        });
+        if(window.confirm('Are you sure you want to delete this part?'))
+        {
+            dispatch(deletePart(partId)).then((res) => {
+                if(res.meta.requestStatus === RequestStatus.Fulfilled) {
+                    dispatch(fetchParts(currentPage));
+                };
+            });                
+        }
     }
 
     const handleFetchReport = () => {
