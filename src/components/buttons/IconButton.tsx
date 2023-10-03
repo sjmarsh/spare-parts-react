@@ -33,7 +33,7 @@ const IconButton = (props: InputProps) => {
     }
 
     return(
-        <button type={buttonType} className={`btn ${props.buttonClassName}`} onClick={e => handleClick()}>
+        <button type={buttonType} className={`btn ${props.buttonClassName}`} onClick={e => handleClick()} aria-label={props.buttonTitle}>
             <span className={`${props.icon} ${props.iconClassName}`} title={props.buttonTitle} aria-hidden="true"></span>
             { isTitleVisible &&
                 <span>{props.buttonTitle}</span>

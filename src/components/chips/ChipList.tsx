@@ -26,9 +26,9 @@ const ChipList = (props: InputProps) => {
     }
 
     return (
-        <div aria-label="Chip List">
+        <div aria-label="Chip List" role="listbox">
             { props.chips.map((chip, index) => 
-                <span className={getChipClass(chip)} key={index} title={chip.tooltip ?? ""}>{chip.name}<span className={styles.chipIcon}><a onClick={(e) => handleToggleChip(chip)}><span className="oi oi-circle-x"></span></a></span></span>
+                <span className={getChipClass(chip)} key={index} title={chip.tooltip ?? ""} role="option">{chip.name}<span className={styles.chipIcon}><a onClick={(e) => handleToggleChip(chip)}><span className="oi oi-circle-x"></span></a></span></span>
             )}
         </div>
     )

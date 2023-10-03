@@ -5,10 +5,10 @@ import { PagedData } from "./pagedData";
 interface FilterGridState<T> {
     filterFields: Array<FilterField>;
     filterLines: Array<FilterLine>;
-    currentResultPage: number;
     isFieldsSelectionVisible: boolean;
     isFiltersEntryVisible: boolean;
     filterResults?: PagedData<T> | null;
+    currentResultPage: number;
 }
 
 export default FilterGridState

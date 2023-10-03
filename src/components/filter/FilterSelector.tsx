@@ -119,7 +119,7 @@ const FilterSelector = (props: inputProps) => {
 
             <div className="col">
                 <div className="form-group my-2">
-                    <a id={`remove-${filterLine.id}`} onClick={handleRemoveFilter}><span className="oi oi-x"></span></a>
+                    <a id={`remove-${filterLine.id}`} role="button" aria-label="Remove Filter" onClick={handleRemoveFilter}><span className="oi oi-x"></span></a>
                 </div>
             </div>
 
