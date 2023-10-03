@@ -1,7 +1,7 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { act } from 'react-dom/test-utils';
-import { describe, test, expect } from 'vitest';
+import { describe, expect } from 'vitest';
 
 import FilterGrid from '../FilterGrid';
 import FilterGridState from '../types/filterGridState';
