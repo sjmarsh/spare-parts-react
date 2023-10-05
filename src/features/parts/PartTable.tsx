@@ -11,6 +11,7 @@ import FetchStatus from '../../app/constants/fetchStatus';
 import RequestStatus from '../../app/constants/requestStatus';
 import TableSettings from '../../app/constants/tableSettings';
 import Pager from '../../components/Pager';
+import useMessageBox from '../../components/messageBox/MessageBox';
 
 import { selectPageOfParts, fetchParts, deletePart, setCurrentPage } from './partListSlice';
 import { showDetail, fetchPart } from './partDetailSlice';
@@ -24,7 +25,8 @@ const PartTable = () => {
     const partsStatus = useAppSelector(state => state.partsList.status);
     const hasError = useAppSelector(state => state.partsList.hasError);
     const errorMessage = useAppSelector(state => state.partsList.error);
-    
+    const [ showMessage, MessageBox ] = useMessageBox();
+       
     useEffect(() => {
         if(partsStatus === FetchStatus.Idle) {
             dispatch(fetchParts(currentPage));
@@ -43,8 +45,10 @@ const PartTable = () => {
         );
     }
 
-    const handleOnDeletePart = (partId: number) => {
-        if(window.confirm('Are you sure you want to delete this part?'))
+    const handleOnDeletePart = async (partId: number) => {
+        
+        const isDeleting = await showMessage('Are you sure you want to delete this part?');
+        if(isDeleting)
         {
             dispatch(deletePart(partId)).then((res) => {
                 if(res.meta.requestStatus === RequestStatus.Fulfilled) {
@@ -118,6 +122,7 @@ const PartTable = () => {
         
         <Pager totalItemCount={totalItemCount} pageSize={TableSettings.PageSize} currentPage={currentPage} onPageClick={handleOnPageClick} />
         
+        <MessageBox/>
     </div>
     )
 }
