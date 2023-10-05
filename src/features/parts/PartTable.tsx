@@ -12,6 +12,8 @@ import RequestStatus from '../../app/constants/requestStatus';
 import TableSettings from '../../app/constants/tableSettings';
 import Pager from '../../components/Pager';
 import useMessageBox from '../../components/messageBox/MessageBox';
+import MessageBoxType from '../../components/messageBox/types/messageBoxType';
+import MessageBoxResult from '../../components/messageBox/types/messageBoxResult';
 
 import { selectPageOfParts, fetchParts, deletePart, setCurrentPage } from './partListSlice';
 import { showDetail, fetchPart } from './partDetailSlice';
@@ -46,9 +48,8 @@ const PartTable = () => {
     }
 
     const handleOnDeletePart = async (partId: number) => {
-        
-        const isDeleting = await showMessage('Are you sure you want to delete this part?');
-        if(isDeleting)
+        const messageResult = await showMessage('Are you sure you want to delete this part?', 'Confirm Delete', MessageBoxType.YesNo);
+        if(messageResult === MessageBoxResult.Yes)
         {
             dispatch(deletePart(partId)).then((res) => {
                 if(res.meta.requestStatus === RequestStatus.Fulfilled) {
