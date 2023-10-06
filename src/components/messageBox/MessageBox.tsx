@@ -69,21 +69,19 @@ const useMessageBox = (): [(messageText: string, titleText: string, messageBoxTy
     const MessageBox = () => {
         return (
         <Modal show={isOpen} className="message-box">
-            <ModalDialog>
-                <ModalHeader>
-                    <ModalTitle className="fs-5">{title}</ModalTitle>
-                </ModalHeader>
-                <ModalBody>
-                    <p className="message">{message}</p>
-                </ModalBody>
-                <ModalFooter>
-                    {
-                        dismissButtonText.length > 0 &&
-                        <Button variant="secondary" onClick={() => onClick(false)}>{dismissButtonText}</Button>
-                    }
-                    <Button variant="primary" onClick={() => onClick(true)}>{acceptButtonText}</Button>
-                </ModalFooter>
-            </ModalDialog>
+            <ModalHeader>
+                <ModalTitle className="fs-5">{title}</ModalTitle>
+            </ModalHeader>
+            <ModalBody>
+                <p className="message">{message}</p>
+            </ModalBody>
+            <ModalFooter>
+                {
+                    dismissButtonText.length > 0 &&
+                    <Button variant="secondary" onClick={() => onClick(false)}>{dismissButtonText}</Button>
+                }
+                <Button variant="primary" onClick={() => onClick(true)}>{acceptButtonText}</Button>
+            </ModalFooter>
         </Modal>
         )
     }
