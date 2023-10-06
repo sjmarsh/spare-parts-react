@@ -20,6 +20,9 @@ import PartCategory from './types/partCategory';
 import IconButton from '../../components/buttons/IconButton';
 import ButtonIcon from '../../components/buttons/buttonIcon';
 import PartAttribute from './types/PartAttribute';
+import useMessageBox from '../../components/messageBox/MessageBox';
+import MessageBoxType from '../../components/messageBox/types/messageBoxType';
+import MessageBoxResult from '../../components/messageBox/types/messageBoxResult';
 
 const PartDetail = () => {
     
@@ -32,6 +35,8 @@ const PartDetail = () => {
     const detailStatus = useAppSelector(state => state.partDetail.status);
     const currentPage = useAppSelector(state => state.partsList.currentPage);
    
+    const [showMessage, MessageBox] = useMessageBox();
+
     const handleCloseModal = () => dispatch(showDetail({mode: DetailMode.Closed, id: 0}));
    
     const handleFormSubmit = (part: Part) => {
@@ -83,8 +88,9 @@ const PartDetail = () => {
                                 stateValues.attributes = [...stateValues.attributes ?? [], {} as PartAttribute]
                                 props.setValues(stateValues);
                             };
-                            const deleteAttribute = (attribute: PartAttribute) => {
-                                if(confirm("Are you sure you want to delete this attribute?")){
+                            const deleteAttribute = async (attribute: PartAttribute) => {
+                                const messageResult = await showMessage('Are you sure you want to delete this attribute?', 'Confirm Delete', MessageBoxType.YesNo);
+                                if(messageResult === MessageBoxResult.Yes){
                                     let stateValues = {...props.values};
                                     stateValues.attributes = stateValues.attributes?.filter(a => a !== attribute);
                                     props.setValues(stateValues, true);
@@ -148,6 +154,7 @@ const PartDetail = () => {
                     <Button variant="link" onClick={handleCloseModal}>Close</Button>
                 </Modal.Footer>
             </Modal>
+            <MessageBox/>
         </div>
     )
 };
