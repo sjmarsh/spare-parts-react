@@ -23,7 +23,7 @@ const SimpleDataGrid = <T,>(props: InputProps<T>) => {
 
     
     const handleShowDetail = (row: DataRow<T>) => {
-        row.isDetailsisible = !row.isDetailsisible;
+        row.isDetailsVisible = !row.isDetailsVisible;
         const state = updateArrayItem<DataRow<T>>(dataRows, row);
         setDataRows(state);
     }
@@ -46,8 +46,8 @@ const SimpleDataGrid = <T,>(props: InputProps<T>) => {
                     dataRows.map((row, index) => [
                     <tr key={index}>
                         <td>
-                            {row.isDetailsisible && <IconButton buttonTitle="Hide Details" isTitleVisible={false} icon={ButtonIcon.ChevronTop} onClick={() => handleShowDetail(row)}/>}
-                            {!row.isDetailsisible && <IconButton buttonTitle="Show Details" isTitleVisible={false} icon={ButtonIcon.ChevronBottom} onClick={() => handleShowDetail(row)}/>}
+                            {row.isDetailsVisible && <IconButton buttonTitle="Hide Details" isTitleVisible={false} icon={ButtonIcon.ChevronTop} onClick={() => handleShowDetail(row)}/>}
+                            {!row.isDetailsVisible && <IconButton buttonTitle="Show Details" isTitleVisible={false} icon={ButtonIcon.ChevronBottom} onClick={() => handleShowDetail(row)}/>}
                         </td>
                         {
                             row.data && Array.from(row.data.values()).map((v, i) => (
@@ -55,7 +55,7 @@ const SimpleDataGrid = <T,>(props: InputProps<T>) => {
                             ))   
                         }
                     </tr>, 
-                    row.isDetailsisible &&  row.detailRows && 
+                    row.isDetailsVisible &&  row.detailRows && 
                     <tr key={`${index}-details`}>                            
                         <td colSpan={dataRows[0].data.size} key={`${index}-details-td`}>
                             <SimpleDataGridDetailSection detailRows={row.detailRows}/>

@@ -10,7 +10,7 @@ class DataRow<T> implements WithId {
 
     public id: string;
     public data: Map<string,string>;
-    public isDetailsisible: boolean;
+    public isDetailsVisible: boolean;
     public detailRows?: Array<DataRowDetail> | null;
 
     constructor(sourceItem: T, columnList: Array<ColumnHeader>){
@@ -20,7 +20,7 @@ class DataRow<T> implements WithId {
         
         this.id = getUUid();
         this.data = this.getData<T>();
-        this.isDetailsisible = false;
+        this.isDetailsVisible = false;
         this.detailRows = this.getDetailRows();
     }
    
