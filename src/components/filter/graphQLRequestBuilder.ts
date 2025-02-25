@@ -18,7 +18,16 @@ const getFilterLineValue = (filterLine: FilterLine) : string => {
         return filterLine.value.toUpperCase();
     }
     if(valueRequiresQuotes(filterLine.selectedField.type)) {
-        return `"${filterLine.value}"`;
+        let lineValue = filterLine.value;
+        if(filterLine.selectedField.type === FilterFieldType.DateType){
+            try {
+                lineValue = new Date(lineValue).toISOString();
+            }
+            catch {
+                console.log(`${lineValue} is not a valid Date for use with GraphQL builder.`)
+            }  
+        }
+        return `"${lineValue}"`;
     }
     return filterLine.value;
 }

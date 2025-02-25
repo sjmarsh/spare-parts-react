@@ -103,6 +103,35 @@ describe('graphQLRequestBuilder', () => {
         expect(result.query).not.toContain("field3");
     })
 
+    it('should build graphQL request with correct date format', () => {
+
+        const theFields = new Array<FilterField>(
+            { id: getUUid(), name: "field1", type: FilterFieldType.StringType, isSelected: true } as FilterField,
+            { id: getUUid(), name: "field2", type: FilterFieldType.NumberType, isSelected: true } as FilterField, 
+            { id: getUUid(), name: "field3", type: FilterFieldType.DateType, isSelected: true } as FilterField 
+        );
+
+        const theOperators = new Array<NamedFilterOperator>(
+            { name: "Equals", filterOperator: FilterOperator.Equal } as NamedFilterOperator,
+            { name: "GraterThan", filterOperator: FilterOperator.GreaterThan } as NamedFilterOperator
+        );
+
+        const theValue = "2010-01-01";
+
+        const filterLine1 = { selectedField: theFields[2], selectedOperator: theOperators[1].filterOperator, value: theValue } as FilterLine
+        const theFilterLines = new Array<FilterLine>(
+            filterLine1
+        );
+
+        const rootGraphQLField = "Things";
+        
+        var result = buildGraphQLRequest(theFilterLines, theFields, rootGraphQLField);
+        
+        expect(result.query.length).toBeGreaterThan(0);
+        expect(result.query).toContain(`${rootGraphQLField} (where: {  field3: { gt: \"2010-01-01T00:00:00.000Z\" }}`);
+        expect(result.query).toContain("field3\r\n");
+    });
+
     it('should build graphQL request with page offset', () => {
 
         const theFields = new Array<FilterField>(
